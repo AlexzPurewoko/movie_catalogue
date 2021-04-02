@@ -1,0 +1,10 @@
+include(":res")
+include(":detail")
+include(":favorite")
+include(":discover")
+include(":search")
+include(":main")
+include(":data")
+include(":core")
+include(":app")
+rootProject.name = "MovieShow"

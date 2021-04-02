@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MovieShow</string>
+    <string name="title_main">Main</string>
+    <string name="title_search">Search MovieShow</string>
+    <string name="title_discover">Discover MovieShow</string>
+    <string name="title_favorite">Favorite MovieShow</string>
+    <string name="title_detail">Detail MovieShow Item</string>
+</resources>

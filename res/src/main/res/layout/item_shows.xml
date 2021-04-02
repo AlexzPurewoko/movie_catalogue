@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/backdrop_img"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/test" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/rating_progress"
+        app:layout_constraintEnd_toStartOf="@id/rating_progress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rating_progress"
+        android:maxLines="1"
+        tools:fontFamily="@font/dancingscript"
+        tools:text="Monster Huntegfhgfhf ghgfhgfhghgfhfhr" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/genres"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/overview"
+        app:layout_constraintStart_toStartOf="@+id/overview"
+        app:layout_constraintTop_toBottomOf="@+id/overview" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/overview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        tools:text="A portal transports Cpt. Artemis and an elite unit of soldiers to a strange world where powerful monsters rule with deadly ferocity. Faced with relentless danger, the team encounters a mysterious hunter who may be their only hope to find a way home." />
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:id="@+id/rating_progress"
+        android:layout_width="wrap_content"
+
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        app:cpb_progress_direction="to_left"
+        app:cpb_progress_max="100"
+        app:cpb_progressbar_color="#FFAB00"
+        app:cpb_progressbar_width="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/backdrop_img"
+        tools:cpb_progress="80" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFAB00"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/rating_progress"
+        app:layout_constraintEnd_toEndOf="@+id/rating_progress"
+        app:layout_constraintStart_toStartOf="@+id/rating_progress"
+        app:layout_constraintTop_toTopOf="@+id/rating_progress"
+        tools:text="4.2" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rating_progress"
+        app:layout_constraintEnd_toEndOf="@+id/overview"
+        app:layout_constraintTop_toTopOf="@+id/rating_progress"
+        app:srcCompat="@drawable/ic_baseline_double_arrow_24"
+        app:tint="#B71C1C" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

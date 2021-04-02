@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.airbnb.lottie.LottieAnimationView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:lottie_fileName="empty_box.json"
+    app:lottie_loop="true"
+    app:lottie_autoPlay="true"
+    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="220dp"/>
