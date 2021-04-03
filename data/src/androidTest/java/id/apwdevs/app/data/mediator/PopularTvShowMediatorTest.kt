@@ -11,6 +11,7 @@ import id.apwdevs.app.data.mediator.dispatcher.PopularTvShowPagingDispatcher
 import id.apwdevs.app.data.paging.test.RecyclerTestAdapter
 import id.apwdevs.app.data.source.local.entity.items.TvEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
+import id.apwdevs.app.data.source.local.room.dbcase.PagingTvShowCaseDbInteractor
 import id.apwdevs.app.data.source.remote.service.ApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -73,6 +74,8 @@ class PopularTvShowMediatorTest {
         recyclerView.adapter = adapter
 
         mockWebServer.dispatcher = PopularTvShowPagingDispatcher(context, ::receiveCallback)
+
+        val pagingCaseDb = PagingTvShowCaseDbInteractor(appDatabase)
         pager = Pager(
                 config = PagingConfig(
                         pageSize = 20,
@@ -81,7 +84,7 @@ class PopularTvShowMediatorTest {
                         enablePlaceholders = false
                 ),
                 remoteMediator = PopularTvShowRemoteMediator(
-                        retrofitService, appDatabase
+                        retrofitService, pagingCaseDb
                 ),
                 pagingSourceFactory = pagingSourceFactory
         ).flow

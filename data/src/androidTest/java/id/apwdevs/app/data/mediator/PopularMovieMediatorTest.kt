@@ -11,6 +11,7 @@ import id.apwdevs.app.data.mediator.dispatcher.PopularMoviePagingDispatcher
 import id.apwdevs.app.data.paging.test.RecyclerTestAdapter
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
+import id.apwdevs.app.data.source.local.room.dbcase.PagingMovieCaseDbInteractor
 import id.apwdevs.app.data.source.remote.service.ApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -73,17 +74,20 @@ class PopularMovieMediatorTest {
         recyclerView.adapter = adapter
 
         mockWebServer.dispatcher = PopularMoviePagingDispatcher(context, ::receiveCallback)
+
+
+        val pagingCaseDb = PagingMovieCaseDbInteractor(appDatabase)
         pager = Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                prefetchDistance = 3,
-                initialLoadSize = 20,
-                enablePlaceholders = false
-            ),
-            remoteMediator = PopularMovieRemoteMediator(
-                retrofitService, appDatabase
-            ),
-            pagingSourceFactory = pagingSourceFactory
+                config = PagingConfig(
+                        pageSize = 20,
+                        prefetchDistance = 3,
+                        initialLoadSize = 20,
+                        enablePlaceholders = false
+                ),
+                remoteMediator = PopularMovieRemoteMediator(
+                        retrofitService, pagingCaseDb
+                ),
+                pagingSourceFactory = pagingSourceFactory
         ).flow
     }
 
