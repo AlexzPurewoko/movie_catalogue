@@ -2,16 +2,23 @@ package id.apwdevs.app.data.source.local.room.dbcase
 
 import androidx.annotation.VisibleForTesting
 import androidx.paging.PagingSource
+import androidx.room.withTransaction
 import androidx.sqlite.db.SupportSQLiteQuery
+import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
+import id.apwdevs.app.data.source.local.room.AppDatabase
+import id.apwdevs.app.data.source.local.room.dao.GenreDao
 import id.apwdevs.app.data.source.local.room.dao.MovieDao
 import id.apwdevs.app.data.source.local.room.dao.RemoteKeysMovieDao
 
-class PagingMovieCaseDbInteractor(
-        private val movieDao: MovieDao,
-        private val remoteKeyDao: RemoteKeysMovieDao
-): PagingCaseDb<MovieEntity, RemoteKeysMovie> {
+class PagingMovieCaseDbInteractor(private val db: AppDatabase): PagingCaseDb<MovieEntity, RemoteKeysMovie> {
+
+
+    private val movieDao: MovieDao = db.movieDao()
+    private val remoteKeyDao: RemoteKeysMovieDao = db.remoteKeysMovieDao()
+    private val genreDao: GenreDao = db.genreDao()
+
     override suspend fun insert(data: List<MovieEntity>) {
         return movieDao.insertMovie(data)
     }
@@ -43,6 +50,18 @@ class PagingMovieCaseDbInteractor(
 
     override suspend fun clearRemoteKeys() {
         remoteKeyDao.clearRemoteKeys()
+    }
+
+    override suspend fun <R> provideTransaction(block: suspend () -> R): R {
+        return db.withTransaction(block)
+    }
+
+    override suspend fun getGenres(): List<Genres> {
+        return genreDao.getAllGenres()
+    }
+
+    override suspend fun insertGenres(genres: List<Genres>) {
+        genreDao.insertGenres(genres)
     }
 
 }
