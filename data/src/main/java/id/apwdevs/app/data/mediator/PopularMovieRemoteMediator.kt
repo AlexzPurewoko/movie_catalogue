@@ -6,13 +6,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import androidx.room.withTransaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
 import id.apwdevs.app.data.source.local.entity.converters.GenreIdsTypeConverter
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
-import id.apwdevs.app.data.source.local.room.AppDatabase
+import id.apwdevs.app.data.source.local.room.dbcase.PagingCaseDb
 import id.apwdevs.app.data.source.remote.response.MovieItemResponse
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
@@ -21,8 +20,8 @@ import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 class PopularMovieRemoteMediator(
-    private val service: ApiService,
-    private val accessDb: AppDatabase
+        private val service: ApiService,
+        private val caseDb: PagingCaseDb<MovieEntity, RemoteKeysMovie>
 ): RemoteMediator<Int, MovieEntity>() {
 
     private var hasBeenUpdateGenre: Boolean = false
@@ -61,26 +60,26 @@ class PopularMovieRemoteMediator(
             val apiResponse = service.getPopularMovies(Config.TOKEN, "en-US", page)
             val items = apiResponse.results
             val endOfPaginationReached = page+1 > apiResponse.totalPages
-            accessDb.withTransaction {
-                if(loadType == LoadType.REFRESH) {
-                    accessDb.remoteKeysMovieDao().clearRemoteKeys()
+            caseDb.provideTransaction {
+                if (loadType == LoadType.REFRESH) {
+                    caseDb.clearRemoteKeys()
                 } else if (loadType == LoadType.APPEND && page - 2 > 0) {
                     deletePrevKeys(page)
                 }
-                val prevKey = if(page == STARTING_PAGE_INDEX) null else page - 1
-                val nextKey = if(endOfPaginationReached) null else page + 1
+                val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
+                val nextKey = if (endOfPaginationReached) null else page + 1
                 val keys = items.map {
                     RemoteKeysMovie(movieId = it.id.toLong(), prevKey = prevKey, nextKey = nextKey)
                 }
                 Log.e("REMOTEKEY", "page $page. list -> ${keys.toString()}")
-                accessDb.remoteKeysMovieDao().insertAll(keys)
+                caseDb.insertAllRemoteKey(keys)
 
-                val saved = accessDb.remoteKeysMovieDao().getAll()
+                val saved = caseDb.getAllRemoteKey()
                 Log.e("REMOTEKEY", "page $page in DAO---. list -> ${saved.toString()}")
 
                 val mappedMoviesToEntity = mapMoviesToEntity(items, page)
-                accessDb.movieDao().insertMovie(mappedMoviesToEntity)
-                val saved2 = accessDb.movieDao().getAllMovie()
+                caseDb.insert(mappedMoviesToEntity)
+                val saved2 = caseDb.getAllData()
 
                 Log.e("REMOTEKEY", "page $page in ALL MOVIES---. list -> ${saved2.size}")
             }
@@ -102,7 +101,7 @@ class PopularMovieRemoteMediator(
         val postQuery =
                 if(pageToBeDeleted == 1) " IS NULL"
                 else "=$pageToBeDeleted"
-        accessDb.remoteKeysMovieDao().deleteKeys(
+        caseDb.deleteKey(
                 SimpleSQLiteQuery("DELETE FROM remote_keys_movie WHERE previous_key$postQuery")
         )
     }
@@ -130,14 +129,14 @@ class PopularMovieRemoteMediator(
             val mappedGenres = genres.map {
                 Genres(it.id, it.name)
             }
-            accessDb.genreDao().insertGenres(mappedGenres)
+            caseDb.insertGenres(mappedGenres)
             hasBeenUpdateGenre = true
         }
     }
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, MovieEntity>): RemoteKeysMovie? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()?.let {
-            val f = accessDb.remoteKeysMovieDao().remoteKeysMovieId(it.id.toLong())
+            val f = caseDb.remoteKeysId(it.id.toLong())
 
             Log.e("REMOTEKEY", "GET ${it.id}. RESULT ${f?.nextKey}")
             f
@@ -147,7 +146,7 @@ class PopularMovieRemoteMediator(
 
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, MovieEntity>): RemoteKeysMovie? {
         return state.pages.firstOrNull {it.data.isNotEmpty()}?.data?.firstOrNull()?.let {
-            val d = accessDb.remoteKeysMovieDao().remoteKeysMovieId(it.id.toLong())
+            val d = caseDb.remoteKeysId(it.id.toLong())
             d
         }
     }
@@ -155,7 +154,7 @@ class PopularMovieRemoteMediator(
     private suspend fun getRemoteKeysClosestToCurrentPosition(state: PagingState<Int, MovieEntity>): RemoteKeysMovie? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let {
-                accessDb.remoteKeysMovieDao().remoteKeysMovieId(it.toLong())
+                caseDb.remoteKeysId(it.toLong())
             }
         }
     }

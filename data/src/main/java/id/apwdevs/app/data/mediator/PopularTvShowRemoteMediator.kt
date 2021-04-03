@@ -5,13 +5,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import androidx.room.withTransaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.RemoteKeysTvShow
 import id.apwdevs.app.data.source.local.entity.converters.GenreIdsTypeConverter
 import id.apwdevs.app.data.source.local.entity.items.TvEntity
-import id.apwdevs.app.data.source.local.room.AppDatabase
+import id.apwdevs.app.data.source.local.room.dbcase.PagingCaseDb
 import id.apwdevs.app.data.source.remote.response.TvShowItemResponse
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
@@ -21,7 +20,7 @@ import java.io.IOException
 @OptIn(ExperimentalPagingApi::class)
 class PopularTvShowRemoteMediator(
         private val service: ApiService,
-        private val accessDb: AppDatabase
+        private val caseDb: PagingCaseDb<TvEntity, RemoteKeysTvShow>
 ) : RemoteMediator<Int, TvEntity>() {
 
     private var hasBeenUpdateGenre: Boolean = false
@@ -61,9 +60,9 @@ class PopularTvShowRemoteMediator(
 
             val items = apiResponse.results
             val endOfPaginationReached = page + 1 > apiResponse.totalPages
-            accessDb.withTransaction {
+            caseDb.provideTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    accessDb.remoteKeysTvShowDao().clearRemoteKeys()
+                    caseDb.clearRemoteKeys()
                 } else if (loadType == LoadType.APPEND && page - 2 > 0) {
                     deletePrevKeys(page)
                 }
@@ -73,14 +72,14 @@ class PopularTvShowRemoteMediator(
                     RemoteKeysTvShow(tvId = it.id.toLong(), prevKey = prevKey, nextKey = nextKey)
                 }
                 Log.e("REMOTEKEY", "page $page. list -> ${keys.toString()}")
-                accessDb.remoteKeysTvShowDao().insertAll(keys)
+                caseDb.insertAllRemoteKey(keys)
 
-                val saved = accessDb.remoteKeysTvShowDao().getAll()
+                val saved = caseDb.getAllRemoteKey()
                 Log.e("REMOTEKEY", "page $page in DAO---. list -> ${saved.toString()}")
 
                 val mappedMoviesToEntity = mapMoviesToEntity(items, page)
-                accessDb.tvShowDao().insertTvShow(mappedMoviesToEntity)
-                val saved2 = accessDb.tvShowDao().getAllTvShow()
+                caseDb.insert(mappedMoviesToEntity)
+                val saved2 = caseDb.getAllData()
 
                 Log.e("REMOTEKEY", "page $page in ALL MOVIES---. list -> ${saved2.size}")
             }
@@ -102,7 +101,7 @@ class PopularTvShowRemoteMediator(
         val postQuery =
                 if (pageToBeDeleted == 1) " IS NULL"
                 else "=$pageToBeDeleted"
-        accessDb.remoteKeysTvShowDao().deleteKeys(
+        caseDb.deleteKey(
                 SimpleSQLiteQuery("DELETE FROM remote_keys_tvshow WHERE previous_key$postQuery")
         )
     }
@@ -132,14 +131,14 @@ class PopularTvShowRemoteMediator(
             val mappedGenres = genres.map {
                 Genres(it.id, it.name)
             }
-            accessDb.genreDao().insertGenres(mappedGenres)
+            caseDb.insertGenres(mappedGenres)
             hasBeenUpdateGenre = true
         }
     }
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, TvEntity>): RemoteKeysTvShow? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()?.let {
-            val f = accessDb.remoteKeysTvShowDao().remoteKeysTvShowId(it.id.toLong())
+            val f = caseDb.remoteKeysId(it.id.toLong())
 
             Log.e("REMOTEKEY", "GET ${it.id}. RESULT ${f?.nextKey}")
             f
@@ -149,7 +148,7 @@ class PopularTvShowRemoteMediator(
 
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, TvEntity>): RemoteKeysTvShow? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let {
-            val d = accessDb.remoteKeysTvShowDao().remoteKeysTvShowId(it.id.toLong())
+            val d = caseDb.remoteKeysId(it.id.toLong())
             d
         }
     }
@@ -157,7 +156,7 @@ class PopularTvShowRemoteMediator(
     private suspend fun getRemoteKeysClosestToCurrentPosition(state: PagingState<Int, TvEntity>): RemoteKeysTvShow? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let {
-                accessDb.remoteKeysTvShowDao().remoteKeysTvShowId(it.toLong())
+                caseDb.remoteKeysId(it.toLong())
             }
         }
     }
