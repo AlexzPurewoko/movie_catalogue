@@ -1,29 +1,31 @@
 package id.apwdevs.app.core.repository
 
-import androidx.paging.*
-import id.apwdevs.app.data.source.local.entity.Genres
-import id.apwdevs.app.data.source.local.paging.TvShowPagingSource
-import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.core.utils.DomainToEntityMapper
-import id.apwdevs.app.core.utils.EntityToDomainMapper
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import id.apwdevs.app.core.domain.model.DetailTvShow
 import id.apwdevs.app.core.domain.model.Genre
 import id.apwdevs.app.core.domain.model.TvShow
-import id.apwdevs.app.core.domain.repository.IFavoriteTvShowRepository
-import id.apwdevs.app.data.source.local.entity.detail.tvshow.FavDetailTvShowEntity
+import id.apwdevs.app.core.domain.repository.FavoriteTvShowRepository
+import id.apwdevs.app.core.utils.DomainToEntityMapper
+import id.apwdevs.app.core.utils.EntityToDomainMapper
+import id.apwdevs.app.data.source.local.entity.Genres
+import id.apwdevs.app.data.source.local.paging.TvShowPagingSource
+import id.apwdevs.app.data.source.local.room.AppDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-class FavTvShowRepository constructor(
-    private val accessDb: AppDatabase
-): IFavoriteTvShowRepository {
+class FavTvShowRepositoryImpl constructor(
+        private val accessDb: AppDatabase
+) : FavoriteTvShowRepository {
 
     private val genres = mutableListOf<Genres>()
     override fun getAllFavorites(): Flow<PagingData<TvShow>> {
         return Pager(
-            config = PagingConfig(TvShowPagingSource.LOAD_SIZE, enablePlaceholders = false),
-            pagingSourceFactory = {TvShowPagingSource(accessDb)}
+                config = PagingConfig(TvShowPagingSource.LOAD_SIZE, enablePlaceholders = false),
+                pagingSourceFactory = { TvShowPagingSource(accessDb) }
         ).flow.map { pagingData ->
             getGenre()
             pagingData.map {
