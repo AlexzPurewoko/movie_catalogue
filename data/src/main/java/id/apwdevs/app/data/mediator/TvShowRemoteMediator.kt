@@ -9,17 +9,20 @@ import androidx.room.withTransaction
 import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.RemoteKeysTvShow
 import id.apwdevs.app.data.source.local.entity.converters.GenreIdsTypeConverter
-import id.apwdevs.app.data.source.local.entity.converters.ListStrCommaConverter
 import id.apwdevs.app.data.source.local.entity.items.TvEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
 import id.apwdevs.app.data.source.remote.response.TvShowItemResponse
 import id.apwdevs.app.data.source.remote.service.ApiService
-import id.apwdevs.app.data.utils.QueryType
 import id.apwdevs.app.data.utils.Config
+import id.apwdevs.app.data.utils.QueryType
 import retrofit2.HttpException
 import java.io.IOException
 import java.io.InvalidObjectException
 
+@Deprecated(
+        "This class will be deleted and changed to a new mediator",
+        replaceWith = ReplaceWith("PopularTvShowRemoteMediator::class"),
+)
 @OptIn(ExperimentalPagingApi::class)
 class TvShowRemoteMediator(
         private val service: ApiService,
@@ -30,8 +33,8 @@ class TvShowRemoteMediator(
     private var hasBeenUpdateGenre: Boolean = false
 
     override suspend fun load(
-        loadType: LoadType,
-        state: PagingState<Int, TvEntity>
+            loadType: LoadType,
+            state: PagingState<Int, TvEntity>
     ): MediatorResult {
 
         val page = when(loadType) {
@@ -41,7 +44,7 @@ class TvShowRemoteMediator(
             }
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeyForFirstItem(state)
-                    ?: throw InvalidObjectException("Remote Key and the prev Key should not be null")
+                        ?: throw InvalidObjectException("Remote Key and the prev Key should not be null")
 
                 remoteKeys.prevKey ?: return MediatorResult.Success(endOfPaginationReached = true)
             }
@@ -88,18 +91,15 @@ class TvShowRemoteMediator(
 
         return items.map {
             val convertedGenres = GenreIdsTypeConverter.GenreIdData(
-                data = it.genreIds
-            )
-            val convertedOriginCountry = ListStrCommaConverter.Data(
-                data = it.originCountry
+                    data = it.genreIds
             )
             Log.e("HHHHHHMOVIETV", "bc : ${it.backdropPath}")
             TvEntity(
-                id = it.id, name = it.name,
-                overview = it.overview, language = it.originalLanguage,
-                genreIds = convertedGenres, posterPath = it.posterPath, backdropPath = it.backdropPath ?: "",
-                firstAirDate = it.firstAirDate, voteAverage = it.voteAverage, voteCount = it.voteCount,
-                originCountry = convertedOriginCountry
+                    id = it.id, name = it.name,
+                    overview = it.overview, language = it.originalLanguage,
+                    genreIds = convertedGenres, posterPath = it.posterPath, backdropPath = it.backdropPath
+                    ?: "",
+                    firstAirDate = it.firstAirDate, voteAverage = it.voteAverage, voteCount = it.voteCount, page = 1
             )
         }
     }

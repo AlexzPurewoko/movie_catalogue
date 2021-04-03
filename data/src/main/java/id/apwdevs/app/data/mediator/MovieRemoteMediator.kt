@@ -5,12 +5,12 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import id.apwdevs.app.data.source.remote.response.MovieItemResponse
 import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
 import id.apwdevs.app.data.source.local.entity.converters.GenreIdsTypeConverter
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
+import id.apwdevs.app.data.source.remote.response.MovieItemResponse
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
 import id.apwdevs.app.data.utils.QueryType
@@ -18,11 +18,15 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.io.InvalidObjectException
 
+@Deprecated(
+        "This class will be deleted and changed to a new mediator",
+        replaceWith = ReplaceWith("PopularMovieRemoteMediator::class"),
+)
 @OptIn(ExperimentalPagingApi::class)
 class MovieRemoteMediator(
-    private val service: ApiService,
-    private val accessDb: AppDatabase,
-    private val queryType: QueryType
+        private val service: ApiService,
+        private val accessDb: AppDatabase,
+        private val queryType: QueryType
 ): RemoteMediator<Int, MovieEntity>() {
 
     private var hasBeenUpdateGenre: Boolean = false
@@ -83,13 +87,14 @@ class MovieRemoteMediator(
 
         return items.map {
             val convertedGenres = GenreIdsTypeConverter.GenreIdData(
-                data = it.genreIds
+                    data = it.genreIds
             )
             MovieEntity(
-                id = it.id, title = it.title,
-                overview = it.overview, language = it.originalLanguage,
-                genreIds = convertedGenres, posterPath = it.posterPath, backdropPath = it.backdropPath,
-                releaseDate = it.releaseDate, voteAverage = it.voteAverage, voteCount = it.voteCount, adult = it.adult
+                    id = it.id, title = it.title,
+                    overview = it.overview, language = it.originalLanguage,
+                    genreIds = convertedGenres, posterPath = it.posterPath, backdropPath = it.backdropPath,
+                    releaseDate = it.releaseDate, voteAverage = it.voteAverage, voteCount = it.voteCount, adult = it.adult,
+                    page = 1
             )
         }
     }
