@@ -33,16 +33,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest
-class SearchMovPagingTest {
+class SearchMoviePagingTest {
     private lateinit var recyclerView: RecyclerView
     private val query = "A"
     private val totalPage = 4
 
     private val service: ApiService by lazy {
         Retrofit.Builder()
-            .baseUrl("http://localhost:8080")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(ApiService::class.java)
+                .baseUrl("http://localhost:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build().create(ApiService::class.java)
     }
 
     private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply{
