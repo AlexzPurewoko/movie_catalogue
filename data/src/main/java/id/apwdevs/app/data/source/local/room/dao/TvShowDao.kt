@@ -2,6 +2,7 @@ package id.apwdevs.app.data.source.local.room.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
+import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 import id.apwdevs.app.data.source.local.entity.items.TvEntity
 
 @Dao
@@ -15,6 +16,9 @@ interface TvShowDao {
     @Query("DELETE FROM tvshows")
     suspend fun clearTvShows()
 
-    @Query("SELECT * FROM tvshows")
+    @Query("SELECT * FROM tvshows ORDER BY page_at ASC")
     fun getAllTvShows(): PagingSource<Int, TvEntity>
+
+    @Query("SELECT * FROM tvshows")
+    suspend fun getAllTvShow(): List<TvEntity>
 }
