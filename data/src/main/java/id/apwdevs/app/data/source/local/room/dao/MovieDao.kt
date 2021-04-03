@@ -15,7 +15,10 @@ interface MovieDao {
     @Query("DELETE FROM movies")
     suspend fun clearMovies()
 
-    @Query("SELECT * FROM movies")
+    @Query("SELECT * FROM movies ORDER BY title ASC")
     fun getAllMovies(): PagingSource<Int, MovieEntity>
+
+    @Query("SELECT * FROM movies")
+    suspend fun getAllMovie(): List<MovieEntity>
 }
 
