@@ -58,7 +58,7 @@ class TvShowRepository constructor(
                     }
                     TvShow(
                         tvId = it.id, name = it.name, firstAirDate = it.firstAirDate, overview = it.overview,
-                        language = it.language, genres = allGenres, posterPath = it.posterPath, originCountry = it.originCountry.data,
+                        language = it.language, genres = allGenres, posterPath = it.posterPath,
                         backdropPath = it.backdropPath, voteAverage = it.voteAverage, voteCount = it.voteCount
                     )
                 }

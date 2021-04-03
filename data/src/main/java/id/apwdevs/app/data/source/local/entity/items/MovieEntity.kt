@@ -1,9 +1,20 @@
 package id.apwdevs.app.data.source.local.entity.items
 
 import androidx.room.*
+import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
 import id.apwdevs.app.data.source.local.entity.converters.GenreIdsTypeConverter
 
-@Entity(tableName = "movies")
+@Entity(
+    tableName = "movies",
+    foreignKeys = [
+        ForeignKey(
+            entity = RemoteKeysMovie::class,
+            parentColumns = ["movie_id"],
+            childColumns = ["id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 @TypeConverters(GenreIdsTypeConverter::class)
 data class MovieEntity (
         @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "id") val id: Int,
@@ -16,6 +27,7 @@ data class MovieEntity (
         @ColumnInfo(name = "release_date") val releaseDate: String,
         @ColumnInfo(name = "vote_average") val voteAverage: Double,
         @ColumnInfo(name = "vote_count") val voteCount: Int,
-        @ColumnInfo(name = "is_adult") val adult: Boolean
+        @ColumnInfo(name = "is_adult") val adult: Boolean,
+        @ColumnInfo(name = "page_at") val page: Int
 ) {
 }

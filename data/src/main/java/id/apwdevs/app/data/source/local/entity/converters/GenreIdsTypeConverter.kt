@@ -16,7 +16,9 @@ class GenreIdsTypeConverter {
     @TypeConverter
     fun fromStrToGenres(strIdGenre: String): GenreIdData {
         val ret = mutableListOf<Int>()
-        strIdGenre.split(",").forEach { numStr -> ret.add(numStr.toInt()) }
+        if(strIdGenre.isNotEmpty())
+            strIdGenre.split(",").forEach { numStr -> ret.add(numStr.toInt()) }
+
         return GenreIdData(ret)
     }
 

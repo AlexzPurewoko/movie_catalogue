@@ -35,7 +35,7 @@ class FavTvShowRepository constructor(
                 }
                 TvShow(
                         tvId = it.id, name = it.name, firstAirDate = it.firstAirDate, overview = it.overview,
-                        language = it.originalLanguage, genres = genres, posterPath = it.posterPath, originCountry = listOf(),
+                        language = it.originalLanguage, genres = genres, posterPath = it.posterPath,
                         backdropPath = it.backdropPath, voteAverage = it.voteAverage, voteCount = it.voteCount
                 )
             }
