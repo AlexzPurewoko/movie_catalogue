@@ -1,5 +1,6 @@
 package id.apwdevs.app.data.mediator
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -17,7 +18,6 @@ import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
 import retrofit2.HttpException
 import java.io.IOException
-import java.io.InvalidObjectException
 
 @OptIn(ExperimentalPagingApi::class)
 class PopularMovieRemoteMediator(
@@ -30,6 +30,7 @@ class PopularMovieRemoteMediator(
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
+    @SuppressLint("VisibleForTests")
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, MovieEntity>
@@ -63,7 +64,6 @@ class PopularMovieRemoteMediator(
             accessDb.withTransaction {
                 if(loadType == LoadType.REFRESH) {
                     accessDb.remoteKeysMovieDao().clearRemoteKeys()
-                    accessDb.movieDao().clearMovies()
                 } else if (loadType == LoadType.APPEND && page - 2 > 0) {
                     deletePrevKeys(page)
                 }
@@ -78,7 +78,7 @@ class PopularMovieRemoteMediator(
                 val saved = accessDb.remoteKeysMovieDao().getAll()
                 Log.e("REMOTEKEY", "page $page in DAO---. list -> ${saved.toString()}")
 
-                val mappedMoviesToEntity = mapMoviesToEntity(items)
+                val mappedMoviesToEntity = mapMoviesToEntity(items, page)
                 accessDb.movieDao().insertMovie(mappedMoviesToEntity)
                 val saved2 = accessDb.movieDao().getAllMovie()
 
@@ -107,7 +107,7 @@ class PopularMovieRemoteMediator(
         )
     }
 
-    private fun mapMoviesToEntity(items: List<MovieItemResponse>): List<MovieEntity> {
+    private fun mapMoviesToEntity(items: List<MovieItemResponse>, page: Int): List<MovieEntity> {
 
         return items.map {
             val convertedGenres = GenreIdsTypeConverter.GenreIdData(
@@ -117,7 +117,8 @@ class PopularMovieRemoteMediator(
                 id = it.id, title = it.title,
                 overview = it.overview, language = it.originalLanguage,
                 genreIds = convertedGenres, posterPath = it.posterPath, backdropPath = it.backdropPath,
-                releaseDate = it.releaseDate, voteAverage = it.voteAverage, voteCount = it.voteCount, adult = it.adult
+                releaseDate = it.releaseDate, voteAverage = it.voteAverage, voteCount = it.voteCount, adult = it.adult,
+                page = page
             )
         }
     }
@@ -163,3 +164,5 @@ class PopularMovieRemoteMediator(
         const val STARTING_PAGE_INDEX = 1
     }
 }
+
+
