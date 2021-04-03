@@ -43,7 +43,7 @@ class PopularMovieMediatorTest {
     }
 
     private val appDatabase: AppDatabase by lazy {
-        Room.databaseBuilder(context, AppDatabase::class.java, "appdb.db")
+        Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .build()
     }
 
@@ -127,12 +127,12 @@ class PopularMovieMediatorTest {
     @Test
     fun append_should_be_able_to_load_next_page_when_scrollUp() {
         runBlocking {
-            var job = executeLaunch(this)
+            val job = executeLaunch(this)
             delay(1000)
 
             adapter.forcePrefetch(18)
 
-            Assert.assertEquals(1, mappingCountCallHandler[3])
+            Assert.assertEquals(1, mappingCountCallHandler[2])
             Assert.assertEquals(20, adapter.itemCount)
 
             job.cancel()
@@ -142,7 +142,7 @@ class PopularMovieMediatorTest {
     @Test
     fun should_able_to_load_last_page_and_not_load_anymore() {
         runBlocking {
-            var job = executeLaunch(this)
+            val job = executeLaunch(this)
             delay(500)
 
             adapter.forcePrefetch(19)
