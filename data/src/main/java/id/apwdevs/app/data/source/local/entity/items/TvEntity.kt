@@ -1,14 +1,22 @@
 package id.apwdevs.app.data.source.local.entity.items
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import androidx.room.*
+import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
+import id.apwdevs.app.data.source.local.entity.RemoteKeysTvShow
 import id.apwdevs.app.data.source.local.entity.converters.GenreIdsTypeConverter
-import id.apwdevs.app.data.source.local.entity.converters.ListStrCommaConverter
 
-@Entity(tableName = "tvshows")
-@TypeConverters(GenreIdsTypeConverter::class, ListStrCommaConverter::class)
+@Entity(
+        tableName = "tvshows",
+        foreignKeys = [
+            ForeignKey(
+                    entity = RemoteKeysTvShow::class,
+                    parentColumns = ["tv_id"],
+                    childColumns = ["id"],
+                    onDelete = ForeignKey.CASCADE
+            )
+        ]
+)
+@TypeConverters(GenreIdsTypeConverter::class)
 data class TvEntity(
     @PrimaryKey(autoGenerate = false) val id: Int,
     @ColumnInfo(name = "name") val name: String,
@@ -17,9 +25,9 @@ data class TvEntity(
     @ColumnInfo(name = "original_language") val language: String,
     @ColumnInfo(name = "genre_ids") val genreIds: GenreIdsTypeConverter.GenreIdData,
     @ColumnInfo(name = "poster_path") val posterPath: String,
-    @ColumnInfo(name = "origin_country") val originCountry: ListStrCommaConverter.Data,
     @ColumnInfo(name = "backdrop_path") val backdropPath: String,
     @ColumnInfo(name = "vote_average") val voteAverage: Double,
-    @ColumnInfo(name = "vote_count") val voteCount: Int
+    @ColumnInfo(name = "vote_count") val voteCount: Int,
+    @ColumnInfo(name = "page_at") val page: Int
 )
 
