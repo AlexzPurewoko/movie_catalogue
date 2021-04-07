@@ -82,13 +82,13 @@ class MovieRepoImpl constructor(
 
     override fun getDetailMovie(movieId: Int): Flow<State<DetailMovie>> {
         return flow {
-            emit(State.Loading() as State<DetailMovie>)
+            emit(State.Loading<DetailMovie>())
             try {
                 val detailMovie = service.getDetailMovies(movieId.toString(), Config.TOKEN, "en-US")
                 val transform = RemoteToDomainMapper.detailMovie(detailMovie)
                 emit(State.Success(transform))
             } catch (e: Throwable) {
-                emit(State.Error(e) as State<DetailMovie>)
+                emit(State.Error<DetailMovie>(e))
             }
         }
     }
