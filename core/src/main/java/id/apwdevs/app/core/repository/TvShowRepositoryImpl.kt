@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
+@Deprecated("will be deleted")
 @OptIn(ExperimentalPagingApi::class)
 class TvShowRepositoryImpl constructor(
         private val service: ApiService,
@@ -42,32 +43,32 @@ class TvShowRepositoryImpl constructor(
     private fun getPaging(queryType: QueryType): Flow<PagingData<TvShow>> {
         val pagingSourceFactory = { accessDb.tvShowDao().getAllTvShows() }
         return Pager(
-            config = PagingConfig(PAGE_SIZE, enablePlaceholders = false),
-            remoteMediator = TvShowRemoteMediator(
-                service, accessDb, queryType
-            ),
-            pagingSourceFactory = pagingSourceFactory
+                config = PagingConfig(PAGE_SIZE, enablePlaceholders = false),
+                remoteMediator = TvShowRemoteMediator(
+                        service, accessDb, queryType
+                ),
+                pagingSourceFactory = pagingSourceFactory
         ).flow
-            .map { pagingData ->
-                getGenre()
-                pagingData.map {
-                    val allGenres = it.genreIds.data.map {
-                        val item = genres.find { i -> i.id == it }
-                        if(item == null) Genre(0, "")
-                        else Genre(item.id, item.genreName)
+                .map { pagingData ->
+                    getGenre()
+                    pagingData.map {
+                        val allGenres = it.genreIds.data.map {
+                            val item = genres.find { i -> i.id == it }
+                            if (item == null) Genre(0, "")
+                            else Genre(item.id, item.genreName)
+                        }
+                        TvShow(
+                                tvId = it.id, name = it.name, firstAirDate = it.firstAirDate, overview = it.overview,
+                                language = it.language, genres = allGenres, posterPath = it.posterPath,
+                                backdropPath = it.backdropPath, voteAverage = it.voteAverage, voteCount = it.voteCount
+                        )
                     }
-                    TvShow(
-                        tvId = it.id, name = it.name, firstAirDate = it.firstAirDate, overview = it.overview,
-                        language = it.language, genres = allGenres, posterPath = it.posterPath,
-                        backdropPath = it.backdropPath, voteAverage = it.voteAverage, voteCount = it.voteCount
-                    )
                 }
-            }
     }
 
 
     private suspend fun getGenre() {
-        if(genres.isNotEmpty()) return
+        if (genres.isNotEmpty()) return
         val genresFromDao = accessDb.genreDao().getAllGenres()
         genres.addAll(genresFromDao)
     }

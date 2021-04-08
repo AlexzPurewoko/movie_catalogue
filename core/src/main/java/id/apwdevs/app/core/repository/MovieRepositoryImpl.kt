@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
+@Deprecated("will be deleted")
 @OptIn(ExperimentalPagingApi::class)
 class MovieRepositoryImpl constructor(
         private val service: ApiService,
@@ -41,35 +42,36 @@ class MovieRepositoryImpl constructor(
     private fun getPaging(queryType: QueryType): Flow<PagingData<Movies>> {
         val pagingSourceFactory = { accessDb.movieDao().getAllMovies() }
         return Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
-            remoteMediator = MovieRemoteMediator(
-                service, accessDb, queryType
-            ),
-            pagingSourceFactory = pagingSourceFactory
+                config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+                remoteMediator = MovieRemoteMediator(
+                        service, accessDb, queryType
+                ),
+                pagingSourceFactory = pagingSourceFactory
         ).flow
-            .map { pagingData ->
-                getGenre()
-                pagingData.map {
-                    val allGenres = it.genreIds.data.map {
-                        val item = genres.find { i -> i.id == it }
-                        if(item == null) Genre(0, "")
-                        else Genre(item.id, item.genreName)
+                .map { pagingData ->
+                    getGenre()
+                    pagingData.map {
+                        val allGenres = it.genreIds.data.map {
+                            val item = genres.find { i -> i.id == it }
+                            if (item == null) Genre(0, "")
+                            else Genre(item.id, item.genreName)
+                        }
+                        Movies(
+                                movieId = it.id, title = it.title, overview = it.overview,
+                                language = it.language, genres = allGenres, posterPath = it.posterPath,
+                                backdropPath = it.backdropPath, releaseDate = it.releaseDate, voteAverage = it.voteAverage,
+                                voteCount = it.voteCount, adult = it.adult
+                        )
                     }
-                    Movies(
-                        movieId = it.id, title = it.title, overview = it.overview,
-                        language = it.language, genres = allGenres, posterPath = it.posterPath,
-                        backdropPath = it.backdropPath, releaseDate = it.releaseDate, voteAverage = it.voteAverage,
-                        voteCount = it.voteCount, adult = it.adult
-                    )
                 }
-            }
     }
 
     private suspend fun getGenre() {
-        if(genres.isNotEmpty()) return
+        if (genres.isNotEmpty()) return
         val genresFromDao = accessDb.genreDao().getAllGenres()
         genres.addAll(genresFromDao)
     }
+
     companion object {
         const val PAGE_SIZE = 20
     }
