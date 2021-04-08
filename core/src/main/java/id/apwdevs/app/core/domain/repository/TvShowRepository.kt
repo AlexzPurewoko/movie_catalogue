@@ -6,13 +6,6 @@ import id.apwdevs.app.core.domain.model.TvShow
 import id.apwdevs.app.core.utils.State
 import kotlinx.coroutines.flow.Flow
 
-@Deprecated("will be deleted")
-interface TvShowRepository {
-    fun discoverPopularTvShow(): Flow<PagingData<TvShow>>
-    fun searchTvShow(query: String, includeAdult: Boolean): Flow<PagingData<TvShow>>
-    fun getDetailTvShow(tvId: Int): Flow<DetailTvShow>
-}
-
 interface TvShowRepository2 {
     fun discoverPopularTvShow(): Flow<PagingData<TvShow>>
     fun searchTvShow(query: String, includeAdult: Boolean): Flow<PagingData<TvShow>>
