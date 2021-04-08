@@ -4,8 +4,9 @@ import androidx.paging.PagingSource
 import id.apwdevs.app.data.source.local.entity.detail.movie.FavDetailMovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
 
+@Deprecated("will be deleted, for favorite use only with flow, not paging")
 class MoviePagingSource(
-    private val accessDb: AppDatabase
+        private val accessDb: AppDatabase
 ): PagingSource<Int, FavDetailMovieEntity>() {
 
     private var countOffsetItem = 0
@@ -22,9 +23,9 @@ class MoviePagingSource(
         countOffsetItem = response.size
         startOffsetItem += countOffsetItem
         return LoadResult.Page(
-            data = response,
-            prevKey = if(position == 1) null else position - 1,
-            nextKey = nextKey
+                data = response,
+                prevKey = if(position == 1) null else position - 1,
+                nextKey = nextKey
         )
     }
 
