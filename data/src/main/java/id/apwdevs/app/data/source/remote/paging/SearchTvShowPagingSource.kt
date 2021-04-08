@@ -9,14 +9,15 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class SearchTvShowPagingSource(
-    private val apiService: ApiService,
-    private val query: String
+        private val apiService: ApiService,
+        private val query: String,
+        private val includeAdult: Boolean = false
 ) : PagingSource<Int, TvShowItemResponse>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TvShowItemResponse> {
         val position = params.key ?: 1
         return try {
-            val response = apiService.searchTvShow(Config.TOKEN, position, query, false)
+            val response = apiService.searchTvShow(Config.TOKEN, position, query, includeAdult)
             val results = response.results
             val totalPages = response.totalPages
             var nextKey: Int? = position + (params.loadSize / ITEM_PER_PAGE)

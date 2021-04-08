@@ -4,32 +4,32 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import id.apwdevs.app.data.source.local.entity.Genres
-import id.apwdevs.app.data.source.local.paging.MoviePagingSource
-import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.core.utils.DomainToEntityMapper
-import id.apwdevs.app.core.utils.EntityToDomainMapper
 import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.Genre
 import id.apwdevs.app.core.domain.model.Movies
-import id.apwdevs.app.core.domain.repository.IFavoriteMovieRepository
+import id.apwdevs.app.core.domain.repository.FavoriteMovieRepository
+import id.apwdevs.app.core.utils.DomainToEntityMapper
+import id.apwdevs.app.core.utils.EntityToDomainMapper
+import id.apwdevs.app.data.source.local.entity.Genres
+import id.apwdevs.app.data.source.local.paging.MoviePagingSource
+import id.apwdevs.app.data.source.local.room.AppDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-class FavMovieRepository  constructor(
-    private val accessDb: AppDatabase
-): IFavoriteMovieRepository {
+class FavMovieRepositoryImpl constructor(
+        private val accessDb: AppDatabase
+) : FavoriteMovieRepository {
     private val genres = mutableListOf<Genres>()
     override fun getAllFavorites(): Flow<PagingData<Movies>> {
         return Pager(
-            config = PagingConfig(MoviePagingSource.LOAD_SIZE, enablePlaceholders = false),
-            pagingSourceFactory = {MoviePagingSource(accessDb)}
+                config = PagingConfig(MoviePagingSource.LOAD_SIZE, enablePlaceholders = false),
+                pagingSourceFactory = { MoviePagingSource(accessDb) }
         ).flow.map { pagingData ->
             getGenre()
             pagingData.map {
                 val listGenres = accessDb.genreDao().genreIdsMapper(it.id)
-                val genres = listGenres.map{
+                val genres = listGenres.map {
                     val item = genres.find { i -> i.id == it }
                     if(item == null) Genre(0, "")
                     else Genre(item.id, item.genreName)

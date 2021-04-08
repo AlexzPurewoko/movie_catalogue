@@ -5,13 +5,13 @@ import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.DetailTvShow
 import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.model.TvShow
-import id.apwdevs.app.core.domain.repository.IFavoriteMovieRepository
-import id.apwdevs.app.core.domain.repository.IFavoriteTvShowRepository
+import id.apwdevs.app.core.domain.repository.FavoriteMovieRepository
+import id.apwdevs.app.core.domain.repository.FavoriteTvShowRepository
 import kotlinx.coroutines.flow.Flow
 
 class FavoriteInteractor constructor(
-    private val favMovieRepository: IFavoriteMovieRepository,
-    private val favTvShowRepository: IFavoriteTvShowRepository
+        private val favMovieRepository: FavoriteMovieRepository,
+        private val favTvShowRepository: FavoriteTvShowRepository
 ): FavoriteUseCase {
     override fun getAllFavoriteMovies(): Flow<PagingData<Movies>> {
         return favMovieRepository.getAllFavorites()

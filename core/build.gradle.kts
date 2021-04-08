@@ -1,4 +1,6 @@
-import modules.*
+import modules.Apps
+import modules.Libs
+import modules.TestLibs
 
 plugins {
     id ("com.android.library")
@@ -58,7 +60,17 @@ dependencies {
 //        Libs.koinAndroid
 //    ).forEach { implementation(it) }
 
-    testImplementation (TestLibs.junit)
-    androidTestImplementation ("androidx.test.ext:junit:1.1.2")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:3.3.0")
+    testImplementation(TestLibs.junit)
+
+    testImplementation(TestLibs.archCoreTesting)
+    testImplementation(Libs.coroutinesCore)
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3")
+    testImplementation(TestLibs.paging)
+    testImplementation("org.robolectric:robolectric:4.5.1")
+    testImplementation("androidx.test:core:1.3.0")
+
+    testImplementation("io.mockk:mockk:1.10.6")
+    androidTestImplementation("androidx.test.ext:junit:1.1.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
 }
