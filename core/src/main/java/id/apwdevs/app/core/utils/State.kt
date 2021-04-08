@@ -1,7 +1,7 @@
 package id.apwdevs.app.core.utils
 
-sealed class State<T>(val data: T?, val error: Throwable?) {
-    class Loading<T>() : State<T>(null, null)
+sealed class State<out T>(val data: T?, val error: Throwable?) {
+    class Loading() : State<Nothing>(null, null)
     class Success<T>(data: T) : State<T>(data, null)
-    class Error<T>(error: Throwable) : State<T>(null, error)
+    class Error(error: Throwable) : State<Nothing>(null, error)
 }
