@@ -4,7 +4,7 @@ import androidx.paging.*
 import id.apwdevs.app.core.domain.model.DetailTvShow
 import id.apwdevs.app.core.domain.model.Genre
 import id.apwdevs.app.core.domain.model.TvShow
-import id.apwdevs.app.core.domain.repository.TvShowRepository2
+import id.apwdevs.app.core.domain.repository.TvShowRepository
 import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.data.mediator.PopularTvShowRemoteMediator
@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.map
 class TvShowRepoImpl constructor(
         private val service: ApiService,
         private val caseDb: PagingCaseDb<TvEntity, RemoteKeysTvShow>
-) : TvShowRepository2 {
+) : TvShowRepository {
 
     private val genres = mutableListOf<Genres>()
 

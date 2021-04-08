@@ -9,7 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import id.apwdevs.app.core.data.FakeDataDetail
 import id.apwdevs.app.core.domain.model.DetailTvShow
 import id.apwdevs.app.core.domain.model.TvShow
-import id.apwdevs.app.core.domain.repository.TvShowRepository2
+import id.apwdevs.app.core.domain.repository.TvShowRepository
 import id.apwdevs.app.core.repository.TvShowRepoImpl
 import id.apwdevs.app.core.rule.TestCoroutineRule
 import id.apwdevs.app.core.utils.RemoteToDomainMapper
@@ -56,14 +56,14 @@ class TvShowRepositoryTest {
     }
 
 
-    private lateinit var tvShowRepository2: TvShowRepository2
+    private lateinit var tvShowRepository: TvShowRepository
 
     @Before
     fun setup() {
         appDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).allowMainThreadQueries().build()
         pagingCaseDb = spyk(PagingTvShowCaseDbInteractor(appDatabase))
         MockKAnnotations.init(this)
-        tvShowRepository2 = TvShowRepoImpl(service, pagingCaseDb)
+        tvShowRepository = TvShowRepoImpl(service, pagingCaseDb)
     }
 
     @Test
@@ -76,7 +76,7 @@ class TvShowRepositoryTest {
             coEvery { service.searchTvShow(Config.TOKEN, 1, "a", false) } throws expected
             coEvery { pagingCaseDb.getGenres() } returns FakeDataDetail.generateGenre()
             val adapter = RecyclerTestAdapter<TvShow>()
-            val result = tvShowRepository2.searchTvShow("a", false)
+            val result = tvShowRepository.searchTvShow("a", false)
 
             // we need to define handler for exception in coroutine because submitData will return error if any error ocurred on PagingSource
             val cHandler = CoroutineExceptionHandler { _, exception ->
@@ -109,7 +109,7 @@ class TvShowRepositoryTest {
             coEvery { service.searchTvShow(Config.TOKEN, 1, "a", false) } returns tvShowResponse
             coEvery { pagingCaseDb.getGenres() } returns FakeDataDetail.generateGenre()
             val adapter = RecyclerTestAdapter<TvShow>()
-            val result = tvShowRepository2.searchTvShow("a", false)
+            val result = tvShowRepository.searchTvShow("a", false)
 
             val job = launch {
                 result.cachedIn(this).collect {
@@ -142,7 +142,7 @@ class TvShowRepositoryTest {
             coEvery { service.getDetailTvShows(movieId.toString(), Config.TOKEN, language = "en-US") } throws expected
 
 
-            val result = tvShowRepository2.getDetailTvShow(movieId)
+            val result = tvShowRepository.getDetailTvShow(movieId)
             var actual: Throwable? = null
             result.collect {
                 observer.onChanged(it)
@@ -175,7 +175,7 @@ class TvShowRepositoryTest {
             val observer = mockk<Observer<State<DetailTvShow>>>(relaxUnitFun = true)
             coEvery { service.getDetailTvShows(tvId.toString(), Config.TOKEN, language = "en-US") } returns fakeData
 
-            val result = tvShowRepository2.getDetailTvShow(tvId)
+            val result = tvShowRepository.getDetailTvShow(tvId)
             var actual: DetailTvShow? = null
             result.collect {
                 observer.onChanged(it)

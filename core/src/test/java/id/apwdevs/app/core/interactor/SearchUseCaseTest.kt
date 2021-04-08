@@ -3,7 +3,7 @@ package id.apwdevs.app.core.interactor
 import androidx.paging.PagingData
 import id.apwdevs.app.core.data.FakeDomain
 import id.apwdevs.app.core.domain.repository.MovieRepository
-import id.apwdevs.app.core.domain.repository.TvShowRepository2
+import id.apwdevs.app.core.domain.repository.TvShowRepository
 import id.apwdevs.app.core.domain.usecase.SearchInteractor
 import id.apwdevs.app.core.domain.usecase.SearchUseCase
 import io.mockk.MockKAnnotations
@@ -23,7 +23,7 @@ class SearchUseCaseTest {
     lateinit var movieRepository: MovieRepository
 
     @MockK
-    lateinit var tvShowRepository: TvShowRepository2
+    lateinit var tvShowRepository: TvShowRepository
 
     lateinit var searchUseCase: SearchUseCase
 
