@@ -154,7 +154,7 @@ class MovieRepositoryTest {
                 observer.onChanged(coMatch { it is State.Loading })
                 service.getDetailMovies(cmpEq(movieId.toString()), cmpEq(Config.TOKEN), cmpEq("en-US"))
                 observer.onChanged(
-                        coMatch { it is State.Error<DetailMovie> }
+                        coMatch { it is State.Error }
                 )
             }
             confirmVerified(observer, service)
