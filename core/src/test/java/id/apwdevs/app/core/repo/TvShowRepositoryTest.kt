@@ -7,10 +7,10 @@ import androidx.paging.cachedIn
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import id.apwdevs.app.core.data.FakeDataDetail
-import id.apwdevs.app.core.domain.model.DetailMovie
-import id.apwdevs.app.core.domain.model.Movies
-import id.apwdevs.app.core.domain.repository.MovieRepository
-import id.apwdevs.app.core.repository.MovieRepoImpl
+import id.apwdevs.app.core.domain.model.DetailTvShow
+import id.apwdevs.app.core.domain.model.TvShow
+import id.apwdevs.app.core.domain.repository.TvShowRepository2
+import id.apwdevs.app.core.repository.TvShowRepoImpl
 import id.apwdevs.app.core.rule.TestCoroutineRule
 import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
@@ -56,14 +56,14 @@ class TvShowRepositoryTest {
     }
 
 
-    private lateinit var movieRepository: MovieRepository
+    private lateinit var tvShowRepository2: TvShowRepository2
 
     @Before
     fun setup() {
         appDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).allowMainThreadQueries().build()
         pagingCaseDb = spyk(PagingTvShowCaseDbInteractor(appDatabase))
         MockKAnnotations.init(this)
-        movieRepository = MovieRepoImpl(service, pagingCaseDb)
+        tvShowRepository2 = TvShowRepoImpl(service, pagingCaseDb)
     }
 
     @Test
@@ -73,10 +73,10 @@ class TvShowRepositoryTest {
 
         coroutineTestRule.runBlockingTest {
 
-            coEvery { service.searchMovies(Config.TOKEN, 1, "a", false) } throws expected
+            coEvery { service.searchTvShow(Config.TOKEN, 1, "a", false) } throws expected
             coEvery { pagingCaseDb.getGenres() } returns FakeDataDetail.generateGenre()
-            val adapter = RecyclerTestAdapter<Movies>()
-            val result = movieRepository.searchMovies("a", false)
+            val adapter = RecyclerTestAdapter<TvShow>()
+            val result = tvShowRepository2.searchTvShow("a", false)
 
             // we need to define handler for exception in coroutine because submitData will return error if any error ocurred on PagingSource
             val cHandler = CoroutineExceptionHandler { _, exception ->
@@ -92,7 +92,7 @@ class TvShowRepositoryTest {
             Assert.assertEquals(0, adapter.itemCount)
 
             coVerify {
-                service.searchMovies(Config.TOKEN, 1, "a", false)
+                service.searchTvShow(Config.TOKEN, 1, "a", false)
                 pagingCaseDb.getGenres()
             }
             confirmVerified(service)
@@ -104,12 +104,12 @@ class TvShowRepositoryTest {
     @Test
     @ExperimentalCoroutinesApi
     fun searchMovies_should_return_data_when_searching_isSuccess() {
-        val movieResponse = FakeDataDetail.generateMovieResponse("a")
+        val tvShowResponse = FakeDataDetail.generateTvResponse("a")
         coroutineTestRule.runBlockingTest {
-            coEvery { service.searchMovies(Config.TOKEN, 1, "a", false) } returns movieResponse
+            coEvery { service.searchTvShow(Config.TOKEN, 1, "a", false) } returns tvShowResponse
             coEvery { pagingCaseDb.getGenres() } returns FakeDataDetail.generateGenre()
-            val adapter = RecyclerTestAdapter<Movies>()
-            val result = movieRepository.searchMovies("a", false)
+            val adapter = RecyclerTestAdapter<TvShow>()
+            val result = tvShowRepository2.searchTvShow("a", false)
 
             val job = launch {
                 result.cachedIn(this).collect {
@@ -118,11 +118,13 @@ class TvShowRepositoryTest {
             }
 
             val actual = adapter.peek(0)
-            val expectedFirstItem = movieResponse.results[0]
+            val expectedFirstItem = tvShowResponse.results[0]
+
             Assert.assertNotNull(actual)
-            Assert.assertEquals(expectedFirstItem.id, actual?.movieId)
+            Assert.assertEquals(expectedFirstItem.id, actual?.tvId)
+
             coVerify {
-                service.searchMovies(Config.TOKEN, 1, "a", false)
+                service.searchTvShow(Config.TOKEN, 1, "a", false)
                 pagingCaseDb.getGenres()
             }
             confirmVerified(service)
@@ -136,11 +138,11 @@ class TvShowRepositoryTest {
         val movieId = 12345
         val expected = Exception("Error 404: Resource Not found")
         coroutineTestRule.runBlockingTest {
-            val observer = mockk<Observer<State<DetailMovie>>>(relaxUnitFun = true)
-            coEvery { service.getDetailMovies(movieId.toString(), Config.TOKEN, language = "en-US") } throws expected
+            val observer = mockk<Observer<State<DetailTvShow>>>(relaxUnitFun = true)
+            coEvery { service.getDetailTvShows(movieId.toString(), Config.TOKEN, language = "en-US") } throws expected
 
 
-            val result = movieRepository.getDetailMovie(movieId)
+            val result = tvShowRepository2.getDetailTvShow(movieId)
             var actual: Throwable? = null
             result.collect {
                 observer.onChanged(it)
@@ -151,9 +153,9 @@ class TvShowRepositoryTest {
 
             coVerifyOrder {
                 observer.onChanged(coMatch { it is State.Loading })
-                service.getDetailMovies(cmpEq(movieId.toString()), cmpEq(Config.TOKEN), cmpEq("en-US"))
+                service.getDetailTvShows(cmpEq(movieId.toString()), cmpEq(Config.TOKEN), cmpEq("en-US"))
                 observer.onChanged(
-                        coMatch { it is State.Error<DetailMovie> }
+                        coMatch { it is State.Error }
                 )
             }
             confirmVerified(observer, service)
@@ -166,27 +168,27 @@ class TvShowRepositoryTest {
     @ExperimentalCoroutinesApi
     @Test
     fun getDetailMovie_should_return_data_when_success_getData() {
-        val movieId = 12345
-        val fakeData = FakeDataDetail.generateMovieDetailResponse(movieId)
-        val expected = RemoteToDomainMapper.detailMovie(fakeData)
+        val tvId = 12345
+        val fakeData = FakeDataDetail.generateTvDetailResponse(tvId)
+        val expected = RemoteToDomainMapper.detailTvShow(fakeData)
         coroutineTestRule.runBlockingTest {
-            val observer = mockk<Observer<State<DetailMovie>>>(relaxUnitFun = true)
-            coEvery { service.getDetailMovies(movieId.toString(), Config.TOKEN, language = "en-US") } returns fakeData
+            val observer = mockk<Observer<State<DetailTvShow>>>(relaxUnitFun = true)
+            coEvery { service.getDetailTvShows(tvId.toString(), Config.TOKEN, language = "en-US") } returns fakeData
 
-            val result = movieRepository.getDetailMovie(movieId)
-            var actual: DetailMovie? = null
+            val result = tvShowRepository2.getDetailTvShow(tvId)
+            var actual: DetailTvShow? = null
             result.collect {
                 observer.onChanged(it)
-                if (it is State.Success<DetailMovie>) {
+                if (it is State.Success) {
                     actual = it.data
                 }
             }
 
             coVerifyOrder {
                 observer.onChanged(coMatch { it is State.Loading })
-                service.getDetailMovies(cmpEq(movieId.toString()), cmpEq(Config.TOKEN), cmpEq("en-US"))
+                service.getDetailTvShows(cmpEq(tvId.toString()), cmpEq(Config.TOKEN), cmpEq("en-US"))
                 observer.onChanged(
-                        coMatch { it is State.Success<DetailMovie> }
+                        coMatch { it is State.Success<DetailTvShow> }
                 )
             }
             confirmVerified(observer, service)
