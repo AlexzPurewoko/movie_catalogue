@@ -1,7 +1,10 @@
 package id.apwdevs.app.core.data
 
+import id.apwdevs.app.core.domain.model.DetailMovie
+import id.apwdevs.app.core.domain.model.DetailTvShow
 import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.model.TvShow
+import id.apwdevs.app.core.domain.model.detail.EpisodeToAir
 
 object FakeDomain {
 
@@ -32,5 +35,29 @@ object FakeDomain {
             mList.add(generateTvShowDomain(i))
         }
         return mList
+    }
+
+    fun generateDetailMovieDomain(id: Int): DetailMovie {
+        return DetailMovie(
+                id, "", "", "", 0, 0.0, 0, 0,
+                "", "", 0, "", "", 0.0, "",
+                false, "", "", listOf(), listOf()
+        )
+    }
+
+    fun generateEpisodeToAir(): EpisodeToAir {
+        return EpisodeToAir(
+                0, "", "", "", 0,
+                0.0, "", 0, "", 0
+        )
+    }
+
+    fun generateDetailTvDomain(id: Int): DetailTvShow {
+        val episodeToAir = generateEpisodeToAir()
+        return DetailTvShow(
+                id, "", 0, "", "", 0.0, 0,
+                0, "", "", "", "", 0.0, "", "",
+                false, "", "", "", listOf(), listOf(), listOf(), episodeToAir, null, listOf()
+        )
     }
 }
