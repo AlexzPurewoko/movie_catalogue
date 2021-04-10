@@ -6,7 +6,6 @@ import id.apwdevs.app.data.source.local.entity.detail.ProductionCompanies
 import id.apwdevs.app.data.source.local.entity.detail.ProductionCompaniesMapper
 import id.apwdevs.app.data.source.local.entity.detail.movie.FavDetailMovie
 import id.apwdevs.app.data.source.local.entity.detail.movie.FavDetailMovieEntity
-import kotlin.jvm.Throws
 
 @Dao
 abstract class FavDetailMovieDao {
@@ -76,10 +75,15 @@ abstract class FavDetailMovieDao {
     /**
      * For paging source only
      */
+    @Deprecated("will be deleted because not using paging")
     @Query("SELECT COUNT() FROM fav_detail_movie")
     abstract suspend fun getCount(): Long
 
+    @Deprecated("will be deleted because not using paging")
     @Query("SELECT * FROM fav_detail_movie LIMIT :startOffset,:endOffset")
     abstract suspend fun getDetailMovieEntity(startOffset: Int, endOffset: Int): List<FavDetailMovieEntity>
+
+    @Query("SELECT * FROM fav_detail_movie")
+    abstract suspend fun getMovieEntities(): List<FavDetailMovieEntity>
 
 }

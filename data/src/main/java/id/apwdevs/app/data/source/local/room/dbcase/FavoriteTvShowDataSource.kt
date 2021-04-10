@@ -1,0 +1,31 @@
+package id.apwdevs.app.data.source.local.room.dbcase
+
+import id.apwdevs.app.data.source.local.entity.detail.tvshow.FavDetailTvShow
+import id.apwdevs.app.data.source.local.entity.detail.tvshow.FavDetailTvShowEntity
+import id.apwdevs.app.data.source.local.room.AppDatabase
+
+class FavoriteTvShowDataSource(
+        appDb: AppDatabase
+) : FavoriteDataSource<FavDetailTvShowEntity, FavDetailTvShow>(appDb) {
+    private val movieDao = appDatabase.favTvShowDetail()
+
+    override suspend fun getAllFavorite(): List<FavDetailTvShowEntity> {
+        return movieDao.getTvShowEntities()
+    }
+
+    override suspend fun getFavorite(id: Int): FavDetailTvShow {
+        return movieDao.getTvShow(id)
+    }
+
+    override suspend fun isFavorite(id: Int): Boolean {
+        return movieDao.isTvShowExists(id)
+    }
+
+    override suspend fun toggleFavorite(data: FavDetailTvShow, favorited: Boolean) {
+        if (favorited)
+            movieDao.insertFavDetailTvShow(data)
+        else
+            movieDao.deleteById(data.favDetailTvShow.id)
+    }
+
+}
