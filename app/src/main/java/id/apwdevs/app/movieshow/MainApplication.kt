@@ -1,16 +1,15 @@
 package id.apwdevs.app.movieshow
 
 import android.app.Application
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import id.apwdevs.app.core.di.repoModule
+import id.apwdevs.app.core.di.useCaseModule
 import id.apwdevs.app.data.di.databaseModule
+import id.apwdevs.app.data.di.dbAccessModule
 import id.apwdevs.app.data.di.networkModule
-import id.apwdevs.app.movieshow.di.useCaseModule
 import id.apwdevs.app.movieshow.util.IdlingResourceHelper
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
@@ -32,10 +31,11 @@ open class MainApplication: Application() {
             androidContext(this@MainApplication)
             androidLogger(Level.DEBUG)
             modules(
-                dbModules,
-                netModules,
-                repoModule,
-                useCaseModule,
+                    dbModules,
+                    dbAccessModule,
+                    netModules,
+                    repoModule,
+                    useCaseModule,
             )
         }
     }
