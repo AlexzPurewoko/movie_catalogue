@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
+@Deprecated("will be deleted!")
 class FavMovieRepositoryImpl constructor(
         private val accessDb: AppDatabase
 ) : FavoriteMovieRepository {
