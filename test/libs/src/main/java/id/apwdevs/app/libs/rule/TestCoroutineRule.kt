@@ -1,4 +1,4 @@
-package id.apwdevs.app.core.rule
+package id.apwdevs.app.libs.rule
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
