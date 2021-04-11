@@ -6,12 +6,10 @@ import androidx.lifecycle.Observer
 import androidx.paging.cachedIn
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import id.apwdevs.app.core.data.FakeDataDetail
 import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.repository.MovieRepository
 import id.apwdevs.app.core.repository.MovieRepoImpl
-import id.apwdevs.app.core.rule.TestCoroutineRule
 import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
@@ -21,6 +19,9 @@ import id.apwdevs.app.data.source.local.room.dbcase.PagingCaseDb
 import id.apwdevs.app.data.source.local.room.dbcase.PagingMovieCaseDbInteractor
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
+import id.apwdevs.app.libs.data.FakeDataDetail
+import id.apwdevs.app.libs.rule.TestCoroutineRule
+import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.CoroutineExceptionHandler

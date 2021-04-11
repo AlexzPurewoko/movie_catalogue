@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.Observer
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import id.apwdevs.app.core.data.FakeDomain
 import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.repository.FavoriteRepository
@@ -16,6 +15,7 @@ import id.apwdevs.app.data.source.local.entity.detail.movie.FavDetailMovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
 import id.apwdevs.app.data.source.local.room.dbcase.FavoriteDataSource
 import id.apwdevs.app.data.source.local.room.dbcase.FavoriteMovieDataSource
+import id.apwdevs.app.libs.data.FakeDomain
 import io.mockk.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
