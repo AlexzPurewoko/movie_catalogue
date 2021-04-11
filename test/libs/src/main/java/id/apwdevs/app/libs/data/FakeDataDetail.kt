@@ -1,4 +1,4 @@
-package id.apwdevs.app.core.data
+package id.apwdevs.app.libs.data
 
 import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.remote.response.GenreResponse
