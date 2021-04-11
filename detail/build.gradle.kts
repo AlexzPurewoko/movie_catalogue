@@ -1,5 +1,7 @@
-import modules.*
-import org.jetbrains.kotlin.android.synthetic.androidIdToName
+import modules.AndroidTestLibs
+import modules.Apps
+import modules.Libs
+import modules.TestLibs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -27,11 +29,11 @@ android {
 
     sourceSets {
 //        ["${project('match the module name that is currently in the dependencies').projectDir}/src/androidTest/java"]
-        getByName("androidTest").apply {
-            val src = java.srcDirs.toMutableSet()
-            src.add(File(project(":app").projectDir, "src/androidTest/java"))
-            java.setSrcDirs(src)
-        }
+//        getByName("androidTest").apply {
+//            val src = java.srcDirs.toMutableSet()
+//            src.add(File(project(":app").projectDir, "src/androidTest/java"))
+//            java.setSrcDirs(src)
+//        }
     }
 
     compileOptions {
@@ -52,7 +54,7 @@ tasks.withType<KotlinCompile>().configureEach {
 
 dependencies {
 
-    api(project(":res"))
+    api(project(":library:res"))
     implementation(project(":app"))
 
     testImplementation (TestLibs.junit)

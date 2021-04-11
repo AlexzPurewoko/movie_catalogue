@@ -1,4 +1,4 @@
-import modules.*
+import modules.Apps
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -38,7 +38,7 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
-    api(project(":res"))
+    api(project(":library:res"))
     implementation(project(":app"))
 
 //    listOf(
