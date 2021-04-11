@@ -14,35 +14,41 @@ class FavInteractor constructor(
         private val favTvShowRepository: FavoriteRepository<TvShow, DetailTvShow>
 ) : FavUseCase {
     override fun getAllFavoriteMovies(): Flow<State<List<Movies>>> {
-        TODO("Not yet implemented")
+        return favMovieRepository.getAllFavorites()
     }
 
     override fun getAllFavoriteTvShows(): Flow<State<List<TvShow>>> {
-        TODO("Not yet implemented")
+        return favTvShowRepository.getAllFavorites()
     }
 
     override fun getFavoriteMovie(id: Int): Flow<State<DetailMovie>> {
-        TODO("Not yet implemented")
+        return favMovieRepository.getFavoriteDetailItem(id)
     }
 
     override fun getFavoriteTvShow(id: Int): Flow<State<DetailTvShow>> {
-        TODO("Not yet implemented")
+        return favTvShowRepository.getFavoriteDetailItem(id)
     }
 
     override suspend fun checkIsInFavorite(id: Int, dataType: DataType): Boolean {
-        TODO("Not yet implemented")
+        return when (dataType) {
+            DataType.MOVIES -> favMovieRepository.checkIsFavorite(id)
+            DataType.TVSHOW -> favTvShowRepository.checkIsFavorite(id)
+        }
     }
 
     override suspend fun saveFavoriteMovie(detailMovie: DetailMovie) {
-        TODO("Not yet implemented")
+        return favMovieRepository.save(detailMovie)
     }
 
     override suspend fun saveFavoriteTvShow(detailTvShow: DetailTvShow) {
-        TODO("Not yet implemented")
+        return favTvShowRepository.save(detailTvShow)
     }
 
     override suspend fun unFavorite(id: Int, dataType: DataType) {
-        TODO("Not yet implemented")
+        when (dataType) {
+            DataType.MOVIES -> favMovieRepository.unFavorite(id)
+            DataType.TVSHOW -> favTvShowRepository.unFavorite(id)
+        }
     }
 
 }
