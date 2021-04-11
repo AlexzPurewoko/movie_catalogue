@@ -6,7 +6,7 @@ object Versions {
     const val kotlin = "1.4.31"
     const val appcompat = "1.0.2"
     const val koin = "2.2.2"
-    const val coroutines = "1.4.2"
+    const val coroutines = "1.4.3"
     const val lifecycleVersion = "2.3.0-rc01"
     const val archVersion = "2.1.0"
     const val roomVersion = "2.3.0-beta01"
@@ -31,4 +31,7 @@ object Versions {
 
     /* test */
     const val junit = "4.12"
+    const val androidTestCore = "1.3.0"
+    const val robolectric = "4.5.1"
+    const val mockk = "1.11.0"
 }
