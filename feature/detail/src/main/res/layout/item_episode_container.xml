@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="240dp"
+    app:cardCornerRadius="4dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/episode_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/test" />
+
+        <View
+            android:id="@+id/bg"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:background="@drawable/bg_gradient"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline"
+            app:layout_constraintVertical_bias="2" />
+
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/rating_progress"
+            android:layout_width="wrap_content"
+
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            app:cpb_progress_direction="to_left"
+            app:cpb_progress_max="100"
+            app:cpb_progressbar_color="#FFAB00"
+            app:cpb_progressbar_width="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline"
+            tools:cpb_progress="80" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFAB00"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/rating_progress"
+            app:layout_constraintEnd_toEndOf="@+id/rating_progress"
+            app:layout_constraintStart_toStartOf="@+id/rating_progress"
+            app:layout_constraintTop_toTopOf="@+id/rating_progress"
+            tools:text="4.2" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintBottom_toTopOf="@+id/secondary"
+            app:layout_constraintEnd_toStartOf="@+id/rating_progress"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="The Series Finale" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_image"
+            app:layout_constraintStart_toStartOf="@+id/title"
+            tools:text="Episode 9 (20-12-2000)" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="180dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--    <RelativeLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent">-->
+    <!--        <ImageView-->
+    <!--            android:scaleType="centerCrop"-->
+    <!--            android:id="@+id/episode_image"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            app:srcCompat="@drawable/test" />-->
+    <!--        <RelativeLayout-->
+    <!--            android:layout_alignParentBottom="true"-->
+    <!--            android:background="@drawable/bg_gradient"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content">-->
+    <!--            -->
+    <!--        </RelativeLayout>-->
+    <!--    </RelativeLayout>-->
+
+</androidx.cardview.widget.CardView>

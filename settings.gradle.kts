@@ -1,10 +1,11 @@
-include(":res")
-include(":detail")
-include(":favorite")
-include(":discover")
-include(":search")
+include(":library:data")
+include(":library:core")
+include(":library:res")
+
+include(":feature:detail")
+include(":feature:favorite")
+include(":feature:discover")
+include(":feature:search")
 include(":main")
-include(":data")
-include(":core")
 include(":app")
 rootProject.name = "MovieShow"

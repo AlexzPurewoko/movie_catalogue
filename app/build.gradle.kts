@@ -1,4 +1,7 @@
-import modules.*
+import modules.AndroidTestLibs
+import modules.Apps
+import modules.Libs
+import modules.TestLibs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -47,7 +50,8 @@ android {
         viewBinding = true
     }
 
-    dynamicFeatures = mutableSetOf(":main", ":search", ":discover", ":favorite", ":detail")
+    dynamicFeatures =
+        mutableSetOf(":feature:search", ":feature:discover", ":feature:favorite", ":feature:detail")
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -59,7 +63,7 @@ tasks.withType<KotlinCompile>().configureEach {
 
 dependencies {
 
-    listOf(":core", ":data", ":res")
+    listOf(":library:core", ":library:data", ":library:res")
         .forEach { implementation(project(it)) }
 
     listOf(
