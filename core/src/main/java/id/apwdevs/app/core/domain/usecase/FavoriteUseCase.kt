@@ -7,6 +7,7 @@ import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.model.TvShow
 import kotlinx.coroutines.flow.Flow
 
+@Deprecated("will be deleted")
 interface FavoriteUseCase {
     fun getAllFavoriteMovies() : Flow<PagingData<Movies>>
     fun getAllFavoriteTvShows() : Flow<PagingData<TvShow>>

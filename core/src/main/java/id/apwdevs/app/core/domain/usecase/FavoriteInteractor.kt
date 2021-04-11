@@ -9,6 +9,7 @@ import id.apwdevs.app.core.domain.repository.FavoriteMovieRepository
 import id.apwdevs.app.core.domain.repository.FavoriteTvShowRepository
 import kotlinx.coroutines.flow.Flow
 
+@Deprecated("will be deleted")
 class FavoriteInteractor constructor(
         private val favMovieRepository: FavoriteMovieRepository,
         private val favTvShowRepository: FavoriteTvShowRepository
