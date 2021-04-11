@@ -28,4 +28,11 @@ class FavoriteMovieDataSource(
             movieDao.deleteById(data.detailMovie.id)
     }
 
+    override suspend fun deleteData(id: Int) {
+        movieDao.deleteById(id)
+    }
+
+    override suspend fun save(data: FavDetailMovie) {
+        movieDao.insertFavDetailMovie(data)
+    }
 }
