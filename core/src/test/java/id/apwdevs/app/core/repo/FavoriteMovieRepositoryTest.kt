@@ -188,5 +188,3 @@ class FavoriteMovieRepositoryTest {
     }
 
 }
-
-object FakeEntity
