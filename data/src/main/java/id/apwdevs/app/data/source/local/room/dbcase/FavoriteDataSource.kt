@@ -7,10 +7,20 @@ abstract class FavoriteDataSource<Entity, DetailEntity>(protected val appDatabas
     abstract suspend fun getAllFavorite(): List<Entity>
     abstract suspend fun getFavorite(id: Int): DetailEntity
     abstract suspend fun isFavorite(id: Int): Boolean
+
+    @Deprecated("will be deleted")
     abstract suspend fun toggleFavorite(data: DetailEntity, favorited: Boolean)
+
+    abstract suspend fun save(data: DetailEntity)
+
+    abstract suspend fun deleteData(id: Int)
 
     suspend fun genres(): List<Genres> {
         return appDatabase.genreDao().getAllGenres()
+    }
+
+    suspend fun genreMapper(id: Int): List<Int> {
+        return appDatabase.genreDao().genreIdsMapper(id)
     }
 }
 

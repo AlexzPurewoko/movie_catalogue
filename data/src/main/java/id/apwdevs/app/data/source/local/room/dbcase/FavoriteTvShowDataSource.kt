@@ -28,4 +28,12 @@ class FavoriteTvShowDataSource(
             movieDao.deleteById(data.favDetailTvShow.id)
     }
 
+    override suspend fun save(data: FavDetailTvShow) {
+        movieDao.insertFavDetailTvShow(data)
+    }
+
+    override suspend fun deleteData(id: Int) {
+        movieDao.deleteById(id)
+    }
+
 }
