@@ -59,5 +59,5 @@ dependencies {
         TestLibs.mockk
     ).forEach { api(it) }
 
-    api(project(":library:core"))
+    implementation(project(":library:core"))
 }
