@@ -1,10 +1,17 @@
 package id.apwdevs.app.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.paging.PagingData
+import id.apwdevs.app.core.data.FakeDomain
 import id.apwdevs.app.core.domain.usecase.SearchUseCase
+import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.search.ui.SearchVewModel
 import io.mockk.MockKAnnotations
+import io.mockk.confirmVerified
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.verify
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -37,7 +44,23 @@ class SearchViewModelTest {
     @Test
     fun `search() should select the right page`() {
         runBlocking {
+            val query = "a"
+            val moviePagingData = flow {
+                emit(PagingData.from(FakeDomain.generateListMovieDomains()))
+            }
+            val tvPagingData = flow {
+                emit(PagingData.from(FakeDomain.generateListTvDomains()))
+            }
+            every { searchUseCase.searchMovie(query, false) } returns moviePagingData
+            every { searchUseCase.searchTvShow(query, false) } returns tvPagingData
+            searchViewModel.search("a", pageType = PageType.MOVIES, includeAdult = false)
 
+            verify(exactly = 1) { searchUseCase.searchMovie("a", false) }
+
+            searchViewModel.search("a", pageType = PageType.TV_SHOW, includeAdult = false)
+
+            verify(exactly = 1) { searchUseCase.searchTvShow("a", false) }
+            confirmVerified(searchUseCase)
         }
     }
 
