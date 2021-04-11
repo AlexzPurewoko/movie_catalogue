@@ -5,13 +5,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface FavoriteRepository<ItemDomainModel, DetailItemDomainModel> {
 
-    fun getAllFavorites(): Flow<State<ItemDomainModel>>
+    fun getAllFavorites(): Flow<State<List<ItemDomainModel>>>
 
     fun getFavoriteDetailItem(id: Int): Flow<State<DetailItemDomainModel>>
 
     suspend fun checkIsFavorite(id: Int): Boolean
 
-    suspend fun save(detailTvShow: DetailItemDomainModel)
+    suspend fun save(data: DetailItemDomainModel)
 
     suspend fun unFavorite(id: Int)
 }
