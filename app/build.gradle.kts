@@ -50,7 +50,8 @@ android {
         viewBinding = true
     }
 
-    dynamicFeatures = mutableSetOf(":main", ":search", ":discover", ":favorite", ":detail")
+    dynamicFeatures =
+        mutableSetOf(":feature:search", ":feature:discover", ":feature:favorite", ":feature:detail")
 }
 
 tasks.withType<KotlinCompile>().configureEach {
