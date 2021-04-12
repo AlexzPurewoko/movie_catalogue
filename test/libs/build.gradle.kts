@@ -56,7 +56,8 @@ dependencies {
         TestLibs.androidXCore,
         TestLibs.corountineXTest,
         TestLibs.robolectric,
-        TestLibs.mockk
+        TestLibs.mockk,
+        TestLibs.mockWebServer
     ).forEach { api(it) }
 
     implementation(project(":library:core"))
