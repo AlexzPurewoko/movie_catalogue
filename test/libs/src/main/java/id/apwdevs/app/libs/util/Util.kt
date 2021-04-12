@@ -1,4 +1,4 @@
-package id.apwdevs.app.data.util
+package id.apwdevs.app.libs.util
 
 import android.content.Context
 import okhttp3.mockwebserver.MockResponse

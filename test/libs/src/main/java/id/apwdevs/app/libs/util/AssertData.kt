@@ -1,4 +1,4 @@
-package id.apwdevs.app.data.util
+package id.apwdevs.app.libs.util
 
 object AssertData {
     const val GENRE_TV = "genre_movie_OK.json"

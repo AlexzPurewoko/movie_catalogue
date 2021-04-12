@@ -1,23 +1,22 @@
-package id.apwdevs.app.data.db.detail.movie
+package id.apwdevs.app.data.detail.db
 
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.SmallTest
 import id.apwdevs.app.data.db.detail.stub.genres
 import id.apwdevs.app.data.source.local.room.AppDatabase
 import id.apwdevs.app.data.source.local.room.dao.FavDetailMovieDao
+import id.apwdevs.app.libs.data.DetailMovieDBStub
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-@RunWith(AndroidJUnit4::class)
-@SmallTest
+@RunWith(RobolectricTestRunner::class)
 class DetailMovieDBTest {
     private lateinit var dao: FavDetailMovieDao
     private lateinit var db: AppDatabase

@@ -1,4 +1,4 @@
-package id.apwdevs.app.data.db.detail.tv
+package id.apwdevs.app.libs.data
 
 import id.apwdevs.app.data.db.detail.stub.genres
 import id.apwdevs.app.data.db.detail.stub.productionCompanies
