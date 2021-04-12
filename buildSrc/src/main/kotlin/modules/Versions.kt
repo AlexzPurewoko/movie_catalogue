@@ -3,7 +3,7 @@ package modules
 object Versions {
 
     const val gradle = "4.1.2"
-    const val kotlin = "1.4.31"
+    const val kotlin = "1.4.32"
     const val appcompat = "1.0.2"
     const val koin = "2.2.2"
     const val coroutines = "1.4.3"
