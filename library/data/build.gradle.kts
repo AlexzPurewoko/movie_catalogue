@@ -36,6 +36,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    packagingOptions {
+        exclude("META-INF/AL2.0")
+        exclude("META-INF/LGPL2.1")
+        exclude("META-INF/licenses/**")
+        exclude("META-INF/*.kotlin_module")
+        exclude("**/attach_hostpot_windows.dll")
+    }
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -65,14 +73,20 @@ dependencies {
 
     kapt(KaptLibs.roomCompiler)
 
-    testImplementation (TestLibs.junit)
+    testImplementation(TestLibs.junit)
+    debugImplementation(project(":test:assetDebug"))
 
     listOf(
-        AndroidTestLibs.androidxJunit,
-        AndroidTestLibs.espressoCore,
-        TestLibs.paging,
-        AndroidTestLibs.androidxAnnotatation,
-        TestLibs.mockWebServer,
-        "androidx.test:rules:1.3.0"
+            AndroidTestLibs.androidxJunit,
+            AndroidTestLibs.espressoCore,
+            AndroidTestLibs.androidxAnnotatation
     ).forEach { androidTestImplementation(it) }
+
+    testImplementation(project(":test:libs"))
+    androidTestImplementation(project(":test:libs"))
+}
+configurations.all {
+    resolutionStrategy {
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-debug")
+    }
 }

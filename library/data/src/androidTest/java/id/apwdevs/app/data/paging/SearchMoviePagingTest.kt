@@ -11,10 +11,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.paging.dispatcher.SearchMoviePagingDispatcher
-import id.apwdevs.app.data.paging.test.RecyclerTestAdapter
 import id.apwdevs.app.data.source.remote.paging.SearchMoviePagingSource
 import id.apwdevs.app.data.source.remote.response.MovieItemResponse
 import id.apwdevs.app.data.source.remote.service.ApiService
+import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

@@ -1,11 +1,11 @@
 package id.apwdevs.app.core.interactor
 
 import androidx.paging.PagingData
-import id.apwdevs.app.core.data.FakeDomain
 import id.apwdevs.app.core.domain.repository.MovieRepository
 import id.apwdevs.app.core.domain.repository.TvShowRepository
 import id.apwdevs.app.core.domain.usecase.DiscoverPopularInteractor
 import id.apwdevs.app.core.domain.usecase.DiscoverPopularUseCase
+import id.apwdevs.app.libs.data.FakeDomain
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

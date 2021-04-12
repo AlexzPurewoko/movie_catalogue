@@ -1,11 +1,11 @@
 package id.apwdevs.app.core.interactor
 
-import id.apwdevs.app.core.data.FakeDomain
 import id.apwdevs.app.core.domain.repository.MovieRepository
 import id.apwdevs.app.core.domain.repository.TvShowRepository
 import id.apwdevs.app.core.domain.usecase.DetailInteractor
 import id.apwdevs.app.core.domain.usecase.DetailUseCase
 import id.apwdevs.app.core.utils.State
+import id.apwdevs.app.libs.data.FakeDomain
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

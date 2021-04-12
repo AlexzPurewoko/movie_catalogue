@@ -1,7 +1,5 @@
 package modules
 
-import sun.misc.Version
-
 @Suppress("unused")
 object Libs {
     const val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
@@ -83,10 +81,15 @@ object KaptLibs {
 object TestLibs {
     const val junit = "junit:junit:${Versions.junit}"
     const val koinAndroid = "org.koin:koin-test:${Versions.koin}"
-    const val archCoreTesting = "androidx.arch.core:core-testing: ${Versions.archVersion}"
+    const val archCoreTesting = "androidx.arch.core:core-testing:${Versions.archVersion}"
     const val roomTest = "androidx.room:room-testing:${Versions.roomVersion}"
     const val paging = "androidx.paging:paging-common:${Versions.paging}"
     const val mockWebServer = "com.squareup.okhttp3:mockwebserver:${Versions.mockWebServer}"
+    const val corountineXTest =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
+    const val androidXCore = "androidx.test:core:${Versions.androidTestCore}"
+    const val robolectric = "org.robolectric:robolectric:${Versions.robolectric}"
+    const val mockk = "io.mockk:mockk:${Versions.mockk}"
 }
 
 object AndroidTestLibs {

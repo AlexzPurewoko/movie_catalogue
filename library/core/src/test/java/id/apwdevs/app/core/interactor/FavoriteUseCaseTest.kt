@@ -1,6 +1,5 @@
 package id.apwdevs.app.core.interactor
 
-import id.apwdevs.app.core.data.FakeDomain
 import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.DetailTvShow
 import id.apwdevs.app.core.domain.model.Movies
@@ -10,6 +9,7 @@ import id.apwdevs.app.core.domain.usecase.FavInteractor
 import id.apwdevs.app.core.domain.usecase.FavUseCase
 import id.apwdevs.app.core.utils.DataType
 import id.apwdevs.app.core.utils.State
+import id.apwdevs.app.libs.data.FakeDomain
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.flow.flow
