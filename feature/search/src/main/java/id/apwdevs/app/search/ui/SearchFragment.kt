@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import androidx.paging.PagingData
 import id.apwdevs.app.res.BaseFeatureFragment
 import id.apwdevs.app.res.util.PageType
@@ -26,7 +28,8 @@ class SearchFragment : BaseFeatureFragment() {
     }
 
     private val searchVewModel: SearchVewModel by viewModel()
-
+    internal val stateViewModel: StateViewModel by viewModels()
+    private var referenceStateFragment: StateDisplayFragment? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,15 +41,45 @@ class SearchFragment : BaseFeatureFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initiateView()
+
+
+        searchVewModel.initiateViewInteractions(binding)
+            .observe(viewLifecycleOwner, this::listenInteractions)
+        stateViewModel.callbackFromStateDisplay.observe(
+            viewLifecycleOwner,
+            ::stateFragmentCallbackObserver
+        )
+    }
+
+    private fun stateFragmentCallbackObserver(parameters: List<Any>) {
+
+    }
+
+    private fun initiateView() {
         binding.spinner.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
             CONTENTS.map { getString(it) })
         binding.recyclerView.adapter = viewPagerAdapter
 
-        searchVewModel.initiateViewInteractions(binding)
-            .observe(viewLifecycleOwner, this::listenInteractions)
+        referenceStateFragment = StateDisplayFragment()
+        childFragmentManager.commit {
+            add(binding.frameStatusContainer.id, StateDisplayFragment())
+            referenceStateFragment?.let { show(it) }
+        }
 
+        stateViewModel.callStateFragmentToDisplaySomething(StateViewModel.DisplayType.RECOMMENDATION)
+    }
+
+    private fun toggleStateDisplayFragment(displayed: Boolean) {
+        childFragmentManager.commit {
+            referenceStateFragment?.let {
+                if (displayed) show(it)
+                else hide(it)
+            }
+        }
     }
 
     private fun anyClickFromItem(item: SearchItem) {
@@ -64,7 +97,7 @@ class SearchFragment : BaseFeatureFragment() {
             if (query.isEmpty()) return
             val includeAdult = binding.isAdult.isChecked
             searchVewModel.search(query, page, includeAdult)
-                .observe(viewLifecycleOwner, this::searchResults)
+                .observe(viewLifecycleOwner, ::searchResults)
         }
     }
 
