@@ -3,7 +3,7 @@ package id.apwdevs.app.data.mediator.dispatcher
 import android.content.Context
 import android.util.Log
 import id.apwdevs.app.data.utils.Config
-import id.apwdevs.app.libs.util.AssertData
+import id.apwdevs.app.libs.util.AssetDataJson
 import id.apwdevs.app.libs.util.provideResponse
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -15,10 +15,10 @@ class PopularMoviePagingDispatcher(
 ): Dispatcher() {
 
     private val mappingRequest = mapOf(
-        "/movie/popular?api_key=${Config.TOKEN}&language=en-US&page=1" to AssertData.MOVIE_PAGE_1,
-        "/movie/popular?api_key=${Config.TOKEN}&language=en-US&page=2" to AssertData.MOVIE_PAGE_2,
-        "/movie/popular?api_key=${Config.TOKEN}&language=en-US&page=3" to AssertData.MOVIE_PAGE_3,
-        "/genre/movie/list?api_key=${Config.TOKEN}&language=en-US" to AssertData.GENRE_MOVIES
+        "/movie/popular?api_key=${Config.TOKEN}&language=en-US&page=1" to AssetDataJson.MOVIE_PAGE_1,
+        "/movie/popular?api_key=${Config.TOKEN}&language=en-US&page=2" to AssetDataJson.MOVIE_PAGE_2,
+        "/movie/popular?api_key=${Config.TOKEN}&language=en-US&page=3" to AssetDataJson.MOVIE_PAGE_3,
+        "/genre/movie/list?api_key=${Config.TOKEN}&language=en-US" to AssetDataJson.GENRE_MOVIES
     )
     override fun dispatch(request: RecordedRequest): MockResponse {
         Log.d("MockDispatcher", "Received Request Path: ${request.path}")
