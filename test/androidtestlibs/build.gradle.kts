@@ -1,6 +1,7 @@
 import modules.AndroidTestLibs
 import modules.Apps
 import modules.Libs
+import modules.TestLibs
 
 plugins {
     id("com.android.library")
@@ -56,11 +57,17 @@ dependencies {
         AndroidTestLibs.navigation,
         "androidx.test.espresso:espresso-contrib:3.3.0",
         "androidx.test:rules:1.3.0",
-        project(":test:libs"),
         project(":library:core"),
         Libs.koinCore,
         Libs.room,
-        Libs.retrofit
+        Libs.retrofit,
+        TestLibs.mockWebServer
     ).forEach { api(it) }
 
+}
+
+allprojects {
+    configurations.all {
+        resolutionStrategy.force("org.objenesis:objenesis:2.6")
+    }
 }
