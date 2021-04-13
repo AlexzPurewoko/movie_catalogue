@@ -9,9 +9,7 @@ import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.data.mediator.PopularMovieRemoteMediator
 import id.apwdevs.app.data.source.local.entity.Genres
-import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
-import id.apwdevs.app.data.source.local.entity.items.MovieEntity
-import id.apwdevs.app.data.source.local.room.dbcase.PagingCaseDb
+import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingCaseMovieDb
 import id.apwdevs.app.data.source.remote.paging.SearchMoviePagingSource
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
@@ -21,8 +19,8 @@ import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalPagingApi::class)
 class MovieRepoImpl constructor(
-        private val service: ApiService,
-        private val caseDb: PagingCaseDb<MovieEntity, RemoteKeysMovie>
+    private val service: ApiService,
+    private val caseDb: PagingCaseMovieDb
 ) : MovieRepository {
     private val genres = mutableListOf<Genres>()
     override fun discoverPopularMovies(): Flow<PagingData<Movies>> {

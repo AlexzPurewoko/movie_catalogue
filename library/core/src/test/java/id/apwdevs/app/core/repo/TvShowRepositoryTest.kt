@@ -12,11 +12,9 @@ import id.apwdevs.app.core.domain.repository.TvShowRepository
 import id.apwdevs.app.core.repository.TvShowRepoImpl
 import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.data.source.local.entity.RemoteKeysTvShow
-import id.apwdevs.app.data.source.local.entity.items.TvEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.PagingCaseDb
-import id.apwdevs.app.data.source.local.room.dbcase.PagingTvShowCaseDbInteractor
+import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingCaseTvShowDb
+import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingTvShowCaseDbInteractor
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
 import id.apwdevs.app.libs.data.FakeDataDetail
@@ -48,7 +46,7 @@ class TvShowRepositoryTest {
     @MockK
     lateinit var service: ApiService
 
-    lateinit var pagingCaseDb: PagingCaseDb<TvEntity, RemoteKeysTvShow>
+    lateinit var pagingCaseDb: PagingCaseTvShowDb
 
     lateinit var appDatabase: AppDatabase
 
