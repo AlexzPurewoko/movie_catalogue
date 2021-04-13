@@ -10,7 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.mediator.dispatcher.PopularTvShowPagingDispatcher
 import id.apwdevs.app.data.source.local.entity.items.TvEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.PagingTvShowCaseDbInteractor
+import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingTvShowCaseDbInteractor
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope
