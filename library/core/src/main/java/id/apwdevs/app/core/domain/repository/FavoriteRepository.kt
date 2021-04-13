@@ -15,3 +15,4 @@ interface FavoriteRepository<ItemDomainModel, DetailItemDomainModel> {
 
     suspend fun unFavorite(id: Int)
 }
+

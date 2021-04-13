@@ -1,12 +1,12 @@
-package id.apwdevs.app.data.source.local.room.dbcase
+package id.apwdevs.app.data.source.local.room.dbcase.favlocal
 
 import id.apwdevs.app.data.source.local.entity.detail.tvshow.FavDetailTvShow
 import id.apwdevs.app.data.source.local.entity.detail.tvshow.FavDetailTvShowEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
 
 class FavoriteTvShowDataSource(
-        appDb: AppDatabase
-) : FavoriteDataSource<FavDetailTvShowEntity, FavDetailTvShow>(appDb) {
+    appDb: AppDatabase
+) : FavoriteTvShowSource(appDb) {
     private val movieDao = appDatabase.favTvShowDetail()
 
     override suspend fun getAllFavorite(): List<FavDetailTvShowEntity> {

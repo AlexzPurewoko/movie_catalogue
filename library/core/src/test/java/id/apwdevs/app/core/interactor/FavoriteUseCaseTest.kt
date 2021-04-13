@@ -1,10 +1,7 @@
 package id.apwdevs.app.core.interactor
 
-import id.apwdevs.app.core.domain.model.DetailMovie
-import id.apwdevs.app.core.domain.model.DetailTvShow
-import id.apwdevs.app.core.domain.model.Movies
-import id.apwdevs.app.core.domain.model.TvShow
-import id.apwdevs.app.core.domain.repository.FavoriteRepository
+import id.apwdevs.app.core.domain.repository.FavMovieRepository
+import id.apwdevs.app.core.domain.repository.FavTvShowRepository
 import id.apwdevs.app.core.domain.usecase.FavInteractor
 import id.apwdevs.app.core.domain.usecase.FavUseCase
 import id.apwdevs.app.core.utils.DataType
@@ -22,10 +19,10 @@ import org.junit.Test
 class FavoriteUseCaseTest {
 
     @MockK
-    lateinit var favMovieRepository: FavoriteRepository<Movies, DetailMovie>
+    lateinit var favMovieRepository: FavMovieRepository
 
     @MockK
-    lateinit var favTvShowRepository: FavoriteRepository<TvShow, DetailTvShow>
+    lateinit var favTvShowRepository: FavTvShowRepository
 
     private lateinit var favoriteUseCase: FavUseCase
 

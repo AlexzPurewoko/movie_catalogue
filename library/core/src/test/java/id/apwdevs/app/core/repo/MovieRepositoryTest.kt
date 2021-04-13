@@ -12,11 +12,9 @@ import id.apwdevs.app.core.domain.repository.MovieRepository
 import id.apwdevs.app.core.repository.MovieRepoImpl
 import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
-import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.PagingCaseDb
-import id.apwdevs.app.data.source.local.room.dbcase.PagingMovieCaseDbInteractor
+import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingCaseMovieDb
+import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingMovieCaseDbInteractor
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
 import id.apwdevs.app.libs.data.FakeDataDetail
@@ -49,7 +47,7 @@ class MovieRepositoryTest {
     @MockK
     lateinit var service: ApiService
 
-    lateinit var pagingCaseDb: PagingCaseDb<MovieEntity, RemoteKeysMovie>
+    lateinit var pagingCaseDb: PagingCaseMovieDb
 
     lateinit var appDatabase: AppDatabase
 

@@ -6,15 +6,13 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.Movies
-import id.apwdevs.app.core.domain.repository.FavoriteRepository
+import id.apwdevs.app.core.domain.repository.FavMovieRepository
 import id.apwdevs.app.core.repository.FavoriteMovieRepoImpl
 import id.apwdevs.app.core.utils.DomainToEntityMapper
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.data.source.local.entity.detail.movie.FavDetailMovie
-import id.apwdevs.app.data.source.local.entity.detail.movie.FavDetailMovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.FavoriteDataSource
-import id.apwdevs.app.data.source.local.room.dbcase.FavoriteMovieDataSource
+import id.apwdevs.app.data.source.local.room.dbcase.favlocal.FavoriteMovieDataSource
+import id.apwdevs.app.data.source.local.room.dbcase.favlocal.FavoriteMovieSource
 import id.apwdevs.app.libs.data.FakeDomain
 import io.mockk.*
 import kotlinx.coroutines.delay
@@ -36,12 +34,14 @@ class FavoriteMovieRepositoryTest {
 
     private lateinit var appDb: AppDatabase
 
-    private lateinit var favDataSource: FavoriteDataSource<FavDetailMovieEntity, FavDetailMovie>
-    private lateinit var favoriteRepo: FavoriteRepository<Movies, DetailMovie>
+    private lateinit var favDataSource: FavoriteMovieSource
+    private lateinit var favoriteRepo: FavMovieRepository
 
     @Before
     fun setup() {
-        appDb = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).allowMainThreadQueries().build()
+        appDb =
+            Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).allowMainThreadQueries()
+                .build()
         favDataSource = spyk(FavoriteMovieDataSource(appDb))
         favoriteRepo = FavoriteMovieRepoImpl(favDataSource)
     }

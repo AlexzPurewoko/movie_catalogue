@@ -1,4 +1,4 @@
-package id.apwdevs.app.data.source.local.room.dbcase
+package id.apwdevs.app.data.source.local.room.dbcase.favlocal
 
 import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.room.AppDatabase

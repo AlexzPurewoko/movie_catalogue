@@ -4,14 +4,15 @@ import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.DetailTvShow
 import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.model.TvShow
-import id.apwdevs.app.core.domain.repository.FavoriteRepository
+import id.apwdevs.app.core.domain.repository.FavMovieRepository
+import id.apwdevs.app.core.domain.repository.FavTvShowRepository
 import id.apwdevs.app.core.utils.DataType
 import id.apwdevs.app.core.utils.State
 import kotlinx.coroutines.flow.Flow
 
 class FavInteractor constructor(
-        private val favMovieRepository: FavoriteRepository<Movies, DetailMovie>,
-        private val favTvShowRepository: FavoriteRepository<TvShow, DetailTvShow>
+    private val favMovieRepository: FavMovieRepository,
+    private val favTvShowRepository: FavTvShowRepository
 ) : FavUseCase {
     override fun getAllFavoriteMovies(): Flow<State<List<Movies>>> {
         return favMovieRepository.getAllFavorites()

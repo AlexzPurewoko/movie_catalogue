@@ -11,7 +11,7 @@ import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
 import id.apwdevs.app.data.source.local.entity.converters.GenreIdsTypeConverter
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
-import id.apwdevs.app.data.source.local.room.dbcase.PagingCaseDb
+import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingCaseMovieDb
 import id.apwdevs.app.data.source.remote.response.MovieItemResponse
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
@@ -20,21 +20,22 @@ import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 class PopularMovieRemoteMediator(
-        private val service: ApiService,
-        private val caseDb: PagingCaseDb<MovieEntity, RemoteKeysMovie>
-): RemoteMediator<Int, MovieEntity>() {
+    private val service: ApiService,
+    private val caseDb: PagingCaseMovieDb
+) : RemoteMediator<Int, MovieEntity>() {
 
     private var hasBeenUpdateGenre: Boolean = false
 
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
+
     @SuppressLint("VisibleForTests")
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, MovieEntity>
     ): MediatorResult {
-        val page = when(loadType) {
+        val page = when (loadType) {
             LoadType.REFRESH -> {
                 Log.d("TRY", "remote mediator REFRESH")
                 val remoteKeys = getRemoteKeysClosestToCurrentPosition(state)
@@ -59,7 +60,7 @@ class PopularMovieRemoteMediator(
             retrieveGenres()
             val apiResponse = service.getPopularMovies(Config.TOKEN, "en-US", page)
             val items = apiResponse.results
-            val endOfPaginationReached = page+1 > apiResponse.totalPages
+            val endOfPaginationReached = page + 1 > apiResponse.totalPages
             caseDb.provideTransaction {
                 if (loadType == LoadType.REFRESH) {
                     caseDb.clearRemoteKeys()
@@ -86,23 +87,23 @@ class PopularMovieRemoteMediator(
 
             Log.d("TRY", "remote mediator after TRANSACTION ${apiResponse.totalPages}")
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
-        } catch (e: IOException){
+        } catch (e: IOException) {
 
             Log.e("TRYERROR", "remote mediator error", e)
             return MediatorResult.Error(e)
-        } catch (e: HttpException){
+        } catch (e: HttpException) {
             Log.e("TRYERROR", "remote mediator error", e)
             return MediatorResult.Error(e)
         }
     }
 
-    private suspend fun deletePrevKeys(currentPage: Int){
+    private suspend fun deletePrevKeys(currentPage: Int) {
         val pageToBeDeleted = currentPage - 2
         val postQuery =
-                if(pageToBeDeleted == 1) " IS NULL"
-                else "=$pageToBeDeleted"
+            if (pageToBeDeleted == 1) " IS NULL"
+            else "=$pageToBeDeleted"
         caseDb.deleteKey(
-                SimpleSQLiteQuery("DELETE FROM remote_keys_movie WHERE previous_key$postQuery")
+            SimpleSQLiteQuery("DELETE FROM remote_keys_movie WHERE previous_key$postQuery")
         )
     }
 
@@ -113,17 +114,24 @@ class PopularMovieRemoteMediator(
                 data = it.genreIds
             )
             MovieEntity(
-                id = it.id, title = it.title,
-                overview = it.overview, language = it.originalLanguage,
-                genreIds = convertedGenres, posterPath = it.posterPath, backdropPath = it.backdropPath,
-                releaseDate = it.releaseDate, voteAverage = it.voteAverage, voteCount = it.voteCount, adult = it.adult,
+                id = it.id,
+                title = it.title,
+                overview = it.overview,
+                language = it.originalLanguage,
+                genreIds = convertedGenres,
+                posterPath = it.posterPath,
+                backdropPath = it.backdropPath,
+                releaseDate = it.releaseDate,
+                voteAverage = it.voteAverage,
+                voteCount = it.voteCount,
+                adult = it.adult,
                 page = page
             )
         }
     }
 
     private suspend fun retrieveGenres() {
-        if(!hasBeenUpdateGenre) {
+        if (!hasBeenUpdateGenre) {
             val retrieveFromApi = service.getMovieGenre(Config.TOKEN)
             val genres = retrieveFromApi.genres
             val mappedGenres = genres.map {
@@ -145,7 +153,7 @@ class PopularMovieRemoteMediator(
     }
 
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, MovieEntity>): RemoteKeysMovie? {
-        return state.pages.firstOrNull {it.data.isNotEmpty()}?.data?.firstOrNull()?.let {
+        return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let {
             val d = caseDb.remoteKeysId(it.id.toLong())
             d
         }

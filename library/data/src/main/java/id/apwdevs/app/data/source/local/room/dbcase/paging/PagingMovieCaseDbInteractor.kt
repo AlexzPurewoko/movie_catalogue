@@ -1,4 +1,4 @@
-package id.apwdevs.app.data.source.local.room.dbcase
+package id.apwdevs.app.data.source.local.room.dbcase.paging
 
 import androidx.annotation.VisibleForTesting
 import androidx.paging.PagingSource
@@ -12,7 +12,7 @@ import id.apwdevs.app.data.source.local.room.dao.GenreDao
 import id.apwdevs.app.data.source.local.room.dao.MovieDao
 import id.apwdevs.app.data.source.local.room.dao.RemoteKeysMovieDao
 
-class PagingMovieCaseDbInteractor(private val db: AppDatabase): PagingCaseDb<MovieEntity, RemoteKeysMovie> {
+class PagingMovieCaseDbInteractor(private val db: AppDatabase) : PagingCaseMovieDb {
 
 
     private val movieDao: MovieDao = db.movieDao()
