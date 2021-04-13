@@ -1,3 +1,4 @@
+import modules.AndroidTestLibs
 import modules.Apps
 import modules.Libs
 
@@ -45,5 +46,21 @@ android {
 }
 
 dependencies {
-    implementation(Libs.kotlinStd)
+
+    listOf(
+        Libs.kotlinStd,
+        project(":app"),
+        AndroidTestLibs.espressoCore,
+        AndroidTestLibs.androidxJunit,
+        AndroidTestLibs.androidxAnnotatation,
+        AndroidTestLibs.navigation,
+        "androidx.test.espresso:espresso-contrib:3.3.0",
+        "androidx.test:rules:1.3.0",
+        project(":test:libs"),
+        project(":library:core"),
+        Libs.koinCore,
+        Libs.room,
+        Libs.retrofit
+    ).forEach { api(it) }
+
 }
