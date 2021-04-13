@@ -1,12 +1,12 @@
-package id.apwdevs.app.data.source.local.room.dbcase
+package id.apwdevs.app.data.source.local.room.dbcase.favlocal
 
 import id.apwdevs.app.data.source.local.entity.detail.movie.FavDetailMovie
 import id.apwdevs.app.data.source.local.entity.detail.movie.FavDetailMovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
 
 class FavoriteMovieDataSource(
-        appDb: AppDatabase
-) : FavoriteDataSource<FavDetailMovieEntity, FavDetailMovie>(appDb) {
+    appDb: AppDatabase
+) : FavoriteMovieSource(appDb) {
     private val movieDao = appDatabase.favMovieDetail()
 
     override suspend fun getAllFavorite(): List<FavDetailMovieEntity> {

@@ -9,9 +9,7 @@ import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.data.mediator.PopularTvShowRemoteMediator
 import id.apwdevs.app.data.source.local.entity.Genres
-import id.apwdevs.app.data.source.local.entity.RemoteKeysTvShow
-import id.apwdevs.app.data.source.local.entity.items.TvEntity
-import id.apwdevs.app.data.source.local.room.dbcase.PagingCaseDb
+import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingCaseTvShowDb
 import id.apwdevs.app.data.source.remote.paging.SearchTvShowPagingSource
 import id.apwdevs.app.data.source.remote.service.ApiService
 import kotlinx.coroutines.flow.Flow
@@ -20,8 +18,8 @@ import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalPagingApi::class)
 class TvShowRepoImpl constructor(
-        private val service: ApiService,
-        private val caseDb: PagingCaseDb<TvEntity, RemoteKeysTvShow>
+    private val service: ApiService,
+    private val caseDb: PagingCaseTvShowDb
 ) : TvShowRepository {
 
     private val genres = mutableListOf<Genres>()

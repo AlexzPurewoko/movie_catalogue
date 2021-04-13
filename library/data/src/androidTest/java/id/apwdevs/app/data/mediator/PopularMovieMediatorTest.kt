@@ -10,7 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.mediator.dispatcher.PopularMoviePagingDispatcher
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.PagingMovieCaseDbInteractor
+import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingMovieCaseDbInteractor
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope

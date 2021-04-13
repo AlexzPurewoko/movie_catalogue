@@ -1,4 +1,4 @@
-package id.apwdevs.app.data.source.local.room.dbcase
+package id.apwdevs.app.data.source.local.room.dbcase.paging
 
 import androidx.paging.PagingSource
 import androidx.room.withTransaction
@@ -11,7 +11,7 @@ import id.apwdevs.app.data.source.local.room.dao.GenreDao
 import id.apwdevs.app.data.source.local.room.dao.RemoteKeysTvShowDao
 import id.apwdevs.app.data.source.local.room.dao.TvShowDao
 
-class PagingTvShowCaseDbInteractor(private val db: AppDatabase): PagingCaseDb<TvEntity, RemoteKeysTvShow> {
+class PagingTvShowCaseDbInteractor(private val db: AppDatabase) : PagingCaseTvShowDb {
 
     private val tvShowDao: TvShowDao = db.tvShowDao()
     private val remoteKeysTvShowDao: RemoteKeysTvShowDao = db.remoteKeysTvShowDao()

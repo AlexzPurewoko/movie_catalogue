@@ -10,7 +10,7 @@ import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.RemoteKeysTvShow
 import id.apwdevs.app.data.source.local.entity.converters.GenreIdsTypeConverter
 import id.apwdevs.app.data.source.local.entity.items.TvEntity
-import id.apwdevs.app.data.source.local.room.dbcase.PagingCaseDb
+import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingCaseTvShowDb
 import id.apwdevs.app.data.source.remote.response.TvShowItemResponse
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
@@ -19,8 +19,8 @@ import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 class PopularTvShowRemoteMediator(
-        private val service: ApiService,
-        private val caseDb: PagingCaseDb<TvEntity, RemoteKeysTvShow>
+    private val service: ApiService,
+    private val caseDb: PagingCaseTvShowDb
 ) : RemoteMediator<Int, TvEntity>() {
 
     private var hasBeenUpdateGenre: Boolean = false
@@ -30,8 +30,8 @@ class PopularTvShowRemoteMediator(
     }
 
     override suspend fun load(
-            loadType: LoadType,
-            state: PagingState<Int, TvEntity>
+        loadType: LoadType,
+        state: PagingState<Int, TvEntity>
     ): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> {
@@ -99,10 +99,10 @@ class PopularTvShowRemoteMediator(
     private suspend fun deletePrevKeys(currentPage: Int) {
         val pageToBeDeleted = currentPage - 2
         val postQuery =
-                if (pageToBeDeleted == 1) " IS NULL"
-                else "=$pageToBeDeleted"
+            if (pageToBeDeleted == 1) " IS NULL"
+            else "=$pageToBeDeleted"
         caseDb.deleteKey(
-                SimpleSQLiteQuery("DELETE FROM remote_keys_tvshow WHERE previous_key$postQuery")
+            SimpleSQLiteQuery("DELETE FROM remote_keys_tvshow WHERE previous_key$postQuery")
         )
     }
 
@@ -110,16 +110,22 @@ class PopularTvShowRemoteMediator(
 
         return items.map {
             val convertedGenres = GenreIdsTypeConverter.GenreIdData(
-                    data = it.genreIds
+                data = it.genreIds
             )
             Log.e("HHHHHHMOVIETV", "bc : ${it.backdropPath}")
             TvEntity(
-                    id = it.id, name = it.name,
-                    overview = it.overview, language = it.originalLanguage,
-                    genreIds = convertedGenres, posterPath = it.posterPath, backdropPath = it.backdropPath
+                id = it.id,
+                name = it.name,
+                overview = it.overview,
+                language = it.originalLanguage,
+                genreIds = convertedGenres,
+                posterPath = it.posterPath,
+                backdropPath = it.backdropPath
                     ?: "",
-                    firstAirDate = it.firstAirDate, voteAverage = it.voteAverage, voteCount = it.voteCount,
-                    page = page
+                firstAirDate = it.firstAirDate,
+                voteAverage = it.voteAverage,
+                voteCount = it.voteCount,
+                page = page
             )
         }
     }

@@ -1,3 +1,4 @@
+include(":test:androidtestlibs")
 include(":test:libs")
 include(":test:assetDebug")
 include(":library:data")
