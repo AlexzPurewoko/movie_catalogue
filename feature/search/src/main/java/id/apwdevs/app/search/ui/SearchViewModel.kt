@@ -8,14 +8,10 @@ import androidx.paging.map
 import id.apwdevs.app.core.domain.usecase.SearchUseCase
 import id.apwdevs.app.movieshow.base.BaseViewModel
 import id.apwdevs.app.res.util.PageType
-import id.apwdevs.app.search.databinding.FragmentSearchBinding
 import id.apwdevs.app.search.model.SearchItem
 import kotlinx.coroutines.flow.*
 import kotlinx.parcelize.Parcelize
 import ru.ldralighieri.corbind.internal.InitialValueFlow
-import ru.ldralighieri.corbind.widget.checkedChanges
-import ru.ldralighieri.corbind.widget.itemSelections
-import ru.ldralighieri.corbind.widget.textChanges
 
 class SearchVewModel(
     application: Application,
@@ -25,22 +21,8 @@ class SearchVewModel(
     private var currentSearch: String = ""
     private var savedSearchParameters: SearchData? = null
     private var savedPosition: Int = 0
-    private val _listenInteractons: MutableLiveData<Boolean> = MutableLiveData()
+    private val _listenInteractions: MutableLiveData<Boolean> = MutableLiveData()
     private var _searchResults: LiveData<PagingData<SearchItem>>? = null
-    //    var listenInteractions: LiveData<Boolean> = _listenInteractons
-
-    @Deprecated("will be deleted!")
-    fun search(
-        query: String,
-        pageType: PageType,
-        includeAdult: Boolean
-    ): LiveData<PagingData<SearchItem>> =
-        when (pageType) {
-            PageType.MOVIES ->
-                searchMovies(query, includeAdult)
-            PageType.TV_SHOW ->
-                searchTvShow(query, includeAdult)
-        }.asLiveData(viewModelScope.coroutineContext)
 
     fun search(
         searchParameter: SearchData
@@ -58,33 +40,6 @@ class SearchVewModel(
         }.toLiveData(viewModelScope.coroutineContext)
 
         return _searchResults as LiveData<PagingData<SearchItem>>
-    }
-
-    @Deprecated("Will be deleted!")
-    fun initiateViewInteractions(binding: FragmentSearchBinding): LiveData<Boolean> {
-        val textSearchChanges = binding.include.textSearch.textChanges()
-        val isAdultCheckChanges = binding.isAdult.checkedChanges()
-        val spinnerChanges = binding.spinner.itemSelections()
-
-        combine(
-            textSearchChanges.map {
-                if (it.toString().isNotEmpty() && currentSearch != it.toString()) {
-                    currentSearch = it.toString()
-                    true
-                } else false
-            },
-            isAdultCheckChanges,
-            spinnerChanges.map {
-                if (it != savedPosition) {
-                    savedPosition = it
-                    true
-                } else false
-            },
-            transform = { anyTextChanges, anyCheckedChanges, anyItemSpinnerChanges ->
-                anyTextChanges or anyCheckedChanges or anyItemSpinnerChanges
-            }
-        ).onEach(this::applyInteractions).launchIn(viewModelScope)
-        return _listenInteractons
     }
 
     fun initViewInteractions(
@@ -110,13 +65,13 @@ class SearchVewModel(
             transform = { anyTextChanges, anyCheckedChanges, anyItemSpinnerChanges ->
                 anyTextChanges or anyCheckedChanges or anyItemSpinnerChanges
             }
-        ).onEach(this::applyInteractions).launchIn(viewModelScope)
+        ).onEach(::applyInteractions).launchIn(viewModelScope)
 
-        return _listenInteractons
+        return _listenInteractions
     }
 
     private fun applyInteractions(anyInteractions: Boolean) {
-        _listenInteractons.value = anyInteractions
+        _listenInteractions.value = anyInteractions
     }
 
     private fun searchMovies(query: String, includeAdult: Boolean): Flow<PagingData<SearchItem>> =
