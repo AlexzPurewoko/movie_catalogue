@@ -17,6 +17,7 @@ class SearchMockDispatcher(
             "/search/movie?api_key=${Config.TOKEN}&page=1&query=a&include_adult=false" to AssetDataJson.MOVIE_PAGE_1,
             "/search/movie?api_key=${Config.TOKEN}&page=2&query=a&include_adult=false" to AssetDataJson.MOVIE_PAGE_2,
             "/search/tv?api_key=${Config.TOKEN}&page=1&query=a&include_adult=false" to AssetDataJson.TVSHOW_PAGE_1,
+            "/search/tv?api_key=${Config.TOKEN}&page=1&query=a&include_adult=true" to AssetDataJson.DATA_EMPTY,
             "/search/tv?api_key=${Config.TOKEN}&page=2&query=a&include_adult=false" to AssetDataJson.TVSHOW_PAGE_1,
             "/genre/movie/list?api_key=${Config.TOKEN}&language=en-US" to AssetDataJson.GENRE_MOVIES,
             "/genre/tv/list?api_key=${Config.TOKEN}&language=en-US" to AssetDataJson.GENRE_TV
