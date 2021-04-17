@@ -12,9 +12,6 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import androidx.test.espresso.matcher.ViewMatchers.*
 import id.apwdevs.app.search.adapter.SearchMovieShowVH
 import id.apwdevs.app.search.databinding.ItemResultSearchBinding
@@ -41,12 +38,6 @@ class SearchCaseTest : BaseAndroidTest() {
 
     override fun setup() {
         super.setup()
-        intending(isInternal()).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                null
-            )
-        )
         mockDispatcher = SearchMockDispatcher(context)
         mockWebServer.dispatcher = SearchMockDispatcher(context) as Dispatcher
 
