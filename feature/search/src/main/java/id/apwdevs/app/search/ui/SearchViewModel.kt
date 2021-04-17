@@ -1,10 +1,12 @@
 package id.apwdevs.app.search.ui
 
+import android.app.Application
 import android.os.Parcelable
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.map
 import id.apwdevs.app.core.domain.usecase.SearchUseCase
+import id.apwdevs.app.movieshow.base.BaseViewModel
 import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.search.databinding.FragmentSearchBinding
 import id.apwdevs.app.search.model.SearchItem
@@ -16,8 +18,9 @@ import ru.ldralighieri.corbind.widget.itemSelections
 import ru.ldralighieri.corbind.widget.textChanges
 
 class SearchVewModel(
+    application: Application,
     private val searchUseCase: SearchUseCase
-) : ViewModel() {
+) : BaseViewModel(application) {
 
     private var currentSearch: String = ""
     private var savedSearchParameters: SearchData? = null
@@ -52,7 +55,7 @@ class SearchVewModel(
                 searchMovies(query, includeAdult)
             PageType.TV_SHOW ->
                 searchTvShow(query, includeAdult)
-        }.asLiveData(viewModelScope.coroutineContext)
+        }.toLiveData(viewModelScope.coroutineContext)
 
         return _searchResults as LiveData<PagingData<SearchItem>>
     }
@@ -131,7 +134,7 @@ class SearchVewModel(
             }
 
     private fun searchTvShow(query: String, includeAdult: Boolean): Flow<PagingData<SearchItem>> =
-        searchUseCase.searchTvShow(query, false)
+        searchUseCase.searchTvShow(query, includeAdult)
             .map { pagingData ->
                 pagingData.map {
                     SearchItem(it.tvId, it.name, it.backdropPath, it.voteAverage, it.firstAirDate)

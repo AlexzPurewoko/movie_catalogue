@@ -28,14 +28,14 @@ abstract class BaseAndroidTest {
         }
 
     @Before
-    fun setup() {
+    open fun setup() {
         IdlingRegistry.getInstance().register(provideIdling.idlingSource)
         mockWebServer = MockWebServer()
         mockWebServer.start(8080)
     }
 
     @After
-    fun tearDown() {
+    open fun tearDown() {
         IdlingRegistry.getInstance().unregister(provideIdling.idlingSource)
         mockWebServer.dispatcher.shutdown()
         mockWebServer.shutdown()

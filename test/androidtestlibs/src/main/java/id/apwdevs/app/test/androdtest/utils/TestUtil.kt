@@ -3,8 +3,10 @@ package id.apwdevs.app.test.androdtest.utils
 import android.view.View
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import org.hamcrest.Matchers
@@ -38,8 +40,24 @@ fun String.mustContainTagsExactly(tag: Any) {
     Espresso.onView(ViewMatchers.withResourceName(this)).check(ViewTagAssertion(tag))
 }
 
+fun String.fillViewWithText(s: String) {
+    Espresso.onView(ViewMatchers.withResourceName(this)).perform(typeText(s))
+}
+
+fun String.performCheckOnView(viewAssertion: ViewAssertion) {
+    Espresso.onView(ViewMatchers.withResourceName(this)).check(viewAssertion)
+}
+
+fun String.performActionOnView(vararg viewActions: ViewAction) {
+    Espresso.onView(ViewMatchers.withResourceName(this)).perform(*viewActions)
+}
+
 fun String.clickThis() {
     Espresso.onView(ViewMatchers.withResourceName(this)).perform(ViewActions.click())
+}
+
+fun String.clickThisText() {
+    Espresso.onView(ViewMatchers.withText(this)).perform(ViewActions.click())
 }
 
 fun String.mustBeDisplayed() {

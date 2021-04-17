@@ -3,8 +3,6 @@ package id.apwdevs.app.search
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.PagingData
-import id.apwdevs.app.core.domain.model.Movies
-import id.apwdevs.app.core.domain.model.TvShow
 import id.apwdevs.app.core.domain.usecase.SearchUseCase
 import id.apwdevs.app.libs.data.FakeDomain
 import id.apwdevs.app.libs.rule.TestCoroutineRule
@@ -22,8 +20,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.robolectric.RobolectricTestRunner
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.offerCatching
@@ -40,9 +36,6 @@ class SearchViewModelTest {
 
     @MockK
     lateinit var searchUseCase: SearchUseCase
-
-    @Captor
-    private lateinit var liveDataCaptor: ArgumentCaptor<PagingData<SearchItem>>
 
     private lateinit var searchViewModel: SearchVewModel
 
@@ -256,20 +249,4 @@ class SearchViewModelTest {
         }
     }
 
-}
-
-object SearchHelper {
-    fun mapMoviesDomainToSearchItem(movies: Movies): SearchItem {
-        return SearchItem(
-                id = movies.movieId, title = movies.title, backdropImage = movies.backdropPath,
-                voteAverage = movies.voteAverage, releaseDate = movies.releaseDate
-        )
-    }
-
-    fun mapTvShowDomainToSearchItem(tvShow: TvShow): SearchItem {
-        return SearchItem(
-                id = tvShow.tvId, title = tvShow.name, backdropImage = tvShow.backdropPath,
-                voteAverage = tvShow.voteAverage, releaseDate = tvShow.firstAirDate
-        )
-    }
 }
