@@ -1,18 +1,9 @@
 package id.apwdevs.app.search
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.*
 import id.apwdevs.app.search.adapter.SearchMovieShowVH
 import id.apwdevs.app.search.databinding.ItemResultSearchBinding
 import id.apwdevs.app.search.ui.SearchFragment
@@ -24,10 +15,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.Dispatcher
-import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.allOf
 import org.junit.Assert
 import org.junit.Test
 
@@ -39,7 +28,7 @@ class SearchCaseTest : BaseAndroidTest() {
     override fun setup() {
         super.setup()
         mockDispatcher = SearchMockDispatcher(context)
-        mockWebServer.dispatcher = SearchMockDispatcher(context) as Dispatcher
+        mockWebServer.dispatcher = SearchMockDispatcher(context)
 
         searchFragment = launchFragmentInContainer(SearchFragment::class.java)
     }
@@ -77,7 +66,7 @@ class SearchCaseTest : BaseAndroidTest() {
         // check that any data should be exists in recyclerview
         // based on comparing the item displayed, must be not empty!
         "recyclerView".performCheckOnView(
-            RecyclerViewItemCheckAssertion { it.adapter?.itemCount != 0 }
+            RecyclerViewCheckItemAssertion { it.adapter?.itemCount != 0 }
         )
     }
 
@@ -115,7 +104,7 @@ class SearchCaseTest : BaseAndroidTest() {
             // check that any data should be exists in recyclerview
             // based on comparing the item displayed, must be not empty!
             "recyclerView".performCheckOnView(
-                RecyclerViewItemCheckAssertion { it.adapter?.itemCount != 0 }
+                RecyclerViewCheckItemAssertion { it.adapter?.itemCount != 0 }
             )
 
             // adult triggers
@@ -158,10 +147,10 @@ class SearchCaseTest : BaseAndroidTest() {
         "frame_status_container".viewMustBeHidden()
 
         "recyclerView".performActionOnView(
-            RecyclerViewActionOnPosition(
-                0,
+            RecyclerViewRunActionAtPosition<SearchMovieShowVH>(
+                10,
                 {
-                    val itemView = (it as SearchMovieShowVH).itemView
+                    val itemView = it.itemView
                     ItemResultSearchBinding.bind(itemView).detail
                 },
                 click()
@@ -170,41 +159,4 @@ class SearchCaseTest : BaseAndroidTest() {
 
         MatcherAssert.assertThat(navController.currentDestination?.id, `is`(id.apwdevs.app.movieshow.R.id.detailFragment))
     }
-}
-
-class RecyclerViewActionOnPosition(
-    private val position: Int,
-    private val selectedViewToPerform: (RecyclerView.ViewHolder) -> View,
-    private val viewAction: ViewAction
-) : ViewAction {
-
-    override fun getConstraints(): Matcher<View> =
-        allOf(isAssignableFrom(RecyclerView::class.java), isDisplayed())
-
-    override fun getDescription(): String =
-        "Performing ViewActions on position: $position"
-
-    override fun perform(uiController: UiController?, view: View?) {
-        val recyclerView = view as RecyclerView
-        val s = recyclerView.findViewHolderForAdapterPosition(position)
-        val resultView = selectedViewToPerform.invoke(s as RecyclerView.ViewHolder)
-
-        viewAction.perform(uiController, resultView)
-    }
-
-}
-
-class RecyclerViewItemCheckAssertion(private val callbackChecker: (RecyclerView) -> Unit) :
-    ViewAssertion {
-    override fun check(view: View?, noViewFoundException: NoMatchingViewException?) {
-        noViewFoundException?.let { throw noViewFoundException }
-
-        Assert.assertNotNull("Reference of view must not be null", view)
-        Assert.assertTrue("Reference View must be a Recyclerview!", view is RecyclerView)
-
-        (view as? RecyclerView)?.apply {
-            callbackChecker.invoke(this)
-        }
-    }
-
 }
