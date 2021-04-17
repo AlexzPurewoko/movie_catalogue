@@ -1,11 +1,37 @@
 package id.apwdevs.app.search
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.view.View
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.NoMatchingViewException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
+import androidx.test.espresso.matcher.ViewMatchers.*
+import id.apwdevs.app.search.adapter.SearchMovieShowVH
+import id.apwdevs.app.search.databinding.ItemResultSearchBinding
 import id.apwdevs.app.search.ui.SearchFragment
+import id.apwdevs.app.search.ui.StateDisplayFragment
 import id.apwdevs.app.test.androdtest.BaseAndroidTest
-import id.apwdevs.app.test.androdtest.utils.mustBeDisplayed
-import id.apwdevs.app.test.androdtest.utils.thisViewMustBeDisplayed
-import id.apwdevs.app.test.androdtest.utils.viewMustBeHidden
+import id.apwdevs.app.test.androdtest.utils.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.Dispatcher
+import org.hamcrest.Matcher
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.allOf
+import org.junit.Assert
 import org.junit.Test
 
 class SearchCaseTest : BaseAndroidTest() {
@@ -15,6 +41,12 @@ class SearchCaseTest : BaseAndroidTest() {
 
     override fun setup() {
         super.setup()
+        intending(isInternal()).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                null
+            )
+        )
         mockDispatcher = SearchMockDispatcher(context)
         mockWebServer.dispatcher = SearchMockDispatcher(context) as Dispatcher
 
@@ -45,21 +77,143 @@ class SearchCaseTest : BaseAndroidTest() {
 
     @Test
     fun shouldDisplay_data_when_searching_success() {
+        "text_search".fillViewWithText("a")
 
+        // recyclerview must be not hidden.
+        "recyclerView".thisViewMustBeDisplayed()
+        "frame_status_container".viewMustBeHidden()
+
+        // check that any data should be exists in recyclerview
+        // based on comparing the item displayed, must be not empty!
+        "recyclerView".performCheckOnView(
+            RecyclerViewItemCheckAssertion { it.adapter?.itemCount != 0 }
+        )
     }
 
     @Test
     fun shouldDisplay_explanation_when_any_error_during_searching() {
+        "text_search".fillViewWithText("b")
 
+        "recyclerView".viewMustBeHidden()
+        "frame_status_container".thisViewMustBeDisplayed()
+
+        // check if display error displays quickly
+
+        val stateFragments =
+            searchFragment.childFragmentManager.fragments[0] as? StateDisplayFragment
+        Assert.assertEquals(
+            stateFragments?.stateForTests,
+            "${StateDisplayFragment::class.java.simpleName}.ERROR"
+        )
     }
 
     @Test
     fun shouldTrigger_search_when_changing_filter_parameters() {
+        runBlocking {
+            "text_search".fillViewWithText("a")
+            "spinner".clickThis()
+
+            "Tv Show".clickThisText()
+
+            // to take the effect, we must delay because ui changes
+            delay(150)
+            // recyclerview must be not hidden.
+            "recyclerView".thisViewMustBeDisplayed()
+            "frame_status_container".viewMustBeHidden()
+
+            // check that any data should be exists in recyclerview
+            // based on comparing the item displayed, must be not empty!
+            "recyclerView".performCheckOnView(
+                RecyclerViewItemCheckAssertion { it.adapter?.itemCount != 0 }
+            )
+
+            // adult triggers
+            // because we not specify adult=true in mock dispatchers, we need to ensure
+            // that the lists is empty
+            "Adult".clickThisText()
+
+            // to take the effect, we must specify short delay because ui changes
+            delay(150)
+            "recyclerView".viewMustBeHidden()
+            "frame_status_container".thisViewMustBeDisplayed()
+
+            val stateFragments =
+                searchFragment.childFragmentManager.fragments[0] as? StateDisplayFragment
+            Assert.assertEquals(
+                stateFragments?.stateForTests,
+                "${StateDisplayFragment::class.java.simpleName}.DATA_EMPTY"
+            )
+        }
 
     }
 
     @Test
     fun shouldAble_to_display_detail_when_clicking_one_item() {
+//        runBlocking {
+        val navController = TestNavHostController(context)
 
+        val ids = id.apwdevs.app.movieshow.R.navigation.main_nav
+        searchFragment.apply {
+            lifecycleScope.launch(Dispatchers.Main) {
+                navController.setGraph(ids)
+                Navigation.setViewNavController(requireView(), navController)
+            }
+        }
+
+        "text_search".fillViewWithText("a")
+
+        // recyclerview must be not hidden.
+        "recyclerView".thisViewMustBeDisplayed()
+        "frame_status_container".viewMustBeHidden()
+
+        "recyclerView".performActionOnView(
+            RecyclerViewActionOnPosition(
+                0,
+                {
+                    val itemView = (it as SearchMovieShowVH).itemView
+                    ItemResultSearchBinding.bind(itemView).detail
+                },
+                click()
+            )
+        )
+
+        MatcherAssert.assertThat(navController.currentDestination?.id, `is`(id.apwdevs.app.movieshow.R.id.detailFragment))
     }
+}
+
+class RecyclerViewActionOnPosition(
+    private val position: Int,
+    private val selectedViewToPerform: (RecyclerView.ViewHolder) -> View,
+    private val viewAction: ViewAction
+) : ViewAction {
+
+    override fun getConstraints(): Matcher<View> =
+        allOf(isAssignableFrom(RecyclerView::class.java), isDisplayed())
+
+    override fun getDescription(): String =
+        "Performing ViewActions on position: $position"
+
+    override fun perform(uiController: UiController?, view: View?) {
+        val recyclerView = view as RecyclerView
+        val s = recyclerView.findViewHolderForAdapterPosition(position)
+        val resultView = selectedViewToPerform.invoke(s as RecyclerView.ViewHolder)
+
+        viewAction.perform(uiController, resultView)
+    }
+
+}
+
+class RecyclerViewItemCheckAssertion(private val callbackChecker: (RecyclerView) -> Unit) :
+    ViewAssertion {
+    override fun check(view: View?, noViewFoundException: NoMatchingViewException?) {
+        noViewFoundException?.let { throw noViewFoundException }
+
+        Assert.assertNotNull("Reference of view must not be null", view)
+        Assert.assertTrue("Reference View must be a Recyclerview!", view is RecyclerView)
+
+        (view as? RecyclerView)?.apply {
+            callbackChecker.invoke(this)
+        }
+    }
+
 }
