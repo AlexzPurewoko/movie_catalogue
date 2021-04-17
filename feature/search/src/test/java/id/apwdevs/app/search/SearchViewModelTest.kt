@@ -1,12 +1,16 @@
 package id.apwdevs.app.search
 
+import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.PagingData
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.core.domain.usecase.SearchUseCase
 import id.apwdevs.app.libs.data.FakeDomain
 import id.apwdevs.app.libs.rule.TestCoroutineRule
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
+import id.apwdevs.app.movieshow.MainApplication
 import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.search.model.SearchItem
 import id.apwdevs.app.search.ui.SearchVewModel
@@ -44,7 +48,7 @@ class SearchViewModelTest {
     @Before
     fun startup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        searchViewModel = SearchVewModel(searchUseCase)
+        searchViewModel = SearchVewModel(MainApplication(), searchUseCase)
         adapter = RecyclerTestAdapter()
     }
 
