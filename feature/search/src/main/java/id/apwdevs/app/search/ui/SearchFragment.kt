@@ -8,8 +8,11 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import id.apwdevs.app.detail.ui.DetailItemFragmentArgs
+import id.apwdevs.app.movieshow.R.id.detailFragment
 import id.apwdevs.app.res.BaseFeatureFragment
 import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.search.adapter.SearchMovieShowAdapter
@@ -36,6 +39,7 @@ class SearchFragment : BaseFeatureFragment() {
     private var referenceStateFragment: StateDisplayFragment? = null
 
     private var searchData: SearchVewModel.SearchData? = null
+    private var hasFirstInitialization: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,6 +79,10 @@ class SearchFragment : BaseFeatureFragment() {
 
             val itemCount = viewPagerAdapter.itemCount
             when {
+                !hasFirstInitialization -> {
+                    callDisplay(StateViewModel.DisplayType.RECOMMENDATION)
+                    hasFirstInitialization = true
+                }
                 state.refresh is LoadState.NotLoading && itemCount == 0 ->
                     callDisplay(StateViewModel.DisplayType.DATA_EMPTY)
                 state.source.refresh is LoadState.Error ->
@@ -118,7 +126,7 @@ class SearchFragment : BaseFeatureFragment() {
                     PageType.MOVIES -> 0
                     PageType.TV_SHOW -> 1
                 }
-            );
+            )
 
             binding.isAdult.isChecked = it.includeAdult
             binding.include.textSearch.setText(it.searchQuery)
@@ -134,11 +142,19 @@ class SearchFragment : BaseFeatureFragment() {
                 else hide(it)
             }
         }
-        binding.recyclerView.visibility = if (displayed) View.INVISIBLE else View.VISIBLE
+        binding.recyclerView.visibility = if (displayed) View.GONE else View.VISIBLE
+        binding.frameStatusContainer.visibility = if (displayed) View.VISIBLE else View.INVISIBLE
     }
 
     private fun anyClickFromItem(item: SearchItem) {
         Toast.makeText(requireContext(), item.title, Toast.LENGTH_LONG).show()
+        searchData?.let {
+            val bundle = DetailItemFragmentArgs(it.pageType, item.id).toBundle()
+            findNavController().navigate(
+                detailFragment, bundle
+            )
+        }
+
     }
 
     private fun listenInteractions(anyInteraction: Boolean) {

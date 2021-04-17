@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import id.apwdevs.app.search.R
 import id.apwdevs.app.search.databinding.StateFragmentBinding
@@ -13,6 +14,9 @@ class StateDisplayFragment : Fragment() {
 
     private lateinit var binding: StateFragmentBinding
     private var viewModelShare: StateViewModel? = null
+
+    @VisibleForTesting
+    var stateForTests: String? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -36,7 +40,7 @@ class StateDisplayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        tag
         binding.btnRetry.setOnClickListener(::onRetryClick)
         viewModelShare?.stateFragmentDisplay?.observe(viewLifecycleOwner, ::stateDisplayObserver)
     }
@@ -64,6 +68,7 @@ class StateDisplayFragment : Fragment() {
                 toggleViewButton(true)
             }
         }
+        stateForTests = "${javaClass.simpleName}.$displayState"
         binding.titleExplanation.text = displayText
     }
 
