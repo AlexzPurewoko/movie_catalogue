@@ -41,14 +41,5 @@ tasks.withType<KotlinCompile>().configureEach {
 dependencies {
     api(project(":library:res"))
     implementation(project(":app"))
-
-//    listOf(
-//        Libs.kotlin,
-//        Libs.coreKtx
-//    ).forEach { implementation(it) }
-
-    testImplementation("junit:junit:4.+")
-    androidTestImplementation("androidx.test.ext:junit:1.1.2")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
-    androidTestImplementation("androidx.annotation:annotation:1.1.0")
+    testImplementation(project(":test:libs"))
 }
