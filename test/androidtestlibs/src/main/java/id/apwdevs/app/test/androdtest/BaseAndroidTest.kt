@@ -53,4 +53,13 @@ abstract class BaseAndroidTest {
         }
         return fragment
     }
+
+    protected inline fun <reified TFragment : Fragment> launchFragmentInContainer(
+        fragment: TFragment
+    ): TFragment {
+        activityRule.scenario.onActivity {
+            it.setFragment(fragment)
+        }
+        return fragment
+    }
 }
