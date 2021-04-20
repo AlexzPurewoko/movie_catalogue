@@ -49,7 +49,7 @@ class ListMovieShowAdapter(
 
 }
 
-class MovieShowVH(
+open class MovieShowVH(
     private val views: ItemShowsBinding
 ): RecyclerView.ViewHolder(views.root) {
 
