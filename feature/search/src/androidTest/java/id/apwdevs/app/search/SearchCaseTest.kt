@@ -129,34 +129,39 @@ class SearchCaseTest : BaseAndroidTest() {
 
     @Test
     fun shouldAble_to_display_detail_when_clicking_one_item() {
-//        runBlocking {
-        val navController = TestNavHostController(context)
+        runBlocking {
+            val navController = TestNavHostController(context)
 
-        val ids = id.apwdevs.app.movieshow.R.navigation.main_nav
-        searchFragment.apply {
-            lifecycleScope.launch(Dispatchers.Main) {
-                navController.setGraph(ids)
-                Navigation.setViewNavController(requireView(), navController)
+            val ids = id.apwdevs.app.movieshow.R.navigation.main_nav
+            searchFragment.apply {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    navController.setGraph(ids)
+                    Navigation.setViewNavController(requireView(), navController)
+                }
             }
-        }
 
-        "text_search".fillViewWithText("a")
+            "text_search".fillViewWithText("a")
+            delay(500)
 
-        // recyclerview must be not hidden.
-        "recyclerView".thisViewMustBeDisplayed()
-        "frame_status_container".viewMustBeHidden()
+            // recyclerview must be not hidden.
+            "recyclerView".thisViewMustBeDisplayed()
+            "frame_status_container".viewMustBeHidden()
 
-        "recyclerView".performActionOnView(
-            RecyclerViewRunActionAtPosition<SearchMovieShowVH>(
-                10,
-                {
-                    val itemView = it.itemView
-                    ItemResultSearchBinding.bind(itemView).detail
-                },
-                click()
+            "recyclerView".performActionOnView(
+                RecyclerViewRunActionAtPosition<SearchMovieShowVH>(
+                    10,
+                    {
+                        val itemView = it.itemView
+                        ItemResultSearchBinding.bind(itemView).detail
+                    },
+                    click()
+                )
             )
-        )
 
-        MatcherAssert.assertThat(navController.currentDestination?.id, `is`(id.apwdevs.app.movieshow.R.id.detailFragment))
+            MatcherAssert.assertThat(
+                navController.currentDestination?.id,
+                `is`(id.apwdevs.app.movieshow.R.id.detailFragment)
+            )
+        }
     }
 }
