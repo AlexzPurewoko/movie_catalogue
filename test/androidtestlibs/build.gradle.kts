@@ -51,6 +51,7 @@ dependencies {
     listOf(
         Libs.kotlinStd,
         project(":app"),
+        TestLibs.koinAndroid,
         AndroidTestLibs.espressoCore,
         AndroidTestLibs.androidxJunit,
         AndroidTestLibs.androidxAnnotatation,
