@@ -27,10 +27,10 @@ open class BaseViewModel(
         context: CoroutineContext,
         timeoutInMs: Long = DEFAULT_TIMEOUT
     ): LiveData<T> = liveData(context, timeoutInMs) {
-        idlingRes.increment()
+
         collect {
+            idlingRes.increment()
             emit(it)
-            delay(100)
             idlingRes.decrement()
         }
     }
