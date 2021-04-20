@@ -17,7 +17,7 @@ android {
         versionCode = Apps.versionCode
         versionName = Apps.versionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "id.apwdevs.app.test.androdtest.runner.AppTestRunner"
     }
 
     buildFeatures.viewBinding = true
@@ -42,4 +42,9 @@ dependencies {
     api(project(":library:res"))
     implementation(project(":app"))
     testImplementation(project(":test:libs"))
+
+    androidTestImplementation(project(":test:androidtestlibs"))
+    androidTestImplementation(project(":test:libs")) {
+        isTransitive = false
+    }
 }
