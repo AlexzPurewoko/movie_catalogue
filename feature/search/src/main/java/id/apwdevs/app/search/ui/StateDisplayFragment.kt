@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
+import id.apwdevs.app.res.databinding.StateFragmentBinding
 import id.apwdevs.app.search.R
-import id.apwdevs.app.search.databinding.StateFragmentBinding
 
 class StateDisplayFragment : Fragment() {
 
