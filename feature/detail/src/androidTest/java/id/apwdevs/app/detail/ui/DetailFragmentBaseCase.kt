@@ -6,7 +6,6 @@ import id.apwdevs.app.data.source.remote.response.moviedetail.MovieDetailRespons
 import id.apwdevs.app.data.source.remote.response.tvdetail.TvDetailResponse
 import id.apwdevs.app.detail.data.AssetData
 import id.apwdevs.app.detail.dispatcher.DetailScopeMockDispatcher
-import id.apwdevs.app.movieshow.BaseAndroidTest
 import id.apwdevs.app.movieshow.util.*
 import id.apwdevs.app.res.util.PageType
 import okhttp3.mockwebserver.Dispatcher
