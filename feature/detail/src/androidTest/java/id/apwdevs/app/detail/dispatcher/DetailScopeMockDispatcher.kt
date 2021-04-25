@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import id.apwdevs.app.data.utils.Config
 import id.apwdevs.app.detail.data.AssetData
-import id.apwdevs.app.movieshow.util.provideResponse
+import id.apwdevs.app.libs.util.provideResponse
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
