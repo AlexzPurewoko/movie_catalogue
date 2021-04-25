@@ -1,37 +1,42 @@
 package id.apwdevs.app.favorite
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import id.apwdevs.app.favorite.testcase.FavoriteFragmentInteractionCaseTest
 import id.apwdevs.app.favorite.ui.FavoriteFragment
 import id.apwdevs.app.res.util.PageType
-import id.apwdevs.app.test.androdtest.utils.performActionOnView
-import id.apwdevs.app.test.androdtest.utils.swipeLeft
-import id.apwdevs.app.test.androdtest.utils.swipeRight
-import id.apwdevs.app.test.androdtest.utils.swipeUp
+import id.apwdevs.app.test.androdtest.utils.*
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.junit.Assert
 
-class FavoriteFragmentTest: FavoriteFragmentInteractionCaseTest() {
+class FavoriteFragmentTest : FavoriteFragmentInteractionCaseTest() {
 
     private lateinit var fragment: FavoriteFragment
     override fun setup() {
         super.setup()
         fragment = launchFragmentInContainer(FavoriteFragment::class.java)
     }
+
+    override fun should_display_correct_ui() {
+        runBlocking {
+            "viewPager".thisViewMustBeDisplayed()
+
+            "tabs".thisViewMustBeDisplayed()
+            "Movies".toUpperCase().mustBeDisplayed()
+            "Tv Shows".toUpperCase().mustBeDisplayed()
+        }
+    }
+
     override fun should_display_correct_fragment_when_swiping() {
-        swipeRight()
+        swipeLeft()
         Assert.assertEquals(PageType.TV_SHOW, fragment.currentPageView)
 
-        swipeUp()
-        swipeLeft()
+        swipeRight()
         Assert.assertEquals(PageType.MOVIES, fragment.currentPageView)
     }
 
@@ -46,11 +51,12 @@ class FavoriteFragmentTest: FavoriteFragmentInteractionCaseTest() {
 
 class TabClickViewActionsAtPosition(
     private val tabPosition: Int
-): ViewAction {
+) : ViewAction {
     override fun getConstraints(): Matcher<View> {
         return Matchers.allOf(
             ViewMatchers.isAssignableFrom(TabLayout::class.java),
-            ViewMatchers.isDisplayed())
+            ViewMatchers.isDisplayed()
+        )
     }
 
     override fun getDescription(): String {
