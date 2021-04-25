@@ -4,6 +4,7 @@ import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.model.TvShow
 import id.apwdevs.app.res.data.MovieShowItem
 
+@Deprecated("Will use from module :res")
 object Mapper {
     fun mapDomainMovieToMovieShowItem(movie: Movies) =
         MovieShowItem(
