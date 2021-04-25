@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import id.apwdevs.app.favorite.databinding.FragmentFavoriteBinding
 import id.apwdevs.app.favorite.di.favoriteModule
 import id.apwdevs.app.res.BaseFeatureFragment
+import id.apwdevs.app.res.util.PageType
 import org.koin.core.module.Module
 
 class FavoriteFragment : BaseFeatureFragment() {
 
     private lateinit var binding: FragmentFavoriteBinding
+
+    @VisibleForTesting var currentPageView: PageType? = null
 
     override val koinModules: List<Module>
         get() = listOf(favoriteModule)
