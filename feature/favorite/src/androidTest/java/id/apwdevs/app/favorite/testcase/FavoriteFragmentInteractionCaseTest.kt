@@ -6,9 +6,7 @@ import org.junit.Test
 abstract class FavoriteFragmentInteractionCaseTest: BaseAndroidTest() {
 
     @Test
-    fun should_display_correct_ui(){
-        TODO("Not yet implemented")
-    }
+    abstract fun should_display_correct_ui()
 
     @Test
     abstract fun should_display_correct_fragment_when_swiping()
