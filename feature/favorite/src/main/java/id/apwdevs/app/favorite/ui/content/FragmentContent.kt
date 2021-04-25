@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import id.apwdevs.app.core.utils.State
+import id.apwdevs.app.detail.ui.DetailItemFragmentArgs
 import id.apwdevs.app.favorite.R
 import id.apwdevs.app.favorite.adapter.FavoriteMovieShowAdapter
 import id.apwdevs.app.favorite.databinding.FragmentContentBinding
@@ -17,6 +19,9 @@ import id.apwdevs.app.res.fragment.viewmodel.StateViewModel
 import id.apwdevs.app.res.util.PageType
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.module.Module
+
+import id.apwdevs.app.movieshow.R as RBase
+
 
 class FragmentContent : FragmentWithState() {
 
@@ -77,6 +82,12 @@ class FragmentContent : FragmentWithState() {
 
     private fun onItemClick(item: MovieShowItem) {
         Toast.makeText(requireContext(), "Item Click ${item.id}", Toast.LENGTH_LONG).show()
+        pageType?.let {
+            val bundle = DetailItemFragmentArgs(it, item.id).toBundle()
+            findNavController().navigate(
+                RBase.id.detailFragment, bundle
+            )
+        }
 
     }
 
