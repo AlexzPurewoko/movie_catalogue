@@ -8,6 +8,7 @@ plugins {
     id("com.android.dynamic-feature")
     kotlin("android")
     id("kotlin-parcelize")
+    id("jacoco-plugin")
 }
 
 android {
