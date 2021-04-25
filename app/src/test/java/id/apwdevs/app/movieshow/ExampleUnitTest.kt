@@ -1,5 +1,8 @@
 package id.apwdevs.app.movieshow
 
+import junit.framework.Assert.assertEquals
+import org.junit.Test
+
 //import org.junit.Test
 //
 //import org.junit.Assert.*
@@ -9,9 +12,9 @@ package id.apwdevs.app.movieshow
 // *
 // * See [testing documentation](http://d.android.com/tools/testing).
 // */
-//class ExampleUnitTest {
-//    @Test
-//    fun addition_isCorrect() {
-//        assertEquals(4, 2 + 2)
-//    }
-//}
+class ExampleUnitTest {
+    @Test
+    fun addition_isCorrect() {
+        assertEquals(4, 2 + 2)
+    }
+}

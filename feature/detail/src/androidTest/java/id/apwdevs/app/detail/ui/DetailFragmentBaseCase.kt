@@ -6,8 +6,11 @@ import id.apwdevs.app.data.source.remote.response.moviedetail.MovieDetailRespons
 import id.apwdevs.app.data.source.remote.response.tvdetail.TvDetailResponse
 import id.apwdevs.app.detail.data.AssetData
 import id.apwdevs.app.detail.dispatcher.DetailScopeMockDispatcher
+import id.apwdevs.app.libs.util.readJson
 import id.apwdevs.app.movieshow.util.*
 import id.apwdevs.app.res.util.PageType
+import id.apwdevs.app.test.androdtest.BaseAndroidTest
+import id.apwdevs.app.test.androdtest.utils.*
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest

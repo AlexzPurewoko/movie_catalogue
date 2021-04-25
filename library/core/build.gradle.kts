@@ -3,6 +3,7 @@ import modules.Apps
 plugins {
     id ("com.android.library")
     kotlin ("android")
+    id("jacoco-plugin")
 }
 
 android {

@@ -6,11 +6,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withResourceName
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import id.apwdevs.app.data.source.remote.response.moviedetail.MovieDetailResponse
 import id.apwdevs.app.detail.ui.helper.DetailMovieHelper
-import id.apwdevs.app.movieshow.util.ViewAssertionRunner
-import id.apwdevs.app.movieshow.util.mustBeDisplayed
-import id.apwdevs.app.movieshow.util.mustDisplayedOnView
-import id.apwdevs.app.movieshow.util.swipeUp
 import id.apwdevs.app.res.util.PageType
+import id.apwdevs.app.test.androdtest.utils.ViewAssertionRunner
+import id.apwdevs.app.test.androdtest.utils.mustBeDisplayed
+import id.apwdevs.app.test.androdtest.utils.mustDisplayedOnView
+import id.apwdevs.app.test.androdtest.utils.swipeUp
 import org.junit.Assert
 import org.junit.runner.RunWith
 
