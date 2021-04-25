@@ -47,6 +47,9 @@ abstract class FavoriteFragmentCaseTest : BaseAndroidTest() {
     @Test
     abstract fun should_display_no_data_whereby_any_data_but_not_to_display_in_this_page()
 
+    @Test
+    abstract fun can_move_to_next_page_when_clicking_next_button()
+
     protected suspend fun prepopulateDataInMemoryDatabase(pageType: PageType): Any {
         val favCaseDb = get(PagingCaseMovieDb::class.java)
         val detailCaseMovieDb = get(FavoriteMovieSource::class.java)
