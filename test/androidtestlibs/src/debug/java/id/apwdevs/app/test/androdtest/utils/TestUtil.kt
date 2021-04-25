@@ -80,11 +80,11 @@ fun swipeUp() {
 }
 
 fun swipeLeft() {
-    Espresso.onView(ViewMatchers.isRoot()).perform(ViewActions.swipeUp())
+    Espresso.onView(ViewMatchers.isRoot()).perform(ViewActions.swipeLeft())
 }
 
 fun swipeRight() {
-    Espresso.onView(ViewMatchers.isRoot()).perform(ViewActions.swipeUp())
+    Espresso.onView(ViewMatchers.isRoot()).perform(ViewActions.swipeRight())
 }
 
 
