@@ -79,6 +79,14 @@ fun swipeUp() {
     Espresso.onView(ViewMatchers.isRoot()).perform(ViewActions.swipeUp())
 }
 
+fun swipeLeft() {
+    Espresso.onView(ViewMatchers.isRoot()).perform(ViewActions.swipeUp())
+}
+
+fun swipeRight() {
+    Espresso.onView(ViewMatchers.isRoot()).perform(ViewActions.swipeUp())
+}
+
 
 class ViewTagAssertion(
     private val tagValue: Any
