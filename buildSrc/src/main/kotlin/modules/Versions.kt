@@ -34,4 +34,7 @@ object Versions {
     const val androidTestCore = "1.3.0"
     const val robolectric = "4.5.1"
     const val mockk = "1.11.0"
+
+    /* coverage */
+    const val jacoco = "0.8.5"
 }
