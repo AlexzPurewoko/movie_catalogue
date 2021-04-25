@@ -1,5 +1,6 @@
 package id.apwdevs.app.libs.util
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class DiffRecyclerTest<T> : DiffUtil.ItemCallback<T>() {
         }
     }
 
+    @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
         return oldItem == newItem
     }
