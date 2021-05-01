@@ -1,19 +1,24 @@
 package id.apwdevs.app.discover.ui.child
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.paging.LoadState
 import androidx.paging.PagingData
+import id.apwdevs.app.discover.R
 import id.apwdevs.app.discover.databinding.FragmentMovieShowBinding
 import id.apwdevs.app.discover.ui.FragmentMessenger
 import id.apwdevs.app.res.adapter.ListMovieShowAdapter
 import id.apwdevs.app.res.data.MovieShowItem
+import id.apwdevs.app.res.fragment.FragmentWithState
+import id.apwdevs.app.res.fragment.viewmodel.StateViewModel
 import id.apwdevs.app.res.util.PageType
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.module.Module
 
-class MovieShowFragment : Fragment() {
+class MovieShowFragment : FragmentWithState() {
 
     private val movieShowViewModel: MovieShowViewModel by viewModel()
     private val movieShowAdapter: ListMovieShowAdapter by lazy { ListMovieShowAdapter(this::onItemClicked) }
@@ -21,6 +26,10 @@ class MovieShowFragment : Fragment() {
     private val fragmentMessenger: FragmentMessenger by lazy { parentFragment as FragmentMessenger }
 
     private lateinit var binding: FragmentMovieShowBinding
+    private var hasFirstInitialization: Boolean = false
+
+    override val koinModules: List<Module>
+        get() = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,11 +42,71 @@ class MovieShowFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.recyclerview.adapter = movieShowAdapter
+        binding.recyclerView.adapter = movieShowAdapter
         movieShowViewModel.discoverPopular(currentFragmentType)
             .observe(viewLifecycleOwner, this::observingData)
 
+        applyFragmentIntoView(binding.frameStatus.id)
+        initAdapter()
+
     }
+
+    private fun initAdapter() {
+
+        // will add removeload statelistener next
+        movieShowAdapter.addLoadStateListener { state ->
+            val itemCount =  movieShowAdapter.itemCount
+            when {
+                !hasFirstInitialization -> {
+                    callDisplay(StateViewModel.DisplayType.RECOMMENDATION)
+                    hasFirstInitialization = true
+                }
+
+                state.refresh is LoadState.NotLoading && itemCount == 0 ->
+                    callDisplay(StateViewModel.DisplayType.DATA_EMPTY)
+                state.mediator?.refresh is LoadState.Error ->{
+                    val o = state.mediator?.refresh as? LoadState.Error
+                    Log.e("MEDIATOR ERROR", "ERROR MESSAGE", o?.error)
+                    callDisplay(StateViewModel.DisplayType.ERROR)
+                }
+                state.refresh is LoadState.Loading && state.mediator?.refresh is LoadState.Loading -> {
+                    callDisplay(StateViewModel.DisplayType.LOADING)
+                }
+                else ->{
+                    toggleStateDisplayFragment(false)
+                }
+
+            }
+
+            Log.e("STATE", "state: ${state.refresh}, mediator: ${state.mediator?.refresh}")
+        }
+
+    }
+
+    private fun callDisplay(displayType: StateViewModel.DisplayType) {
+        toggleStateDisplayFragment(true)
+        callStateFragmentToDisplaySomething(displayType)
+    }
+
+    override fun mapOfTextDisplay(): HashMap<StateViewModel.DisplayType, Int>  = hashMapOf(
+        StateViewModel.DisplayType.DATA_EMPTY to R.string.discover_data_empty,
+        StateViewModel.DisplayType.ERROR to R.string.discover_data_error,
+        StateViewModel.DisplayType.LOADING to R.string.discover_data_loading
+    )
+
+    override fun toggleStateDisplayFragment(displayed: Boolean) {
+        super.toggleStateDisplayFragment(displayed)
+        binding.recyclerView.visibility = if (displayed) View.GONE else View.VISIBLE
+        binding.frameStatus.visibility = if (displayed) View.VISIBLE else View.INVISIBLE
+    }
+
+    override fun provideCallbackFromStateDisplay(parameters: List<Any>) {
+        if(parameters[0] === StateViewModel.StateCallType.RETRY){
+            movieShowViewModel.discoverPopular(currentFragmentType)
+                .observe(viewLifecycleOwner, this::observingData)
+        }
+    }
+
 
     private fun observingData(data: PagingData<MovieShowItem>) {
         movieShowAdapter.submitData(lifecycle, data)
