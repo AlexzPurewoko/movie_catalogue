@@ -52,6 +52,9 @@ abstract class MovieShowFragmentCaseTest : BaseAndroidTest() {
     abstract fun should_display_error_when_failed_get_data()
 
     @Test
+    abstract fun should_navigate_to_detail_fragment_when_click_next_icon()
+
+    @Test
     abstract fun should_be_able_to_refresh_data_after_clicking_try_again()
 
     protected fun launchFragment() =

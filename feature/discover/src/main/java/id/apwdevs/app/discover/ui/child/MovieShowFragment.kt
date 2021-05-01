@@ -5,8 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import id.apwdevs.app.detail.ui.DetailItemFragmentArgs
 import id.apwdevs.app.discover.R
 import id.apwdevs.app.discover.databinding.FragmentMovieShowBinding
 import id.apwdevs.app.discover.ui.FragmentMessenger
@@ -17,6 +20,8 @@ import id.apwdevs.app.res.fragment.viewmodel.StateViewModel
 import id.apwdevs.app.res.util.PageType
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.module.Module
+
+import id.apwdevs.app.movieshow.R as BaseR
 
 class MovieShowFragment : FragmentWithState() {
 
@@ -113,7 +118,14 @@ class MovieShowFragment : FragmentWithState() {
     }
 
     private fun onItemClicked(data: MovieShowItem) {
-        fragmentMessenger.onItemClick(currentFragmentType, data)
+//        fragmentMessenger.onItemClick(currentFragmentType, data)
+        Toast.makeText(requireContext(), "Item Click ${data.id}", Toast.LENGTH_LONG).show()
+        currentFragmentType.let {
+            val bundle = DetailItemFragmentArgs(it, data.id).toBundle()
+            findNavController().navigate(
+                BaseR.id.detailFragment, bundle
+            )
+        }
     }
 
     companion object {

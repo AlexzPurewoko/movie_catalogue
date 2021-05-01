@@ -62,6 +62,33 @@ class DiscoverTvShowFragmentTest: MovieShowFragmentCaseTest() {
         }
     }
 
+    override fun should_navigate_to_detail_fragment_when_click_next_icon() {
+        runBlocking {
+            mockWebServer.dispatcher = QueueDispatcher()
+            mockWebServer.enqueue(MockResponse().setResponseCode(404))
+            launchFragment()
+
+            delay(1000)
+            "recyclerView".viewMustBeHidden()
+            "frameStatus".thisViewMustBeDisplayed()
+
+            "Retry".mustBeDisplayed()
+            mockWebServer.dispatcher = DiscoverMockDispatcher(context)
+
+            "Retry".clickThisText()
+
+            delay(1000)
+            "frameStatus".viewMustBeHidden()
+            "recyclerView".thisViewMustBeDisplayed()
+            "recyclerView".performCheckOnView(
+                RecyclerViewCheckItemAssertion {
+                    val displayedItems = it.childCount
+                    Assert.assertTrue("Items must be displayed on the view", displayedItems > 0)
+                }
+            )
+        }
+    }
+
     override fun should_be_able_to_refresh_data_after_clicking_try_again() {
         runBlocking {
             mockWebServer.dispatcher = QueueDispatcher()

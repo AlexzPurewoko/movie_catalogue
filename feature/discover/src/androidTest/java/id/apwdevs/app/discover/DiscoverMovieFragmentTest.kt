@@ -1,15 +1,27 @@
 package id.apwdevs.app.discover
 
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
+import androidx.test.espresso.action.ViewActions.click
 import id.apwdevs.app.discover.case.MovieShowFragmentCaseTest
 import id.apwdevs.app.discover.dispatcher.DiscoverMockDispatcher
 import id.apwdevs.app.discover.dispatcher.EmptyMockDispatcher
+import id.apwdevs.app.res.adapter.ListMovieShowAdapter
+import id.apwdevs.app.res.adapter.MovieShowVH
+import id.apwdevs.app.res.databinding.ItemShowsBinding
 import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.test.androdtest.utils.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.QueueDispatcher
+import org.hamcrest.MatcherAssert
+import org.hamcrest.core.Is
 import org.junit.Assert
+
+import id.apwdevs.app.movieshow.R
 
 class DiscoverMovieFragmentTest: MovieShowFragmentCaseTest() {
 
@@ -60,6 +72,36 @@ class DiscoverMovieFragmentTest: MovieShowFragmentCaseTest() {
 
             "Error while retrieve data".mustBeDisplayed()
             "Retry".mustBeDisplayed()
+        }
+    }
+
+    override fun should_navigate_to_detail_fragment_when_click_next_icon() {
+        runBlocking {
+            mockWebServer.dispatcher = DiscoverMockDispatcher(context)
+            val fg = launchFragment()
+            val navController = TestNavHostController(context)
+
+            launch(Dispatchers.Main) {
+                fg.apply {
+                    navController.setGraph(R.navigation.main_nav)
+                    Navigation.setViewNavController(requireView(), navController)
+                }
+            }
+
+            delay(1000)
+            "recyclerView".performActionOnView(
+                RecyclerViewRunActionAtPosition<MovieShowVH>(
+                    0, {
+                        val v = it.itemView
+                        ItemShowsBinding.bind(v).imageView
+                    }, click()
+                )
+            )
+
+            MatcherAssert.assertThat(
+                navController.currentDestination?.id,
+                Is.`is`(R.id.detailFragment)
+            )
         }
     }
 
