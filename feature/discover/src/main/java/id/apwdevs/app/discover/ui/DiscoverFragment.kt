@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -17,10 +18,18 @@ import id.apwdevs.app.res.BaseFeatureFragment
 import id.apwdevs.app.res.data.MovieShowItem
 import id.apwdevs.app.res.util.PageType
 import org.koin.core.module.Module
+import java.lang.ref.WeakReference
 
+typealias SelectedFunc = (Int) -> Unit
 class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
 
     private lateinit var binding: FragmentDiscoverBinding
+
+    @VisibleForTesting var currentPageView: PageType? = null
+
+    private var tabLayoutMediator: TabLayoutMediator? = null
+
+    private var onPageChangeCallback: ViewPager2.OnPageChangeCallback? = null
 
     private val viewPagerAdapter: DiscoverStateFragmentAdapter by lazy {
         DiscoverStateFragmentAdapter(this, ::onclick)
@@ -58,16 +67,47 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
 
     private fun initializeTab(tabs: TabLayout, pagerContainer: ViewPager2) {
         pagerContainer.adapter = viewPagerAdapter
-        TabLayoutMediator(tabs, pagerContainer) { tab, position ->
+        tabLayoutMediator = TabLayoutMediator(tabs, pagerContainer) { tab, position ->
             tab.text = getString(TABS[position])
-        }.attach()
+        }
+        tabLayoutMediator?.attach()
+
+        onPageChangeCallback = OnPageSelectedChangeCallback {
+            currentPageView = when(it){
+                0 -> PageType.MOVIES
+                1 -> PageType.TV_SHOW
+                else -> null
+            }
+        }
+        onPageChangeCallback?.let { pagerContainer.registerOnPageChangeCallback(it) }
     }
 
+    override fun onDetach() {
+        onPageChangeCallback?.let {
+            binding.pagerContainer.unregisterOnPageChangeCallback(it)
+        }
+        onPageChangeCallback = null
+        tabLayoutMediator?.detach()
+
+        super.onDetach()
+    }
 
     companion object {
         private val TABS = intArrayOf(
             R.string.movies,
             R.string.tvshows
         )
+    }
+
+    private class OnPageSelectedChangeCallback(
+        onSelected: SelectedFunc
+    ): ViewPager2.OnPageChangeCallback() {
+
+        private val weakReference: WeakReference<SelectedFunc> = WeakReference(onSelected)
+
+        override fun onPageSelected(position: Int) {
+            weakReference.get()?.invoke(position)
+        }
+
     }
 }
