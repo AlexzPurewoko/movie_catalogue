@@ -18,7 +18,7 @@ android {
         versionCode = Apps.versionCode
         versionName = Apps.versionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "id.apwdevs.app.test.androdtest.runner.AppTestRunner"
     }
 
     buildFeatures.viewBinding = true
