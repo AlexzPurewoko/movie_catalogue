@@ -10,7 +10,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.mediator.dispatcher.PopularMoviePagingDispatcher
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingMovieCaseDbInteractor
+import id.apwdevs.app.data.source.local.database.paging.PagingMovieCaseDbInteractor
+import id.apwdevs.app.data.source.remote.network.MoviesNetwork
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +26,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.java.KoinJavaComponent.inject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -36,12 +38,7 @@ class PopularMovieMediatorTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val retrofitService: ApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl("http://localhost:8080")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(ApiService::class.java)
-    }
+    private val retrofitService: MoviesNetwork by inject(MoviesNetwork::class.java)
 
     private val appDatabase: AppDatabase by lazy {
         Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)

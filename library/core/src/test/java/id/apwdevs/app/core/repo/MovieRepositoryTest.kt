@@ -13,8 +13,8 @@ import id.apwdevs.app.core.repository.MovieRepoImpl
 import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingCaseMovieDb
-import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingMovieCaseDbInteractor
+import id.apwdevs.app.data.source.local.database.paging.PagingCaseMovieDb
+import id.apwdevs.app.data.source.local.database.paging.PagingMovieCaseDbInteractor
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
 import id.apwdevs.app.libs.data.FakeDataDetail

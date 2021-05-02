@@ -1,8 +1,10 @@
 package id.apwdevs.app.data.di
 
-import androidx.room.Room
 import com.google.gson.Gson
-import id.apwdevs.app.data.source.local.room.AppDatabase
+import id.apwdevs.app.data.source.remote.network.MoviesNetwork
+import id.apwdevs.app.data.source.remote.network.MoviesNetworkImpl
+import id.apwdevs.app.data.source.remote.network.TvShowsNetwork
+import id.apwdevs.app.data.source.remote.network.TvShowsNetworkImpl
 import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.data.utils.Config
 import okhttp3.OkHttpClient
@@ -12,14 +14,6 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-
-val databaseModule = module {
-    single {
-        Room.databaseBuilder(
-            get(), AppDatabase::class.java, "app_database.db"
-        ).build()
-    }
-}
 
 val networkModule = module {
 
@@ -41,4 +35,9 @@ val networkModule = module {
             addConverterFactory(get())
         }.build().create(ApiService::class.java)
     }
+}
+
+val netWorkAccessModule = module {
+    factory<MoviesNetwork> { MoviesNetworkImpl(get()) }
+    factory<TvShowsNetwork> { TvShowsNetworkImpl(get()) }
 }

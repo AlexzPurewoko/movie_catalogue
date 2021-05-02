@@ -9,7 +9,7 @@ import id.apwdevs.app.core.utils.EntityToDomainMapper
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.detail.movie.FavDetailMovieEntity
-import id.apwdevs.app.data.source.local.room.dbcase.favlocal.FavoriteMovieSource
+import id.apwdevs.app.data.source.local.database.favlocal.FavoriteMovieSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

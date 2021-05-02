@@ -23,8 +23,8 @@ data class TvEntity(
     @ColumnInfo(name = "overview") val overview: String,
     @ColumnInfo(name = "original_language") val language: String,
     @ColumnInfo(name = "genre_ids") val genreIds: GenreIdsTypeConverter.GenreIdData,
-    @ColumnInfo(name = "poster_path") val posterPath: String,
-    @ColumnInfo(name = "backdrop_path") val backdropPath: String,
+    @ColumnInfo(name = "poster_path") val posterPath: String?,
+    @ColumnInfo(name = "backdrop_path") val backdropPath: String?,
     @ColumnInfo(name = "vote_average") val voteAverage: Double,
     @ColumnInfo(name = "vote_count") val voteCount: Int,
     @ColumnInfo(name = "page_at") val page: Int

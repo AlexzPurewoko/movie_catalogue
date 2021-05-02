@@ -11,8 +11,8 @@ import id.apwdevs.app.core.repository.FavoriteTvShowRepoImpl
 import id.apwdevs.app.core.utils.DomainToEntityMapper
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.favlocal.FavoriteTvShowDataSource
-import id.apwdevs.app.data.source.local.room.dbcase.favlocal.FavoriteTvShowSource
+import id.apwdevs.app.data.source.local.database.favlocal.FavoriteTvShowDataSource
+import id.apwdevs.app.data.source.local.database.favlocal.FavoriteTvShowSource
 import id.apwdevs.app.libs.data.FakeDomain
 import io.mockk.*
 import kotlinx.coroutines.delay

@@ -11,6 +11,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.paging.dispatcher.SearchTvShowPagingDispatcher
+import id.apwdevs.app.data.source.remote.network.MoviesNetwork
+import id.apwdevs.app.data.source.remote.network.TvShowsNetwork
 import id.apwdevs.app.data.source.remote.paging.SearchTvShowPagingSource
 import id.apwdevs.app.data.source.remote.response.TvShowItemResponse
 import id.apwdevs.app.data.source.remote.service.ApiService
@@ -27,6 +29,8 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.java.KoinJavaComponent
+import org.koin.java.KoinJavaComponent.inject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -37,12 +41,14 @@ class SearchTvShowPagingTest {
     private val query = "A"
     private val totalPage = 4
 
-    private val service: ApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl("http://localhost:8080")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(ApiService::class.java)
-    }
+//    private val service: ApiService by lazy {
+//        Retrofit.Builder()
+//            .baseUrl("http://localhost:8080")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build().create(ApiService::class.java)
+//    }
+
+    private val service: TvShowsNetwork by inject(TvShowsNetwork::class.java)
 
     private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply{
         for (i in 0..totalPage){

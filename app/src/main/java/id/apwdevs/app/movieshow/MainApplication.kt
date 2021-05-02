@@ -6,6 +6,7 @@ import id.apwdevs.app.core.di.repoModule
 import id.apwdevs.app.core.di.useCaseModule
 import id.apwdevs.app.data.di.databaseModule
 import id.apwdevs.app.data.di.dbAccessModule
+import id.apwdevs.app.data.di.netWorkAccessModule
 import id.apwdevs.app.data.di.networkModule
 import id.apwdevs.app.movieshow.util.IdlingResourceHelper
 import org.koin.android.ext.koin.androidContext
@@ -34,6 +35,7 @@ open class MainApplication: Application() {
                     dbModules,
                     dbAccessModule,
                     netModules,
+                    netWorkAccessModule,
                     repoModule,
                     useCaseModule,
             )

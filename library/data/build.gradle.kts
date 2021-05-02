@@ -17,7 +17,7 @@ android {
         versionCode = Apps.versionCode
         versionName = Apps.versionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "id.apwdevs.app.test.androdtest.runner.AppTestRunner"
         consumerProguardFiles( "consumer-rules.pro")
     }
 
@@ -38,13 +38,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    packagingOptions {
-        exclude("META-INF/AL2.0")
-        exclude("META-INF/LGPL2.1")
-        exclude("META-INF/licenses/**")
-        exclude("META-INF/*.kotlin_module")
-        exclude("**/attach_hostpot_windows.dll")
-    }
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -74,17 +67,22 @@ dependencies {
 
     kapt(KaptLibs.roomCompiler)
 
-    testImplementation(TestLibs.junit)
-    debugImplementation(project(":test:assetDebug"))
-
-    listOf(
-            AndroidTestLibs.androidxJunit,
-            AndroidTestLibs.espressoCore,
-            AndroidTestLibs.androidxAnnotatation
-    ).forEach { androidTestImplementation(it) }
-
+//    testImplementation(TestLibs.junit)
+//    debugImplementation(project(":test:assetDebug"))
+//
+//    listOf(
+//            AndroidTestLibs.androidxJunit,
+//            AndroidTestLibs.espressoCore,
+//            AndroidTestLibs.androidxAnnotatation
+//    ).forEach { androidTestImplementation(it) }
+//
+//    testImplementation(project(":test:libs"))
+//    androidTestImplementation(project(":test:libs"))
     testImplementation(project(":test:libs"))
-    androidTestImplementation(project(":test:libs"))
+    androidTestImplementation(project(":test:androidtestlibs"))
+    androidTestImplementation(project(":test:libs")) {
+        isTransitive = false
+    }
 }
 configurations.all {
     resolutionStrategy {

@@ -8,17 +8,17 @@ import id.apwdevs.app.core.domain.repository.TvShowRepository
 import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.data.mediator.PopularTvShowRemoteMediator
+import id.apwdevs.app.data.source.local.database.paging.PagingCaseTvShowDb
 import id.apwdevs.app.data.source.local.entity.Genres
-import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingCaseTvShowDb
+import id.apwdevs.app.data.source.remote.network.TvShowsNetwork
 import id.apwdevs.app.data.source.remote.paging.SearchTvShowPagingSource
-import id.apwdevs.app.data.source.remote.service.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalPagingApi::class)
 class TvShowRepoImpl constructor(
-    private val service: ApiService,
+    private val tvShowsNetwork: TvShowsNetwork,
     private val caseDb: PagingCaseTvShowDb
 ) : TvShowRepository {
 
@@ -33,7 +33,7 @@ class TvShowRepoImpl constructor(
                         initialLoadSize = 20,
                         enablePlaceholders = false
                 ),
-                remoteMediator = PopularTvShowRemoteMediator(service, caseDb),
+                remoteMediator = PopularTvShowRemoteMediator(tvShowsNetwork, caseDb),
                 pagingSourceFactory = { caseDb.getAllDataPaging() }
         ).flow.map { pagingData ->
             getGenre()
@@ -60,7 +60,7 @@ class TvShowRepoImpl constructor(
                         initialLoadSize = 20,
                         enablePlaceholders = false
                 ),
-                pagingSourceFactory = { SearchTvShowPagingSource(service, query, includeAdult) }
+                pagingSourceFactory = { SearchTvShowPagingSource(tvShowsNetwork, query, includeAdult) }
         ).flow.map { pagingData ->
             getGenre()
             pagingData.map {
@@ -82,7 +82,7 @@ class TvShowRepoImpl constructor(
         return flow {
             emit(State.Loading())
             try {
-                val detailMovie = service.getDetailTvShows(tvId.toString(), id.apwdevs.app.data.utils.Config.TOKEN, "en-US")
+                val detailMovie = tvShowsNetwork.getDetailTvShows(tvId.toString())
                 val transform = RemoteToDomainMapper.detailTvShow(detailMovie)
                 emit(State.Success(transform))
             } catch (e: Throwable) {

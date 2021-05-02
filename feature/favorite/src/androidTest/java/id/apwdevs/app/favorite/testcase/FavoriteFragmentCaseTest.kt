@@ -4,9 +4,9 @@ import com.google.gson.Gson
 import id.apwdevs.app.core.utils.DomainToEntityMapper
 import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.favlocal.FavoriteMovieSource
-import id.apwdevs.app.data.source.local.room.dbcase.favlocal.FavoriteTvShowSource
-import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingCaseMovieDb
+import id.apwdevs.app.data.source.local.database.favlocal.FavoriteMovieSource
+import id.apwdevs.app.data.source.local.database.favlocal.FavoriteTvShowSource
+import id.apwdevs.app.data.source.local.database.paging.PagingCaseMovieDb
 import id.apwdevs.app.data.source.remote.response.GenreResponse
 import id.apwdevs.app.data.source.remote.response.moviedetail.MovieDetailResponse
 import id.apwdevs.app.data.source.remote.response.tvdetail.TvDetailResponse

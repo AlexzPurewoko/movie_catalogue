@@ -1,4 +1,4 @@
-package id.apwdevs.app.data.source.local.room.dbcase.paging
+package id.apwdevs.app.data.source.local.database.paging
 
 import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity

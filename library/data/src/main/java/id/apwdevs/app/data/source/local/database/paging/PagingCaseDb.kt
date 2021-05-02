@@ -1,4 +1,4 @@
-package id.apwdevs.app.data.source.local.room.dbcase.paging
+package id.apwdevs.app.data.source.local.database.paging
 
 import androidx.paging.PagingSource
 import androidx.sqlite.db.SupportSQLiteQuery

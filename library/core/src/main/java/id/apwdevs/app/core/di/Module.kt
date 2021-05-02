@@ -12,8 +12,6 @@ val useCaseModule = module {
     factory<FavUseCase> { FavInteractor(get(), get()) }
     factory<DiscoverPopularUseCase> { DiscoverPopularInteractor(get(), get()) }
 
-    // deprecated! will be deleted
-    factory<FavoriteUseCase> { FavoriteInteractor(get(), get()) }
 }
 
 val repoModule = module {
@@ -23,7 +21,4 @@ val repoModule = module {
     factory<FavMovieRepository> { FavoriteMovieRepoImpl(get()) }
     factory<FavTvShowRepository> { FavoriteTvShowRepoImpl(get()) }
 
-    // deprecated implementation will be deleted later.
-    factory<FavoriteMovieRepository> { FavMovieRepositoryImpl(get()) }
-    factory<FavoriteTvShowRepository> { FavTvShowRepositoryImpl(get()) }
 }
