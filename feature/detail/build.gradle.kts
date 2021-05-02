@@ -22,20 +22,11 @@ android {
         versionCode = Apps.versionCode
         versionName = Apps.versionName
 
-        testInstrumentationRunner = "id.apwdevs.app.movieshow.runner.AppTestRunner"
+        testInstrumentationRunner = "id.apwdevs.app.test.androdtest.runner.AppTestRunner"
         testApplicationId = applicationId
     }
 
     buildFeatures.viewBinding = true
-
-    sourceSets {
-//        ["${project('match the module name that is currently in the dependencies').projectDir}/src/androidTest/java"]
-//        getByName("androidTest").apply {
-//            val src = java.srcDirs.toMutableSet()
-//            src.add(File(project(":app").projectDir, "src/androidTest/java"))
-//            java.setSrcDirs(src)
-//        }
-    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -62,27 +53,4 @@ dependencies {
         isTransitive = false
     }
     androidTestImplementation(project(":test:androidtestlibs"))
-
-    testImplementation(TestLibs.junit)
-
-    listOf(
-        AndroidTestLibs.navigation,
-        AndroidTestLibs.androidxJunit,
-        AndroidTestLibs.androidxAnnotatation,
-        TestLibs.mockWebServer
-
-    ).forEach { androidTestImplementation(it) }
-
-
-
-//    debugImplementation(AndroidTestLibs.fragment)
-//    androidTestImplementation(Libs.coreKtx)
-    androidTestImplementation(project(":app"))
-    debugImplementation(project(":app"))
-//    androidTestImplementation(TestLibs.junit)
-////    androidTestImplementation(project(":res"))
-//    androidTestImplementation("androidx.test.ext:junit:1.1.2")
-//    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
-//    androidTestImplementation("androidx.test:rules:1.3.0")
-//    androidTestImplementation ("androidx.annotation:annotation:1.1.0")
 }

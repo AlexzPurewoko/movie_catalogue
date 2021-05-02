@@ -8,7 +8,10 @@ import id.apwdevs.app.core.domain.model.DetailTvShow
 import id.apwdevs.app.core.domain.model.detail.EpisodeToAir
 import id.apwdevs.app.core.domain.usecase.DetailUseCase
 import id.apwdevs.app.core.domain.usecase.FavoriteUseCase
+import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.detail.data.EpisodeItemData
+import id.apwdevs.app.detail.data.MovieDetail
+import id.apwdevs.app.detail.data.TvShowDetail
 import id.apwdevs.app.movieshow.MainApplication
 import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.res.util.zeroIfNull
@@ -18,6 +21,8 @@ import kotlinx.coroutines.launch
 import kotlin.math.floor
 
 // these only from
+
+@Deprecated("will use new implementation")
 class DetailViewModel(
     application: Application,
     private val detailUseCase: DetailUseCase,
@@ -81,17 +86,24 @@ class DetailViewModel(
 
             try {
                 data.collect {
-                    itemData = it
-//                    val generated = MovieDetail(
-//                            originalLanguage = it.originalLanguage, title = it.title, backdropPath = it.backdropPath,
-//                            overview = it.overview, runTime = composeRuntime(it.runtime), posterPath = it.posterPath,
-//                            releaseDate = it.releaseDate, rating = it.voteAverage.toFloat(), tagline = it.tagline,
-//                            status = it.status, genres = it.genres
-//                    )
-//
-//                    _data.postValue(Resource.Success(generated))
+                    itemData = it as DetailMovie
+                    when(itemData){
+                        is State.Error -> {}
+                        is State.Loading -> {}
+                        is State.Success<*> -> {}
+                    }
+                    val generated = MovieDetail(
+                            originalLanguage = it.originalLanguage, title = it.title, backdropPath = it.backdropPath,
+                            overview = it.overview, runTime = composeRuntime(it.runtime), posterPath = it.posterPath,
+                            releaseDate = it.releaseDate, rating = it.voteAverage.toFloat(), tagline = it.tagline,
+                            status = it.status, genres = it.genres
+                    )
+
+                    _data.postValue(Resource.Success(generated))
                 }
             } catch (e: Throwable) {
+                Log.e("ERROR", "ERror", e)
+                e.printStackTrace()
                 _data.postValue(Resource.Failed(e))
             }
 
@@ -118,16 +130,16 @@ class DetailViewModel(
 
             try {
                 data.collect {
-                    itemData = it
-//                    val generated = TvShowDetail(
-//                            originalLanguage = it.originalLanguage, title = it.name, backdropPath = it.backdropPath,
-//                            overview = it.overview, posterPath = it.posterPath, firstAirDate = it.firstAirDate,
-//                            rating = it.voteAverage.toFloat(), tagline = it.tagline, status = it.status,
-//                            genres = it.genres, lastEpisodeToAir = composeEpisode(it.lastEpisodeToAir), nextEpisodeToAir = it.nextEpisodeToAir?.let { n -> composeEpisode(n) }?: null,
-//                            seasons = it.seasons, type = it.type
-//                    )
-//
-//                    _data.value = Resource.Success(generated)
+                    itemData = it as DetailTvShow
+                    val generated = TvShowDetail(
+                            originalLanguage = it.originalLanguage, title = it.name, backdropPath = it.backdropPath,
+                            overview = it.overview, posterPath = it.posterPath, firstAirDate = it.firstAirDate,
+                            rating = it.voteAverage.toFloat(), tagline = it.tagline, status = it.status,
+                            genres = it.genres, lastEpisodeToAir = composeEpisode(it.lastEpisodeToAir), nextEpisodeToAir = it.nextEpisodeToAir?.let { n -> composeEpisode(n) }?: null,
+                            seasons = it.seasons, type = it.type
+                    )
+
+                    _data.value = Resource.Success(generated)
                 }
             } catch (e: Throwable) {
                 _data.value = Resource.Failed(e)
@@ -167,3 +179,4 @@ class DetailViewModel(
 
     }
 }
+
