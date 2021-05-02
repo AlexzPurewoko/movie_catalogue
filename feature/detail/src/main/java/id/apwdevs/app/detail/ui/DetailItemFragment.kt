@@ -9,6 +9,7 @@ import id.apwdevs.app.detail.di.detailModule
 import id.apwdevs.app.detail.ui.helper.DetailItemHelper
 import id.apwdevs.app.detail.ui.helper.DetailMovieHelper
 import id.apwdevs.app.detail.ui.helper.DetailTvShowHelper
+import id.apwdevs.app.detail.viewmodel.DetailMovieShowVM
 import id.apwdevs.app.detail.viewmodel.DetailViewModel
 import id.apwdevs.app.res.BaseFeatureFragment
 import id.apwdevs.app.res.util.PageType
@@ -22,7 +23,7 @@ class DetailItemFragment : BaseFeatureFragment() {
     }
 
 
-    private val detailViewModel: DetailViewModel by viewModel()
+    private val detailViewModel: DetailMovieShowVM by viewModel()
     lateinit var detailHelper: DetailItemHelper
 
     override val koinModules: List<Module>
@@ -58,7 +59,6 @@ class DetailItemFragment : BaseFeatureFragment() {
         detailViewModel.itemId = args.itemId
 
         detailViewModel.data.observe(viewLifecycleOwner, detailHelper::bindObservedData)
-        detailViewModel.favorited.observe(viewLifecycleOwner, detailHelper::bindFavoriteObserver)
         detailViewModel.loadData()
         detailHelper.handleClickFavorite(detailViewModel::toggleFavorite)
 
