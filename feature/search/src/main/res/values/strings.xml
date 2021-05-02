@@ -3,4 +3,5 @@
     <string name="display_empty">Empty Results</string>
     <string name="display_recommendation">Let\'s Search Whatever you Like</string>
     <string name="display_error">Error while Searching</string>
+    <string name="search_loading">Searching</string>
 </resources>

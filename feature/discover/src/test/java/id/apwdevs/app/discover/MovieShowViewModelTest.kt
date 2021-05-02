@@ -52,7 +52,8 @@ class MovieShowViewModelTest {
     @Before
     fun startup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        viewModel = MovieShowViewModel(discoverUseCase)
+        val app = mockk<MainApplication>(relaxed = true)
+        viewModel = MovieShowViewModel(app, discoverUseCase)
         captureSlot = slot()
 
         adapter = RecyclerTestAdapter()

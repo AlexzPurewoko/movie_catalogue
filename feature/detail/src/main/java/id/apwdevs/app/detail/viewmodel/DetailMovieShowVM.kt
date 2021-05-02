@@ -5,20 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.DetailTvShow
-import id.apwdevs.app.core.domain.model.detail.EpisodeToAir
 import id.apwdevs.app.core.domain.usecase.DetailUseCase
 import id.apwdevs.app.core.domain.usecase.FavUseCase
 import id.apwdevs.app.core.utils.DataType
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.detail.data.EpisodeItemData
 import id.apwdevs.app.detail.data.MovieDetail
 import id.apwdevs.app.detail.data.TvShowDetail
+import id.apwdevs.app.detail.util.mapToItem
 import id.apwdevs.app.movieshow.base.BaseViewModel
 import id.apwdevs.app.res.util.PageType
-import id.apwdevs.app.res.util.zeroIfNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import kotlin.math.floor
 
 class DetailMovieShowVM(
     application: Application,
@@ -98,9 +95,7 @@ class DetailMovieShowVM(
                         is State.Loading -> {}
                         is State.Success -> {
                             itemData = retData.data
-                            mappedData = retData.data?.let {
-                                MapHelper.fromDomainTvShowIntoTvShowDetail(it)
-                            }
+                            mappedData = retData.data?.mapToItem()
                         }
                     }
                 }
@@ -141,9 +136,7 @@ class DetailMovieShowVM(
                         is State.Loading -> {}
                         is State.Success -> {
                             itemData = retData.data
-                            mappedData = retData.data?.let {
-                                MapHelper.fromDomainMovieIntoMovieDetail(it)
-                            }
+                            mappedData = retData.data?.mapToItem()
                         }
                     }
                 }
@@ -175,44 +168,3 @@ class DetailMovieShowVM(
     }
 }
 
-object MapHelper {
-    fun fromDomainMovieIntoMovieDetail(detailMovie: DetailMovie): MovieDetail {
-        return MovieDetail(
-                originalLanguage = detailMovie.originalLanguage, title = detailMovie.title, backdropPath = detailMovie.backdropPath,
-                overview = detailMovie.overview, runTime = composeRuntime(detailMovie.runtime), posterPath = detailMovie.posterPath,
-                releaseDate = detailMovie.releaseDate, rating = detailMovie.voteAverage.toFloat(), tagline = detailMovie.tagline,
-                status = detailMovie.status, genres = detailMovie.genres
-        )
-    }
-
-    fun fromDomainTvShowIntoTvShowDetail(detailTvShow: DetailTvShow): TvShowDetail {
-        return TvShowDetail(
-                originalLanguage = detailTvShow.originalLanguage, title = detailTvShow.name, backdropPath = detailTvShow.backdropPath,
-                overview = detailTvShow.overview, posterPath = detailTvShow.posterPath, firstAirDate = detailTvShow.firstAirDate,
-                rating = detailTvShow.voteAverage.toFloat(), tagline = detailTvShow.tagline, status = detailTvShow.status,
-                genres = detailTvShow.genres, lastEpisodeToAir = composeEpisode(detailTvShow.lastEpisodeToAir), nextEpisodeToAir = detailTvShow.nextEpisodeToAir?.let { n -> composeEpisode(n) }?: null,
-                seasons = detailTvShow.seasons, type = detailTvShow.type
-        )
-    }
-
-    private fun composeEpisode(lastEpisodeToAir: EpisodeToAir): EpisodeItemData {
-        return EpisodeItemData(
-                lastEpisodeToAir.stillPath,
-                lastEpisodeToAir.name,
-                lastEpisodeToAir.voteAverage,
-                lastEpisodeToAir.airDate,
-                lastEpisodeToAir.seasonNumber
-        )
-    }
-
-    private fun composeRuntime(runtime: Int?): String {
-        val runTime = runtime.zeroIfNull
-        return if (runTime == 0) "0h 0m"
-        else {
-            val hours = floor(runTime.toDouble() / 60).toInt()
-            val minutes = runTime % 60
-
-            "${hours}h ${minutes}m"
-        }
-    }
-}

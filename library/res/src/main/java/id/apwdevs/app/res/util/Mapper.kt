@@ -4,26 +4,26 @@ import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.model.TvShow
 import id.apwdevs.app.res.data.MovieShowItem
 
-object Mapper {
-    fun mapDomainMovieToMovieShowItem(movie: Movies) =
-        MovieShowItem(
-            movie.movieId,
-            movie.title,
-            movie.overview,
-            movie.backdropPath,
-            movie.genres,
-            movie.voteCount,
-            movie.voteAverage
-        )
+@JvmName("mapMovieDomainToMovieShowItem")
+fun Movies.mapToItem() =
+    MovieShowItem(
+       movieId,
+       title,
+       overview,
+       backdropPath,
+       genres,
+       voteCount,
+       voteAverage
+    )
 
-    fun mapDomainTvShowToMovieShowItem(tvshow: TvShow) =
-        MovieShowItem(
-            tvshow.tvId,
-            tvshow.name,
-            tvshow.overview,
-            tvshow.backdropPath,
-            tvshow.genres,
-            tvshow.voteCount,
-            tvshow.voteAverage
-        )
-}
+@JvmName("mapTvShowDomainToMovieShowItem")
+fun TvShow.mapToItem() =
+    MovieShowItem(
+        tvId,
+        name,
+        overview,
+        backdropPath,
+        genres,
+        voteCount,
+        voteAverage
+    )

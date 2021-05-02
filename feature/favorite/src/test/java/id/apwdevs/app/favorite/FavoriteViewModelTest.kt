@@ -4,13 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import id.apwdevs.app.core.domain.usecase.FavUseCase
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.favorite.util.Mapper
 import id.apwdevs.app.favorite.viewmodel.FavoriteViewModel
 import id.apwdevs.app.libs.data.FakeDomain
 import id.apwdevs.app.libs.rule.TestCoroutineRule
 import id.apwdevs.app.libs.util.runTest
 import id.apwdevs.app.movieshow.MainApplication
 import id.apwdevs.app.res.data.MovieShowItem
+import id.apwdevs.app.res.util.mapToItem
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -64,7 +64,7 @@ class FavoriteViewModelTest {
         val fakeData = FakeDomain.generateListMovieDomains()
         val state = State.Success(fakeData)
         val mappedState = state.copyTo {
-            it.map { movie -> Mapper.mapDomainMovieToMovieShowItem(movie) }
+            it.map { movie -> movie.mapToItem() }
         }
         val fakeFlowState = flow {
             emit(state)
@@ -119,7 +119,7 @@ class FavoriteViewModelTest {
         val fakeData = FakeDomain.generateListTvDomains()
         val state = State.Success(fakeData)
         val mappedState = state.copyTo {
-            it.map { tvShow -> Mapper.mapDomainTvShowToMovieShowItem(tvShow) }
+            it.map { tvShow -> tvShow.mapToItem() }
         }
         val fakeFlowState = flow {
             emit(state)

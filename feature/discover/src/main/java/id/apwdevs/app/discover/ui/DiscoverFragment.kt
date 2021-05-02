@@ -16,11 +16,10 @@ import id.apwdevs.app.movieshow.R
 import id.apwdevs.app.movieshow.ui.main.MainFragmentDirections
 import id.apwdevs.app.res.BaseFeatureFragment
 import id.apwdevs.app.res.data.MovieShowItem
+import id.apwdevs.app.res.util.OnPageSelectedChangeCallback
 import id.apwdevs.app.res.util.PageType
 import org.koin.core.module.Module
-import java.lang.ref.WeakReference
 
-typealias SelectedFunc = (Int) -> Unit
 class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
 
     private lateinit var binding: FragmentDiscoverBinding
@@ -97,17 +96,5 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
             R.string.movies,
             R.string.tvshows
         )
-    }
-
-    private class OnPageSelectedChangeCallback(
-        onSelected: SelectedFunc
-    ): ViewPager2.OnPageChangeCallback() {
-
-        private val weakReference: WeakReference<SelectedFunc> = WeakReference(onSelected)
-
-        override fun onPageSelected(position: Int) {
-            weakReference.get()?.invoke(position)
-        }
-
     }
 }

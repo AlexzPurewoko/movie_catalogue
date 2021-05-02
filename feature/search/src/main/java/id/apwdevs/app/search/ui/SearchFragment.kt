@@ -6,26 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import id.apwdevs.app.detail.ui.DetailItemFragmentArgs
 import id.apwdevs.app.movieshow.R.id.detailFragment
-import id.apwdevs.app.res.BaseFeatureFragment
+import id.apwdevs.app.res.fragment.FragmentWithState
+import id.apwdevs.app.res.fragment.viewmodel.StateViewModel
 import id.apwdevs.app.res.util.PageType
+import id.apwdevs.app.search.R
 import id.apwdevs.app.search.adapter.SearchMovieShowAdapter
 import id.apwdevs.app.search.databinding.FragmentSearchBinding
 import id.apwdevs.app.search.di.searchModule
 import id.apwdevs.app.search.model.SearchItem
+import kotlinx.coroutines.FlowPreview
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.module.Module
 import ru.ldralighieri.corbind.widget.checkedChanges
 import ru.ldralighieri.corbind.widget.itemSelections
 import ru.ldralighieri.corbind.widget.textChanges
 
-class SearchFragment : BaseFeatureFragment() {
+@FlowPreview
+class SearchFragment : FragmentWithState() {
     override val koinModules: List<Module>
         get() = listOf(searchModule)
 
@@ -35,8 +37,6 @@ class SearchFragment : BaseFeatureFragment() {
     }
 
     private val searchVewModel: SearchVewModel by viewModel()
-    internal val stateViewModel: StateViewModel by viewModels()
-    private var referenceStateFragment: StateDisplayFragment? = null
 
     private var searchData: SearchVewModel.SearchData? = null
     private var hasFirstInitialization: Boolean = false
@@ -68,10 +68,6 @@ class SearchFragment : BaseFeatureFragment() {
             binding.isAdult.checkedChanges(),
             binding.spinner.itemSelections()
         ).observe(viewLifecycleOwner, this::listenInteractions)
-        stateViewModel.callbackFromStateDisplay.observe(
-            viewLifecycleOwner,
-            ::stateFragmentCallbackObserver
-        )
     }
 
     private fun initAdapter() {
@@ -97,13 +93,13 @@ class SearchFragment : BaseFeatureFragment() {
 
     private fun callDisplay(type: StateViewModel.DisplayType) {
         toggleStateDisplayFragment(true)
-        stateViewModel.callStateFragmentToDisplaySomething(type)
+        callStateFragmentToDisplaySomething(type)
     }
 
     private fun stateFragmentCallbackObserver(parameters: List<Any>) {
         if (parameters[0] == StateViewModel.StateCallType.RETRY)
             searchData?.let {
-                searchVewModel.search(it)
+                searchVewModel.search(it).observe(viewLifecycleOwner, ::searchResults)
             }
     }
 
@@ -114,11 +110,7 @@ class SearchFragment : BaseFeatureFragment() {
             CONTENTS.map { getString(it) })
         binding.recyclerView.adapter = viewPagerAdapter
 
-        referenceStateFragment = StateDisplayFragment()
-        childFragmentManager.commit {
-            add(binding.frameStatusContainer.id, StateDisplayFragment())
-            referenceStateFragment?.let { show(it) }
-        }
+        super.applyFragmentIntoView(binding.frameStatusContainer.id)
 
         searchData?.let {
             binding.spinner.setSelection(
@@ -131,17 +123,12 @@ class SearchFragment : BaseFeatureFragment() {
             binding.isAdult.isChecked = it.includeAdult
             binding.include.textSearch.setText(it.searchQuery)
         }
-
-        stateViewModel.callStateFragmentToDisplaySomething(StateViewModel.DisplayType.RECOMMENDATION)
+        toggleStateDisplayFragment(true)
+        callStateFragmentToDisplaySomething(StateViewModel.DisplayType.RECOMMENDATION)
     }
 
-    private fun toggleStateDisplayFragment(displayed: Boolean) {
-        childFragmentManager.commit {
-            referenceStateFragment?.let {
-                if (displayed) show(it)
-                else hide(it)
-            }
-        }
+    override fun toggleStateDisplayFragment(displayed: Boolean) {
+        super.toggleStateDisplayFragment(displayed)
         binding.recyclerView.visibility = if (displayed) View.GONE else View.VISIBLE
         binding.frameStatusContainer.visibility = if (displayed) View.VISIBLE else View.INVISIBLE
     }
@@ -173,6 +160,17 @@ class SearchFragment : BaseFeatureFragment() {
                 .observe(viewLifecycleOwner, ::searchResults)
             searchData = composeData
         }
+    }
+
+    override fun mapOfTextDisplay(): HashMap<StateViewModel.DisplayType, Int> = hashMapOf(
+        StateViewModel.DisplayType.RECOMMENDATION to R.string.display_recommendation,
+        StateViewModel.DisplayType.ERROR to R.string.display_error,
+        StateViewModel.DisplayType.LOADING to R.string.search_loading,
+        StateViewModel.DisplayType.DATA_EMPTY to R.string.display_empty
+    )
+
+    override fun provideCallbackFromStateDisplay(parameters: List<Any>) {
+        stateFragmentCallbackObserver(parameters)
     }
 
     private fun searchResults(data: PagingData<SearchItem>) {

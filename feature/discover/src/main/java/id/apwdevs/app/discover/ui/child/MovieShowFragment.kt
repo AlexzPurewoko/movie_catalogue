@@ -74,12 +74,11 @@ class MovieShowFragment : FragmentWithState() {
                     Log.e("MEDIATOR ERROR", "ERROR MESSAGE", o?.error)
                     callDisplay(StateViewModel.DisplayType.ERROR)
                 }
-                state.refresh is LoadState.Loading && state.mediator?.refresh is LoadState.Loading -> {
+                state.refresh is LoadState.Loading && state.mediator?.refresh is LoadState.Loading ->
                     callDisplay(StateViewModel.DisplayType.LOADING)
-                }
-                else ->{
+
+                else ->
                     toggleStateDisplayFragment(false)
-                }
 
             }
 

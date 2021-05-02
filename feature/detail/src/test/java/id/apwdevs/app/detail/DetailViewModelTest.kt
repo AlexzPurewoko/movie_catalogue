@@ -8,8 +8,8 @@ import id.apwdevs.app.core.domain.usecase.DetailUseCase
 import id.apwdevs.app.core.domain.usecase.FavUseCase
 import id.apwdevs.app.core.utils.DataType
 import id.apwdevs.app.core.utils.State
+import id.apwdevs.app.detail.util.mapToItem
 import id.apwdevs.app.detail.viewmodel.DetailMovieShowVM
-import id.apwdevs.app.detail.viewmodel.MapHelper
 import id.apwdevs.app.libs.data.FakeDomain
 import id.apwdevs.app.libs.rule.TestCoroutineRule
 import id.apwdevs.app.movieshow.MainApplication
@@ -63,7 +63,7 @@ class DetailViewModelTest {
         val fakeData = FakeDomain.generateDetailMovieDomain(id)
         val expectedActual = DetailMovieShowVM.DataPostType(
             DetailMovieShowVM.PostType.DATA,
-            MapHelper.fromDomainMovieIntoMovieDetail(fakeData)
+            fakeData.mapToItem()
         )
         coEvery { favoriteUseCase.checkIsInFavorite(id, dataType) } returns false
         every { detailUseCase.getDetailMovie(id) } returns flow {
@@ -96,7 +96,7 @@ class DetailViewModelTest {
         val fakeData = FakeDomain.generateDetailMovieDomain(id)
         val expectedActual = DetailMovieShowVM.DataPostType(
                 DetailMovieShowVM.PostType.DATA,
-                MapHelper.fromDomainMovieIntoMovieDetail(fakeData)
+                fakeData.mapToItem()
         )
         coEvery { favoriteUseCase.checkIsInFavorite(id, dataType) } returns true
         every { favoriteUseCase.getFavoriteMovie(id) } returns flow {
@@ -160,7 +160,7 @@ class DetailViewModelTest {
         val fakeData = FakeDomain.generateDetailTvDomain(id)
         val expectedActual = DetailMovieShowVM.DataPostType(
                 DetailMovieShowVM.PostType.DATA,
-                MapHelper.fromDomainTvShowIntoTvShowDetail(fakeData)
+                fakeData.mapToItem()
         )
         coEvery { favoriteUseCase.checkIsInFavorite(id, dataType) } returns false
         every { detailUseCase.getDetailTvShow(id) } returns flow {
@@ -193,7 +193,7 @@ class DetailViewModelTest {
         val fakeData = FakeDomain.generateDetailTvDomain(id)
         val expectedActual = DetailMovieShowVM.DataPostType(
                 DetailMovieShowVM.PostType.DATA,
-                MapHelper.fromDomainTvShowIntoTvShowDetail(fakeData)
+                fakeData.mapToItem()
         )
         coEvery { favoriteUseCase.checkIsInFavorite(id, dataType) } returns true
         every { favoriteUseCase.getFavoriteTvShow(id) } returns flow {
