@@ -134,11 +134,13 @@ class PopularTvShowRemoteMediator(
         if (!hasBeenUpdateGenre) {
             val retrieveFromApi = service.getTvShowGenre(Config.TOKEN)
             val genres = retrieveFromApi.genres
-            val mappedGenres = genres.map {
+            val mappedGenres = genres?.map {
                 Genres(it.id, it.name)
             }
-            caseDb.insertGenres(mappedGenres)
-            hasBeenUpdateGenre = true
+            mappedGenres?.let {
+                caseDb.insertGenres(it)
+                hasBeenUpdateGenre = true
+            }
         }
     }
 

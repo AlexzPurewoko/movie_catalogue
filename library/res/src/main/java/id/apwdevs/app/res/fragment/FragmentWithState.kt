@@ -32,7 +32,7 @@ abstract class FragmentWithState : BaseFeatureFragment() {
         }
     }
 
-    protected fun toggleStateDisplayFragment(displayed: Boolean) {
+    protected open fun toggleStateDisplayFragment(displayed: Boolean) {
         childFragmentManager.commit {
             referenceStateFragment?.let {
                 if (displayed) show(it)

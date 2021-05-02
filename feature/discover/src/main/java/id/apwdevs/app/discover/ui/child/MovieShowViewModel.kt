@@ -1,19 +1,20 @@
 package id.apwdevs.app.discover.ui.child
 
+import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
 import id.apwdevs.app.core.domain.usecase.DiscoverPopularUseCase
+import id.apwdevs.app.movieshow.base.BaseViewModel
 import id.apwdevs.app.res.data.MovieShowItem
 import id.apwdevs.app.res.util.PageType
 import kotlinx.coroutines.flow.map
 
 class MovieShowViewModel(
+    application: Application,
     private val popularUseCase: DiscoverPopularUseCase
-) : ViewModel() {
+) : BaseViewModel(application) {
 
 
     fun discoverPopular(type: PageType): LiveData<PagingData<MovieShowItem>> =
@@ -37,7 +38,7 @@ class MovieShowViewModel(
                         it.voteAverage
                     )
                 }
-            }.asLiveData(viewModelScope.coroutineContext)
+            }.toLiveData(viewModelScope.coroutineContext)
     }
 
     private fun displayPopularTvShow(): LiveData<PagingData<MovieShowItem>> {
@@ -54,6 +55,6 @@ class MovieShowViewModel(
                         it.voteAverage
                     )
                 }
-            }.asLiveData(viewModelScope.coroutineContext)
+            }.toLiveData(viewModelScope.coroutineContext)
     }
 }

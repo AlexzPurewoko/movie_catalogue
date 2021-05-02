@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="discover_data_empty">Empty Data</string>
+    <string name="discover_data_error">Error while retrieve data</string>
+    <string name="discover_data_loading">Loading</string>
+</resources>
