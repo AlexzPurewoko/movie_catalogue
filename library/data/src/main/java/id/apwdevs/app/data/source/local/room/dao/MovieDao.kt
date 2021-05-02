@@ -5,6 +5,7 @@ import androidx.room.*
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 
 @Dao
+@Suppress("unused")
 interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovie(movie: List<MovieEntity>)

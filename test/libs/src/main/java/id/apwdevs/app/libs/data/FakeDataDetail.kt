@@ -1,12 +1,10 @@
 package id.apwdevs.app.libs.data
 
 import id.apwdevs.app.data.source.local.entity.Genres
-import id.apwdevs.app.data.source.remote.response.GenreResponse
 import id.apwdevs.app.data.source.remote.response.MovieItemResponse
 import id.apwdevs.app.data.source.remote.response.PageResponse
 import id.apwdevs.app.data.source.remote.response.TvShowItemResponse
 import id.apwdevs.app.data.source.remote.response.moviedetail.MovieDetailResponse
-import id.apwdevs.app.data.source.remote.response.parts.Genre
 import id.apwdevs.app.data.source.remote.response.tvdetail.TvDetailResponse
 import id.apwdevs.app.data.source.remote.response.tvdetail.parts.EpisodesToAir
 
@@ -20,14 +18,14 @@ object FakeDataDetail {
         )
     }
 
-    fun generateMovieItemResponse(id: Int): MovieItemResponse {
+    private fun generateMovieItemResponse(id: Int): MovieItemResponse {
         return MovieItemResponse(
                 "", "", "", false, "", listOf(1, 2), "", "",
                 "", 0.0, 0.0, id, false, 0
         )
     }
 
-    fun generateMovieResponse(query: String): PageResponse<MovieItemResponse> {
+    fun generateMovieResponse(): PageResponse<MovieItemResponse> {
         val mList = mutableListOf<MovieItemResponse>()
         for (i in 1..5) {
             mList.add(generateMovieItemResponse(i))
@@ -44,15 +42,8 @@ object FakeDataDetail {
         )
     }
 
-    fun generateGenreResponse(): GenreResponse {
-        return GenreResponse(listOf(
-                Genre(id = 1, name = "a"),
-                Genre(id = 1, name = "b")
-        ))
-    }
-
     // tv
-    fun generateTvResponse(s: String): PageResponse<TvShowItemResponse> {
+    fun generateTvResponse(): PageResponse<TvShowItemResponse> {
         val mList = mutableListOf<TvShowItemResponse>()
         for (i in 1..5) {
             mList.add(generateTvItemResponse(i))
@@ -62,14 +53,14 @@ object FakeDataDetail {
         )
     }
 
-    fun generateTvItemResponse(id: Int): TvShowItemResponse {
+    private fun generateTvItemResponse(id: Int): TvShowItemResponse {
         return TvShowItemResponse(
                 "", "", "", listOf(1, 2), "", listOf(), "", "",
                 0.0, 0.0, "", id, 0,
         )
     }
 
-    fun generateEpisodesToAir() =
+    private fun generateEpisodesToAir() =
             EpisodesToAir("", "", "", 0, 0.0, "", 0,
                     0, null, 0)
 

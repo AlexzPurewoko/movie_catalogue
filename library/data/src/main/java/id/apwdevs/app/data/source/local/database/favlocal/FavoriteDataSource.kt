@@ -8,9 +8,6 @@ abstract class FavoriteDataSource<Entity, DetailEntity>(protected val appDatabas
     abstract suspend fun getFavorite(id: Int): DetailEntity
     abstract suspend fun isFavorite(id: Int): Boolean
 
-    @Deprecated("will be deleted")
-    abstract suspend fun toggleFavorite(data: DetailEntity, favorited: Boolean)
-
     abstract suspend fun save(data: DetailEntity)
 
     abstract suspend fun deleteData(id: Int)

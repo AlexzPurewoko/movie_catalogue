@@ -1,11 +1,8 @@
 package id.apwdevs.app.core.repo
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.cachedIn
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.repository.MovieRepository
@@ -13,7 +10,6 @@ import id.apwdevs.app.core.repository.MovieRepoImpl
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.core.utils.mapToDomain
 import id.apwdevs.app.data.source.local.database.paging.PagingCaseMovieDb
-import id.apwdevs.app.data.source.local.room.AppDatabase
 import id.apwdevs.app.data.source.remote.network.MoviesNetwork
 import id.apwdevs.app.libs.data.FakeDataDetail
 import id.apwdevs.app.libs.rule.TestCoroutineRule
@@ -48,19 +44,10 @@ class MovieRepositoryTest {
     @MockK
     lateinit var pagingCaseDb: PagingCaseMovieDb
 
-    lateinit var appDatabase: AppDatabase
-
-    private val context: Context by lazy {
-        ApplicationProvider.getApplicationContext()
-    }
-
-
     private lateinit var movieRepository: MovieRepository
 
     @Before
     fun setup() {
-        appDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).allowMainThreadQueries().build()
-//        pagingCaseDb = spyk(PagingMovieCaseDbInteractor(appDatabase))
         MockKAnnotations.init(this)
         movieRepository = MovieRepoImpl(service, pagingCaseDb)
     }
@@ -103,7 +90,7 @@ class MovieRepositoryTest {
     @Test
     @ExperimentalCoroutinesApi
     fun searchMovies_should_return_data_when_searching_isSuccess() {
-        val movieResponse = FakeDataDetail.generateMovieResponse("a")
+        val movieResponse = FakeDataDetail.generateMovieResponse()
         coroutineTestRule.runBlockingTest {
             coEvery { service.searchMovies("a", false, 1) } returns movieResponse
             coEvery { service.searchMovies("a", false, 2) } returns movieResponse

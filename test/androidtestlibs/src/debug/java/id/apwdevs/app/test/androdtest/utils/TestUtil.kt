@@ -98,12 +98,3 @@ class ViewTagAssertion(
         Assert.assertEquals(view!!.tag, tagValue)
     }
 }
-
-class ViewAssertionRunner(
-    private val runner: (View?) -> Unit
-) : ViewAssertion {
-    override fun check(view: View?, noViewFoundException: NoMatchingViewException?) {
-        noViewFoundException?.let { throw noViewFoundException }
-        runner(view)
-    }
-}

@@ -38,8 +38,4 @@ data class CreatedByEntity (
     @ColumnInfo(name = "profile_path")
     val profilePath: String?,
 
-){
-
-
-
-}
+)

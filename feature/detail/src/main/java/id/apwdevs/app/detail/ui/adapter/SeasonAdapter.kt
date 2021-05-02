@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import id.apwdevs.app.core.domain.model.detail.TvShowSeason
+import id.apwdevs.app.detail.R
 import id.apwdevs.app.detail.databinding.ItemSeasonsBinding
 import id.apwdevs.app.res.util.getImageURL
 
@@ -32,7 +33,7 @@ class SeasonViewHolder(
                 .load(data.posterPath.getImageURL("w154"))
                 .into(seasonImage)
             seasonName.text = data.name
-            episodeCount.text = "${data.episodeCount} Episodes"
+            episodeCount.text = binding.root.context.getString(R.string.episode_count, data.episodeCount)
             seasonDate.text = data.airDate
         }
     }

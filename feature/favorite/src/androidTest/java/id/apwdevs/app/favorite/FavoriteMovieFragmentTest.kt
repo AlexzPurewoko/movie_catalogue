@@ -70,7 +70,7 @@ class FavoriteMovieFragmentTest: FavoriteFragmentCaseTest() {
             prepopulateDataInMemoryDatabase(PageType.MOVIES)
 
             val fg = launchFragment()
-            val ids = id.apwdevs.app.movieshow.R.navigation.main_nav
+            val ids = R.navigation.main_nav
             val navController = TestNavHostController(context)
 
             launch(Dispatchers.Main) {

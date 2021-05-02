@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+<menu
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:title="Search"
+        android:title="@string/tab_search"
         android:id="@+id/search_tab"
         android:icon="@drawable/ic_baseline_search_24"/>
 
     <item
-        android:title="Discover"
+        android:title="@string/tab_discover"
         android:id="@+id/discover_tab"
         android:icon="@drawable/ic_baseline_stars_24"/>
 
     <item
-        android:title="Favorite"
+        android:title="@string/tab_favorite"
         android:id="@+id/favorite_tab"
         android:icon="@drawable/ic_baseline_favorite_24"/>
 

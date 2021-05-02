@@ -2,6 +2,7 @@ package id.apwdevs.app.data.source.local.entity.converters
 
 import androidx.room.TypeConverter
 
+@Suppress("unused")
 class GenreIdsTypeConverter {
     @TypeConverter
     fun fromGenresToString(genres: GenreIdData) : String {

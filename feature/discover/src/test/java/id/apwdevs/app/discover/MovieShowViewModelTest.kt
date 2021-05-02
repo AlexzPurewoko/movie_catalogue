@@ -43,8 +43,6 @@ class MovieShowViewModelTest {
 
     private lateinit var captureSlot: CapturingSlot<PagingData<MovieShowItem>>
 
-    private val application = MainApplication()
-
     private lateinit var viewModel: MovieShowViewModel
 
     private lateinit var adapter: RecyclerTestAdapter<MovieShowItem>

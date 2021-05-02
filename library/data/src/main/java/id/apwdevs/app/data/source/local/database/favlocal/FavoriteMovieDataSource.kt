@@ -21,13 +21,6 @@ class FavoriteMovieDataSource(
         return movieDao.isMovieExists(id)
     }
 
-    override suspend fun toggleFavorite(data: FavDetailMovie, favorited: Boolean) {
-        if (favorited)
-            movieDao.insertFavDetailMovie(data)
-        else
-            movieDao.deleteById(data.detailMovie.id)
-    }
-
     override suspend fun deleteData(id: Int) {
         movieDao.deleteById(id)
     }

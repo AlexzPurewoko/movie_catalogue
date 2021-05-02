@@ -1,14 +1,16 @@
 package id.apwdevs.app.favorite.testcase
 
 import com.google.gson.Gson
-import id.apwdevs.app.core.utils.DomainToEntityMapper
-import id.apwdevs.app.core.utils.RemoteToDomainMapper
+import id.apwdevs.app.core.utils.mapToDomain
+import id.apwdevs.app.core.utils.mapToEntity
 import id.apwdevs.app.data.source.local.database.favlocal.FavoriteMovieSource
 import id.apwdevs.app.data.source.local.database.favlocal.FavoriteTvShowSource
 import id.apwdevs.app.data.source.local.database.paging.PagingCaseMovieDb
+import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.room.AppDatabase
 import id.apwdevs.app.data.source.remote.response.GenreResponse
 import id.apwdevs.app.data.source.remote.response.moviedetail.MovieDetailResponse
+import id.apwdevs.app.data.source.remote.response.parts.Genre
 import id.apwdevs.app.data.source.remote.response.tvdetail.TvDetailResponse
 import id.apwdevs.app.favorite.di.favoriteModule
 import id.apwdevs.app.libs.util.AssetDataJson
@@ -64,15 +66,11 @@ abstract class FavoriteFragmentCaseTest : BaseAndroidTest() {
                 val detailMovieObj = gson.fromJson(detailMovie, MovieDetailResponse::class.java)
 
                 favCaseDb.insertGenres(
-                    DomainToEntityMapper.domainGenreToEntityRoom(
-                        RemoteToDomainMapper.genres(jsonGenreMovies.genres
-                        ))
+                    jsonGenreMovies.genres?.toGenreEntity() ?: listOf()
                 )
 
                 detailCaseMovieDb.save(
-                    DomainToEntityMapper.favDetailMovie(
-                        RemoteToDomainMapper.detailMovie(detailMovieObj)
-                    )
+                    detailMovieObj.mapToDomain().mapToEntity()
                 )
                 detailMovieObj
             }
@@ -85,15 +83,12 @@ abstract class FavoriteFragmentCaseTest : BaseAndroidTest() {
                 val detailTvShowObj = gson.fromJson(detailTvShow, TvDetailResponse::class.java)
 
                 favCaseDb.insertGenres(
-                    DomainToEntityMapper.domainGenreToEntityRoom(
-                        RemoteToDomainMapper.genres(jsonGenreTvShow.genres
-                        ))
+                    jsonGenreTvShow.genres?.toGenreEntity() ?: listOf()
                 )
 
+
                 detailCaseTvShowDb.save(
-                    DomainToEntityMapper.favDetailTvShow(
-                        RemoteToDomainMapper.detailTvShow(detailTvShowObj)
-                    )
+                    detailTvShowObj.mapToDomain().mapToEntity()
                 )
                 detailTvShowObj
             }
@@ -102,6 +97,10 @@ abstract class FavoriteFragmentCaseTest : BaseAndroidTest() {
 
     }
 
+    private fun List<Genre>.toGenreEntity(): List<Genres> {
+        return this.map {
+            Genres(it.id, it.name)
+        }
+    }
+
 }
-
-

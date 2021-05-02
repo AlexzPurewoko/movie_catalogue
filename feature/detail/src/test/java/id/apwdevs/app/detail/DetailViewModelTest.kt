@@ -42,9 +42,6 @@ class DetailViewModelTest {
     lateinit var detailUseCase: DetailUseCase
 
     @MockK
-    lateinit var favoriteObserver: Observer<State<Boolean>>
-
-    @MockK
     lateinit var dataObserver: Observer<State<Any>>
 
     private lateinit var detailViewModel: DetailMovieShowVM
@@ -250,22 +247,42 @@ class DetailViewModelTest {
 
     @Test
     fun `toggleFavorite movie must trigger delete when has been favorited`() {
-        testFavorite(true, false, PageType.MOVIES, DataType.MOVIES)
+        testFavorite(
+            initialIsFavorited = true,
+            resultFavorited = false,
+            pageType = PageType.MOVIES,
+            dataType = DataType.MOVIES
+        )
     }
 
     @Test
     fun `toggleFavorite movie must trigger save when hasn't been favorite`() {
-        testFavorite(false, true, PageType.MOVIES, DataType.MOVIES)
+        testFavorite(
+            initialIsFavorited = false,
+            resultFavorited = true,
+            pageType = PageType.MOVIES,
+            dataType = DataType.MOVIES
+        )
     }
 
     @Test
     fun `toggleFavorite tvshow must trigger delete when has been favorited`() {
-        testFavorite(true, false, PageType.TV_SHOW, DataType.TVSHOW)
+        testFavorite(
+            initialIsFavorited = true,
+            resultFavorited = false,
+            pageType = PageType.TV_SHOW,
+            dataType = DataType.TVSHOW
+        )
     }
 
     @Test
     fun `toggleFavorite tvshow must trigger save when hasn't been favorite`() {
-        testFavorite(false, true, PageType.TV_SHOW, DataType.TVSHOW)
+        testFavorite(
+            initialIsFavorited = false,
+            resultFavorited = true,
+            pageType = PageType.TV_SHOW,
+            dataType = DataType.TVSHOW
+        )
     }
 
     private fun testFavorite(initialIsFavorited: Boolean, resultFavorited: Boolean, pageType: PageType, dataType: DataType) {

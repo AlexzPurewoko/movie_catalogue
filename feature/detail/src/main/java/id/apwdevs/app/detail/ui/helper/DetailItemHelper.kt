@@ -65,7 +65,7 @@ abstract class DetailItemHelper(
     fun bindObservedData(resData: State<DetailMovieShowVM.DataPostType>) {
         val widgetFav = rootBinding.favoriteFab
         when (resData) {
-            is State.Error -> handleOnFailed(resData.error)
+            is State.Error -> handleOnFailed()
             is State.Loading -> {
                 widgetFav.isEnabled = false
                 favoriteMenuItem?.isEnabled = false
@@ -127,7 +127,7 @@ abstract class DetailItemHelper(
         onDestroy()
     }
 
-    private fun handleOnFailed(error: Throwable?) {
+    private fun handleOnFailed() {
         with(rootBinding) {
             favoriteFab.isEnabled = false
             disableScrollState(true)
@@ -152,11 +152,6 @@ abstract class DetailItemHelper(
 
         favoriteMenuItem?.isVisible = scrollRate < 20
 //        if(scrollRate > 20)
-    }
-
-    private fun errorToMessage(error: Throwable?): String {
-        val err = error?.message ?: "Unidentified Error"
-        return rootBinding.root.context.resources.getString(id.apwdevs.app.detail.R.string.display_error)
     }
 
     private fun disableScrollState(disabled: Boolean) {

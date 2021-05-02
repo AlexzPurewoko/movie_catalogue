@@ -12,7 +12,6 @@ import androidx.paging.PagingData
 import id.apwdevs.app.detail.ui.DetailItemFragmentArgs
 import id.apwdevs.app.discover.R
 import id.apwdevs.app.discover.databinding.FragmentMovieShowBinding
-import id.apwdevs.app.discover.ui.FragmentMessenger
 import id.apwdevs.app.res.adapter.ListMovieShowAdapter
 import id.apwdevs.app.res.data.MovieShowItem
 import id.apwdevs.app.res.fragment.FragmentWithState
@@ -20,7 +19,6 @@ import id.apwdevs.app.res.fragment.viewmodel.StateViewModel
 import id.apwdevs.app.res.util.PageType
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.module.Module
-
 import id.apwdevs.app.movieshow.R as BaseR
 
 class MovieShowFragment : FragmentWithState() {
@@ -28,7 +26,6 @@ class MovieShowFragment : FragmentWithState() {
     private val movieShowViewModel: MovieShowViewModel by viewModel()
     private val movieShowAdapter: ListMovieShowAdapter by lazy { ListMovieShowAdapter(this::onItemClicked) }
     private val currentFragmentType: PageType by lazy { requireArguments().getParcelable(SHOWS_TYPE)!! }
-    private val fragmentMessenger: FragmentMessenger by lazy { parentFragment as FragmentMessenger }
 
     private lateinit var binding: FragmentMovieShowBinding
     private var hasFirstInitialization: Boolean = false
@@ -117,7 +114,6 @@ class MovieShowFragment : FragmentWithState() {
     }
 
     private fun onItemClicked(data: MovieShowItem) {
-//        fragmentMessenger.onItemClick(currentFragmentType, data)
         Toast.makeText(requireContext(), "Item Click ${data.id}", Toast.LENGTH_LONG).show()
         currentFragmentType.let {
             val bundle = DetailItemFragmentArgs(it, data.id).toBundle()

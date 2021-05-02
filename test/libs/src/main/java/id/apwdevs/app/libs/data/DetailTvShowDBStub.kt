@@ -1,12 +1,12 @@
 package id.apwdevs.app.libs.data
 
-import id.apwdevs.app.data.db.detail.stub.genres
-import id.apwdevs.app.data.db.detail.stub.productionCompanies
+import id.apwdevs.app.libs.data.stub.genres
+import id.apwdevs.app.libs.data.stub.productionCompanies
 import id.apwdevs.app.data.source.local.entity.detail.tvshow.*
 
 
 object DetailTvShowDBStub {
-    fun composeFavDetailTvShowEntity(id: Int) : FavDetailTvShowEntity {
+    private fun composeFavDetailTvShowEntity(id: Int) : FavDetailTvShowEntity {
         return FavDetailTvShowEntity(
             id, "", 0, "", "", 0.0,
             0, 0, "", "", "", "",

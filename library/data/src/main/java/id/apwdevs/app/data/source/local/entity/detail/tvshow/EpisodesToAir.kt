@@ -59,6 +59,7 @@ data class EpisodesToAir(
                 NEXT_AIR(0x4a)
         }
 
+        @Suppress("unused")
         class AiringTypeConverter {
                 @TypeConverter
                 fun convertIntToAiringType(typeId: Int): AiringType? {

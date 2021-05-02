@@ -4,6 +4,7 @@ import androidx.room.*
 import id.apwdevs.app.data.source.local.entity.Genres
 
 @Dao
+@Suppress("unused")
 interface GenreDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGenres(genres: List<Genres>)

@@ -9,8 +9,8 @@ plugins {
 }
 
 android {
-    compileSdkVersion(modules.Apps.compileSdk)
-    buildToolsVersion(modules.Apps.buildToolsVersion)
+    compileSdkVersion(Apps.compileSdk)
+    buildToolsVersion(Apps.buildToolsVersion)
 
     defaultConfig {
         applicationId = "id.apwdevs.app.search"

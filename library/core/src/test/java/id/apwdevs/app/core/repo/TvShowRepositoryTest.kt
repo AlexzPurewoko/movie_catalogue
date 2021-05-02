@@ -45,9 +45,9 @@ class TvShowRepositoryTest {
     @MockK
     lateinit var service: TvShowsNetwork
 
-    lateinit var pagingCaseDb: PagingCaseTvShowDb
+    private lateinit var pagingCaseDb: PagingCaseTvShowDb
 
-    lateinit var appDatabase: AppDatabase
+    private lateinit var appDatabase: AppDatabase
 
     private val context: Context by lazy {
         ApplicationProvider.getApplicationContext()
@@ -102,7 +102,7 @@ class TvShowRepositoryTest {
     @Test
     @ExperimentalCoroutinesApi
     fun searchMovies_should_return_data_when_searching_isSuccess() {
-        val tvShowResponse = FakeDataDetail.generateTvResponse("a")
+        val tvShowResponse = FakeDataDetail.generateTvResponse()
         coroutineTestRule.runBlockingTest {
             coEvery { service.searchTvShows("a", false, 1) } returns tvShowResponse
             coEvery { service.searchTvShows("a", false, 2) } returns tvShowResponse

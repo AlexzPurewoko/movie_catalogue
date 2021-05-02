@@ -15,6 +15,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:contentDescription="@string/poster_seasons_content_description"
             android:id="@+id/season_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,7 +57,8 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="10sp"
-                tools:text="22-10-2022" />
+                tools:text="22-10-2022"
+                tools:ignore="SmallSp" />
         </LinearLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

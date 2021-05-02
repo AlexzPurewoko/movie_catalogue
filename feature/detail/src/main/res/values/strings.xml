@@ -11,7 +11,11 @@
     <string name="run_time">Run Time</string>
     <string name="secondary_text">Episode %1$d (%2$s)</string>
     <string name="display_error">Failed to load resource. Try Again ?</string>
-    <string name="added_to_favorite">Added to Favorite</string>
-    <string name="removed_from_favorite">Removed from Favorite</string>
     <string name="favorite_menu">Favorite Menu</string>
+    <string name="backdrop_image">Backdrop Image</string>
+    <string name="save_image">Save Image</string>
+    <string name="favorite_button">Favorite Button</string>
+    <string name="poster_seasons_content_description">Poster Seasons</string>
+    <string name="okay">Okay</string>
+    <string name="episode_count">%1$d Episodes</string>
 </resources>

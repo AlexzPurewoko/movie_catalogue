@@ -72,12 +72,14 @@ object Libs {
     const val mockWebServer = "com.squareup.okhttp3:mockwebserver:${Versions.mockWebServer}"
 }
 
+@Suppress("unused")
 object KaptLibs {
     const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycleVersion}"
     const val roomCompiler = "androidx.room:room-compiler:${Versions.roomVersion}"
     const val hiltCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
 }
 
+@Suppress("unused")
 object TestLibs {
     const val junit = "junit:junit:${Versions.junit}"
     const val koinAndroid = "org.koin:koin-test:${Versions.koin}"
@@ -92,6 +94,7 @@ object TestLibs {
     const val mockk = "io.mockk:mockk:${Versions.mockk}"
 }
 
+@Suppress("unused")
 object AndroidTestLibs {
     const val workManagerTest = "androidx.work:work-testing:${Versions.workManager}"
     const val fragment = "androidx.fragment:fragment-testing:${Versions.fragment}"

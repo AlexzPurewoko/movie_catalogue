@@ -13,7 +13,7 @@ class TvShowsNetworkImplTest {
     @MockK
     lateinit var apiService: ApiService
 
-    lateinit var tvShowsNetworkImpl: TvShowsNetworkImpl
+    private lateinit var tvShowsNetworkImpl: TvShowsNetworkImpl
 
     private val movieId: String = "1"
 

@@ -21,13 +21,6 @@ class FavoriteTvShowDataSource(
         return movieDao.isTvShowExists(id)
     }
 
-    override suspend fun toggleFavorite(data: FavDetailTvShow, favorited: Boolean) {
-        if (favorited)
-            movieDao.insertFavDetailTvShow(data)
-        else
-            movieDao.deleteById(data.favDetailTvShow.id)
-    }
-
     override suspend fun save(data: FavDetailTvShow) {
         movieDao.insertFavDetailTvShow(data)
     }

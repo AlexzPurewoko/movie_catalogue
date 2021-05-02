@@ -5,6 +5,7 @@ import androidx.room.*
 import id.apwdevs.app.data.source.local.entity.items.TvEntity
 
 @Dao
+@Suppress("unused")
 interface TvShowDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTvShow(movie: List<TvEntity>)

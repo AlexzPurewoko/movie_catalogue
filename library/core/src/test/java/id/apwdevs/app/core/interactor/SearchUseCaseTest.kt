@@ -25,7 +25,7 @@ class SearchUseCaseTest {
     @MockK
     lateinit var tvShowRepository: TvShowRepository
 
-    lateinit var searchUseCase: SearchUseCase
+    private lateinit var searchUseCase: SearchUseCase
 
     @Before
     fun setup() {
