@@ -1,6 +1,7 @@
 package id.apwdevs.app.detail.ui.helper
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -12,6 +13,7 @@ import id.apwdevs.app.detail.data.MovieDetail
 import id.apwdevs.app.detail.databinding.ContentDetailMovieBinding
 import id.apwdevs.app.detail.ui.component.CardBackdropItem
 import id.apwdevs.app.detail.ui.component.NoDataItem
+import id.apwdevs.app.res.util.convertRatingFrom10to5
 import id.apwdevs.app.res.util.getImageURL
 import id.apwdevs.app.res.util.gone
 import id.apwdevs.app.res.util.visible
@@ -43,7 +45,8 @@ class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: (
 
         with(contentBinding) {
             title.text = movieData.title
-            ratingBar.rating = movieData.rating
+            ratingBar.rating = movieData.rating.convertRatingFrom10to5()
+            Log.e("Rating", "rating: ${movieData.rating}")
             voteAverageText.text = "(${movieData.rating})"
             composeGenre(genres, movieData.genres)
             status.text = "${movieData.status}\n(${movieData.releaseDate})"

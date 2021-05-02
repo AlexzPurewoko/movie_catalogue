@@ -18,7 +18,7 @@ android {
         versionCode = Apps.versionCode
         versionName = Apps.versionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "id.apwdevs.app.test.androdtest.runner.AppTestRunner"
     }
 
     buildFeatures.viewBinding = true
@@ -42,6 +42,12 @@ dependencies {
     api(project(":library:res"))
     implementation(project(":app"))
 
+    testImplementation(project(":test:libs"))
+    androidTestImplementation(project(":test:libs")) {
+        isTransitive = false
+    }
+    androidTestImplementation(project(":test:androidtestlibs"))
+
 //    listOf(
 //        Libs.kotlin,
 //        Libs.coreKtx,
@@ -50,8 +56,9 @@ dependencies {
 //            Libs.koinAndroid,
 //            Libs.koinAndroidViewModel
 //    ).forEach { implementation(it) }
-    testImplementation("junit:junit:4.+")
-    androidTestImplementation("androidx.test.ext:junit:1.1.2")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
-    androidTestImplementation("androidx.annotation:annotation:1.1.0")
+//    testIMplementation(":t")
+//    testImplementation("junit:junit:4.+")
+//    androidTestImplementation("androidx.test.ext:junit:1.1.2")
+//    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+//    androidTestImplementation("androidx.annotation:annotation:1.1.0")
 }

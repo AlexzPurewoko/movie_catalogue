@@ -14,6 +14,7 @@ import id.apwdevs.app.detail.ui.adapter.SeasonAdapter
 import id.apwdevs.app.detail.ui.component.CardBackdropItem
 import id.apwdevs.app.detail.ui.component.EpisodeItem
 import id.apwdevs.app.detail.ui.component.NoDataItem
+import id.apwdevs.app.res.util.convertRatingFrom10to5
 import id.apwdevs.app.res.util.getImageURL
 import id.apwdevs.app.res.util.gone
 import id.apwdevs.app.res.util.visible
@@ -49,7 +50,7 @@ class DetailTvShowHelper(
 
         with(contentBinding) {
             title.text = tvShowData.title
-            ratingBar.rating = tvShowData.rating
+            ratingBar.rating = tvShowData.rating.convertRatingFrom10to5()
             voteAverageText.text = "(${tvShowData.rating})"
             composeGenre(genres, tvShowData.genres)
             status.text = "${tvShowData.status}\n(${tvShowData.firstAirDate})"
@@ -85,7 +86,7 @@ class DetailTvShowHelper(
 
     override fun onDestroy() {
         sectionFragments.forEach { fg ->
-            if (fragmentManager.fragments.contains(fg))
+            if (!fragmentManager.isDestroyed && fragmentManager.fragments.contains(fg))
                 fragmentManager.commit { detach(fg) }
         }
         sectionFragments.clear()

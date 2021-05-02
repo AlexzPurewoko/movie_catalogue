@@ -2,4 +2,5 @@
 <resources>
     <string name="movies">Movie</string>
     <string name="tvshows">Tv Show</string>
+    <string name="retry">Retry</string>
 </resources>

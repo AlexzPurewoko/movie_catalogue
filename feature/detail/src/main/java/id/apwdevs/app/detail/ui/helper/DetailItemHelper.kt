@@ -8,7 +8,9 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import id.apwdevs.app.core.domain.model.Genre
+import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.detail.databinding.FragmentDetailBinding
+import id.apwdevs.app.detail.viewmodel.DetailMovieShowVM
 import id.apwdevs.app.detail.viewmodel.DetailViewModel.Resource
 import id.apwdevs.app.res.R
 import id.apwdevs.app.res.util.gone
@@ -61,34 +63,48 @@ abstract class DetailItemHelper(
         rootBinding.appBar.addOnOffsetChangedListener(appBarLayoutOffsetChangeListener)
     }
 
-    fun bindObservedData(resData: Resource<Any>) {
+    fun bindObservedData(resData: State<DetailMovieShowVM.DataPostType>) {
+        val widgetFav = rootBinding.favoriteFab
         when (resData) {
-            is Resource.Failed -> handleOnFailed(resData.error)
-            is Resource.Loading -> {
-                onLoad()
-                loading(true)
+            is State.Error -> handleOnFailed(resData.error)
+            is State.Loading -> {
+                widgetFav.isEnabled = false
+                favoriteMenuItem?.isEnabled = false
+
+                if(resData.loadingTag != DetailMovieShowVM.FAVORITE_LOADING_TAG){
+                    onLoad()
+                    loading(true)
+                }
             }
-            is Resource.Success -> {
-                errorState(false)
-                loading(false)
-                disableScrollState(false)
-                onSuccess(resData.data)
+            is State.Success -> {
+                when(resData.data?.postType) {
+                    DetailMovieShowVM.PostType.DATA -> {
+                        errorState(false)
+                        loading(false)
+                        disableScrollState(false)
+                        onSuccess(resData.data?.data)
+                    }
+                    DetailMovieShowVM.PostType.FAVORITE_STATE -> {
+                        triggerFavorite(resData)
+                    }
+                }
+
             }
         }
     }
 
-    fun bindFavoriteObserver(resFav: Resource<Boolean>) {
+    private fun triggerFavorite(resFav: State<DetailMovieShowVM.DataPostType>) {
         val widgetFav = rootBinding.favoriteFab
         when (resFav) {
-            is Resource.Failed -> {
+            is State.Error -> {
             }
-            is Resource.Loading -> {
+            is State.Loading -> {
                 widgetFav.isEnabled = false
                 favoriteMenuItem?.isEnabled = false
             }
-            is Resource.Success -> {
+            is State.Success -> {
                 val enabled = true
-                val isFavorited = resFav.data == true
+                val isFavorited = resFav.data?.data == true
                 val img =
                     if (isFavorited) R.drawable.ic_baseline_favorite_24
                     else R.drawable.ic_baseline_favorite_border_24
@@ -96,7 +112,6 @@ abstract class DetailItemHelper(
                 widgetFav.isEnabled = enabled
                 favoriteMenuItem?.isEnabled = enabled
                 widgetFav.setImageResource(img)
-
             }
         }
     }
