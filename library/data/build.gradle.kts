@@ -1,4 +1,6 @@
-import modules.*
+import modules.Apps
+import modules.KaptLibs
+import modules.Libs
 
 plugins {
     id ("com.android.library")
@@ -67,25 +69,9 @@ dependencies {
 
     kapt(KaptLibs.roomCompiler)
 
-//    testImplementation(TestLibs.junit)
-//    debugImplementation(project(":test:assetDebug"))
-//
-//    listOf(
-//            AndroidTestLibs.androidxJunit,
-//            AndroidTestLibs.espressoCore,
-//            AndroidTestLibs.androidxAnnotatation
-//    ).forEach { androidTestImplementation(it) }
-//
-//    testImplementation(project(":test:libs"))
-//    androidTestImplementation(project(":test:libs"))
     testImplementation(project(":test:libs"))
     androidTestImplementation(project(":test:androidtestlibs"))
     androidTestImplementation(project(":test:libs")) {
         isTransitive = false
-    }
-}
-configurations.all {
-    resolutionStrategy {
-        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-debug")
     }
 }

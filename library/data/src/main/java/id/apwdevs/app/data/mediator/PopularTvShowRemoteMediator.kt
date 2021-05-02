@@ -10,7 +10,6 @@ import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.RemoteKeysTvShow
 import id.apwdevs.app.data.source.local.entity.items.TvEntity
 import id.apwdevs.app.data.source.remote.network.TvShowsNetwork
-import id.apwdevs.app.data.utils.Config
 import id.apwdevs.app.data.utils.mapToEntity
 import retrofit2.HttpException
 import java.io.IOException

@@ -3,24 +3,19 @@ package id.apwdevs.app.detail.ui
 import android.util.Log
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast
 import androidx.test.espresso.matcher.ViewMatchers.withResourceName
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import id.apwdevs.app.data.source.remote.response.moviedetail.MovieDetailResponse
 import id.apwdevs.app.data.source.remote.response.tvdetail.TvDetailResponse
 import id.apwdevs.app.detail.dispatcher.DetailScopeMockDispatcher
 import id.apwdevs.app.detail.ui.case.DetailItemFragmentCase
-import id.apwdevs.app.detail.ui.helper.DetailMovieHelper
 import id.apwdevs.app.detail.ui.helper.DetailTvShowHelper
 import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.test.androdtest.utils.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.QueueDispatcher
-import org.hamcrest.core.AllOf.allOf
 import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)

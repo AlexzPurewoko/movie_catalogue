@@ -12,7 +12,6 @@ import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.RemoteKeysMovie
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 import id.apwdevs.app.data.source.remote.network.MoviesNetwork
-import id.apwdevs.app.data.utils.Config
 import id.apwdevs.app.data.utils.mapToEntity
 import retrofit2.HttpException
 import java.io.IOException

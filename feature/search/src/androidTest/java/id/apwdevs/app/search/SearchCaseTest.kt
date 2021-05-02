@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import okhttp3.mockwebserver.Dispatcher
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.`is`
 import org.junit.Assert

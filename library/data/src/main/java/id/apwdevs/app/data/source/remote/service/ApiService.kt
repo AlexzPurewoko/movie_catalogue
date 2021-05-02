@@ -1,6 +1,5 @@
 package id.apwdevs.app.data.source.remote.service
 
-import android.opengl.GLES32
 import id.apwdevs.app.data.source.remote.response.GenreResponse
 import id.apwdevs.app.data.source.remote.response.MovieItemResponse
 import id.apwdevs.app.data.source.remote.response.PageResponse
@@ -11,7 +10,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-@Deprecated("use for internal only", level = DeprecationLevel.WARNING)
 interface ApiService {
 
     @GET("movie/popular")

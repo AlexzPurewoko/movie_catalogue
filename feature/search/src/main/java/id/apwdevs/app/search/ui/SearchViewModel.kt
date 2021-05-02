@@ -2,7 +2,9 @@ package id.apwdevs.app.search.ui
 
 import android.app.Application
 import android.os.Parcelable
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
 import id.apwdevs.app.core.domain.usecase.SearchUseCase

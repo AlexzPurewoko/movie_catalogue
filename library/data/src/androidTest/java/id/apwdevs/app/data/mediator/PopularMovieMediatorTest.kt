@@ -8,11 +8,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.mediator.dispatcher.PopularMoviePagingDispatcher
+import id.apwdevs.app.data.source.local.database.paging.PagingMovieCaseDbInteractor
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.database.paging.PagingMovieCaseDbInteractor
 import id.apwdevs.app.data.source.remote.network.MoviesNetwork
-import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -27,8 +26,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.java.KoinJavaComponent.inject
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest

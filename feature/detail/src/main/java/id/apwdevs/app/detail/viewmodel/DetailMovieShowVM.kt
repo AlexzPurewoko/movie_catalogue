@@ -18,7 +18,6 @@ import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.res.util.zeroIfNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import java.lang.NullPointerException
 import kotlin.math.floor
 
 class DetailMovieShowVM(

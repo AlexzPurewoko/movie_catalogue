@@ -1,11 +1,8 @@
 package id.apwdevs.app.search
 
-import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.PagingData
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.core.domain.usecase.SearchUseCase
 import id.apwdevs.app.libs.data.FakeDomain
 import id.apwdevs.app.libs.rule.TestCoroutineRule

@@ -1,8 +1,14 @@
 package id.apwdevs.app.core.di
 
-import id.apwdevs.app.core.domain.repository.*
+import id.apwdevs.app.core.domain.repository.FavMovieRepository
+import id.apwdevs.app.core.domain.repository.FavTvShowRepository
+import id.apwdevs.app.core.domain.repository.MovieRepository
+import id.apwdevs.app.core.domain.repository.TvShowRepository
 import id.apwdevs.app.core.domain.usecase.*
-import id.apwdevs.app.core.repository.*
+import id.apwdevs.app.core.repository.FavoriteMovieRepoImpl
+import id.apwdevs.app.core.repository.FavoriteTvShowRepoImpl
+import id.apwdevs.app.core.repository.MovieRepoImpl
+import id.apwdevs.app.core.repository.TvShowRepoImpl
 import org.koin.dsl.module
 
 val useCaseModule = module {

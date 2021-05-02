@@ -1,12 +1,15 @@
 package id.apwdevs.app.core.repository
 
-import androidx.paging.*
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingData
+import androidx.paging.map
 import id.apwdevs.app.core.domain.model.DetailMovie
-import id.apwdevs.app.core.domain.model.Genre
 import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.repository.MovieRepository
-import id.apwdevs.app.core.utils.RemoteToDomainMapper
+import id.apwdevs.app.core.utils.Config
 import id.apwdevs.app.core.utils.State
+import id.apwdevs.app.core.utils.mapToDomain
 import id.apwdevs.app.data.mediator.PopularMovieRemoteMediator
 import id.apwdevs.app.data.source.local.database.paging.PagingCaseMovieDb
 import id.apwdevs.app.data.source.local.entity.Genres
@@ -24,55 +27,25 @@ class MovieRepoImpl constructor(
     private val genres = mutableListOf<Genres>()
     override fun discoverPopularMovies(): Flow<PagingData<Movies>> {
         return Pager(
-                config = PagingConfig(
-                        pageSize = 20,
-                        prefetchDistance = 3,
-                        initialLoadSize = 20,
-                        enablePlaceholders = false
-                ),
+                config = Config.pageConfig(),
                 remoteMediator = PopularMovieRemoteMediator(moviesNetwork, caseDb),
                 pagingSourceFactory = { caseDb.getAllDataPaging() }
         ).flow.map { pagingData ->
             getGenre()
             pagingData.map {
-                val allGenres = it.genreIds.data.map {
-                    val item = genres.find { i -> i.id == it }
-                    if (item == null) Genre(0, "")
-                    else Genre(item.id, item.genreName)
-                }
-                Movies(
-                        movieId = it.id, title = it.title, overview = it.overview,
-                        language = it.language, genres = allGenres, posterPath = it.posterPath,
-                        backdropPath = it.backdropPath, releaseDate = it.releaseDate, voteAverage = it.voteAverage,
-                        voteCount = it.voteCount, adult = it.adult
-                )
+                it.mapToDomain(genres)
             }
         }
     }
 
     override fun searchMovies(query: String, includeAdult: Boolean): Flow<PagingData<Movies>> {
         return Pager(
-                config = PagingConfig(
-                        pageSize = 20,
-                        prefetchDistance = 3,
-                        initialLoadSize = 20,
-                        enablePlaceholders = false
-                ),
+                config = Config.pageConfig(),
                 pagingSourceFactory = { SearchMoviePagingSource(moviesNetwork, query, includeAdult) }
         ).flow.map { pagingData ->
             getGenre()
             pagingData.map {
-                val allGenres = it.genreIds.map {
-                    val item = genres.find { i -> i.id == it }
-                    if (item == null) Genre(0, "")
-                    else Genre(item.id, item.genreName)
-                }
-                Movies(
-                        movieId = it.id, title = it.title, overview = it.overview,
-                        language = it.originalLanguage, genres = allGenres, posterPath = it.posterPath,
-                        backdropPath = it.backdropPath, releaseDate = it.releaseDate, voteAverage = it.voteAverage,
-                        voteCount = it.voteCount, adult = it.adult
-                )
+                it.mapToDomain(genres)
             }
         }
     }
@@ -82,7 +55,7 @@ class MovieRepoImpl constructor(
             emit(State.Loading())
             try {
                 val detailMovie = moviesNetwork.getDetailMovies(movieId.toString())
-                val transform = RemoteToDomainMapper.detailMovie(detailMovie)
+                val transform = detailMovie.mapToDomain()
                 emit(State.Success(transform))
             } catch (e: Throwable) {
                 emit(State.Error(e))
@@ -94,9 +67,5 @@ class MovieRepoImpl constructor(
         if (genres.isNotEmpty()) return
         val genresFromDao = caseDb.getGenres()
         genres.addAll(genresFromDao)
-    }
-
-    companion object {
-        const val PAGE_SIZE = 20
     }
 }

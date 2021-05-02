@@ -14,7 +14,6 @@ import id.apwdevs.app.data.paging.dispatcher.SearchMoviePagingDispatcher
 import id.apwdevs.app.data.source.remote.network.MoviesNetwork
 import id.apwdevs.app.data.source.remote.paging.SearchMoviePagingSource
 import id.apwdevs.app.data.source.remote.response.MovieItemResponse
-import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -29,8 +28,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.java.KoinJavaComponent
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest

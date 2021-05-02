@@ -11,11 +11,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.paging.dispatcher.SearchTvShowPagingDispatcher
-import id.apwdevs.app.data.source.remote.network.MoviesNetwork
 import id.apwdevs.app.data.source.remote.network.TvShowsNetwork
 import id.apwdevs.app.data.source.remote.paging.SearchTvShowPagingSource
 import id.apwdevs.app.data.source.remote.response.TvShowItemResponse
-import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -29,10 +27,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.inject
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest

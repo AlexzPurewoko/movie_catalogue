@@ -9,7 +9,6 @@ import id.apwdevs.app.discover.ui.DiscoverFragment
 import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.test.androdtest.BaseAndroidTest
 import id.apwdevs.app.test.androdtest.utils.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers

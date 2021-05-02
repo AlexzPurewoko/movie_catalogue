@@ -3,9 +3,7 @@ package id.apwdevs.app.discover
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.PagingData
-import androidx.paging.map
 import id.apwdevs.app.core.domain.usecase.DiscoverPopularUseCase
-import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.discover.ui.child.MovieShowViewModel
 import id.apwdevs.app.libs.data.FakeDomain
 import id.apwdevs.app.libs.rule.TestCoroutineRule
@@ -13,7 +11,6 @@ import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import id.apwdevs.app.libs.util.runTest
 import id.apwdevs.app.movieshow.MainApplication
 import id.apwdevs.app.res.data.MovieShowItem
-import id.apwdevs.app.res.util.Mapper
 import id.apwdevs.app.res.util.PageType
 import io.mockk.*
 import io.mockk.impl.annotations.MockK

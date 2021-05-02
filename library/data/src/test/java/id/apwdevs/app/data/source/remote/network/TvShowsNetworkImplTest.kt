@@ -9,8 +9,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 
-import org.junit.Assert.*
-
 class TvShowsNetworkImplTest {
     @MockK
     lateinit var apiService: ApiService

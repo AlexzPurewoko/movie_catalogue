@@ -11,7 +11,6 @@ import id.apwdevs.app.core.domain.model.Genre
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.detail.databinding.FragmentDetailBinding
 import id.apwdevs.app.detail.viewmodel.DetailMovieShowVM
-import id.apwdevs.app.detail.viewmodel.DetailViewModel.Resource
 import id.apwdevs.app.res.R
 import id.apwdevs.app.res.util.gone
 import id.apwdevs.app.res.util.visible

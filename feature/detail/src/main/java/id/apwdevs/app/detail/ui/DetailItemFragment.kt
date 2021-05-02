@@ -10,7 +10,6 @@ import id.apwdevs.app.detail.ui.helper.DetailItemHelper
 import id.apwdevs.app.detail.ui.helper.DetailMovieHelper
 import id.apwdevs.app.detail.ui.helper.DetailTvShowHelper
 import id.apwdevs.app.detail.viewmodel.DetailMovieShowVM
-import id.apwdevs.app.detail.viewmodel.DetailViewModel
 import id.apwdevs.app.res.BaseFeatureFragment
 import id.apwdevs.app.res.util.PageType
 import org.koin.android.viewmodel.ext.android.viewModel

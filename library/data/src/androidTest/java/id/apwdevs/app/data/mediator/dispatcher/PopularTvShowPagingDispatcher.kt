@@ -1,12 +1,9 @@
 package id.apwdevs.app.data.mediator.dispatcher
 
 import android.content.Context
-import android.util.Log
 import id.apwdevs.app.data.utils.Config
 import id.apwdevs.app.libs.util.AssetDataJson
 import id.apwdevs.app.libs.util.ScopeDispatcher
-import id.apwdevs.app.libs.util.provideResponse
-import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
 

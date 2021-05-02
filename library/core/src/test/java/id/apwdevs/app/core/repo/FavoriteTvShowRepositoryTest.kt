@@ -8,11 +8,11 @@ import id.apwdevs.app.core.domain.model.DetailTvShow
 import id.apwdevs.app.core.domain.model.TvShow
 import id.apwdevs.app.core.domain.repository.FavTvShowRepository
 import id.apwdevs.app.core.repository.FavoriteTvShowRepoImpl
-import id.apwdevs.app.core.utils.DomainToEntityMapper
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.data.source.local.room.AppDatabase
+import id.apwdevs.app.core.utils.mapToEntity
 import id.apwdevs.app.data.source.local.database.favlocal.FavoriteTvShowDataSource
 import id.apwdevs.app.data.source.local.database.favlocal.FavoriteTvShowSource
+import id.apwdevs.app.data.source.local.room.AppDatabase
 import id.apwdevs.app.libs.data.FakeDomain
 import io.mockk.*
 import kotlinx.coroutines.delay
@@ -78,7 +78,7 @@ class FavoriteTvShowRepositoryTest {
 
             coVerifyOrder {
 
-                favDataSource.save(DomainToEntityMapper.favDetailTvShow(fakeData))
+                favDataSource.save(fakeData.mapToEntity())
                 observer.onChanged(match {
                     it is State.Loading
                 })
@@ -120,7 +120,7 @@ class FavoriteTvShowRepositoryTest {
 
             coVerifyOrder {
 
-                favDataSource.save(DomainToEntityMapper.favDetailTvShow(fakeData))
+                favDataSource.save(fakeData.mapToEntity())
                 observer.onChanged(match {
                     it is State.Loading
                 })
@@ -161,7 +161,7 @@ class FavoriteTvShowRepositoryTest {
     fun save_should_success_when_saving_data() {
         runBlocking {
             val fakeData = FakeDomain.generateDetailTvDomain(1)
-            val fakeMapper = DomainToEntityMapper.favDetailTvShow(fakeData)
+            val fakeMapper = fakeData.mapToEntity()
             favoriteRepo.save(fakeData)
 
             val isFav = favoriteRepo.checkIsFavorite(1)

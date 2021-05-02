@@ -10,13 +10,12 @@ import id.apwdevs.app.core.domain.model.DetailTvShow
 import id.apwdevs.app.core.domain.model.TvShow
 import id.apwdevs.app.core.domain.repository.TvShowRepository
 import id.apwdevs.app.core.repository.TvShowRepoImpl
-import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.data.source.local.room.AppDatabase
+import id.apwdevs.app.core.utils.mapToDomain
 import id.apwdevs.app.data.source.local.database.paging.PagingCaseTvShowDb
 import id.apwdevs.app.data.source.local.database.paging.PagingTvShowCaseDbInteractor
-import id.apwdevs.app.data.source.remote.service.ApiService
-import id.apwdevs.app.data.utils.Config
+import id.apwdevs.app.data.source.local.room.AppDatabase
+import id.apwdevs.app.data.source.remote.network.TvShowsNetwork
 import id.apwdevs.app.libs.data.FakeDataDetail
 import id.apwdevs.app.libs.rule.TestCoroutineRule
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
@@ -44,7 +43,7 @@ class TvShowRepositoryTest {
     val coroutineTestRule = TestCoroutineRule()
 
     @MockK
-    lateinit var service: ApiService
+    lateinit var service: TvShowsNetwork
 
     lateinit var pagingCaseDb: PagingCaseTvShowDb
 
@@ -72,7 +71,7 @@ class TvShowRepositoryTest {
 
         coroutineTestRule.runBlockingTest {
 
-            coEvery { service.searchTvShow(Config.TOKEN, 1, "a", false) } throws expected
+            coEvery { service.searchTvShows("a", false) } throws expected
             coEvery { pagingCaseDb.getGenres() } returns FakeDataDetail.generateGenre()
             val adapter = RecyclerTestAdapter<TvShow>()
             val result = tvShowRepository.searchTvShow("a", false)
@@ -91,7 +90,7 @@ class TvShowRepositoryTest {
             Assert.assertEquals(0, adapter.itemCount)
 
             coVerify {
-                service.searchTvShow(Config.TOKEN, 1, "a", false)
+                service.searchTvShows("a", false)
                 pagingCaseDb.getGenres()
             }
             confirmVerified(service)
@@ -105,7 +104,8 @@ class TvShowRepositoryTest {
     fun searchMovies_should_return_data_when_searching_isSuccess() {
         val tvShowResponse = FakeDataDetail.generateTvResponse("a")
         coroutineTestRule.runBlockingTest {
-            coEvery { service.searchTvShow(Config.TOKEN, 1, "a", false) } returns tvShowResponse
+            coEvery { service.searchTvShows("a", false, 1) } returns tvShowResponse
+            coEvery { service.searchTvShows("a", false, 2) } returns tvShowResponse
             coEvery { pagingCaseDb.getGenres() } returns FakeDataDetail.generateGenre()
             val adapter = RecyclerTestAdapter<TvShow>()
             val result = tvShowRepository.searchTvShow("a", false)
@@ -123,7 +123,8 @@ class TvShowRepositoryTest {
             Assert.assertEquals(expectedFirstItem.id, actual?.tvId)
 
             coVerify {
-                service.searchTvShow(Config.TOKEN, 1, "a", false)
+                service.searchTvShows("a", false, 1)
+                service.searchTvShows("a", false, 2)
                 pagingCaseDb.getGenres()
             }
             confirmVerified(service)
@@ -138,7 +139,7 @@ class TvShowRepositoryTest {
         val expected = Exception("Error 404: Resource Not found")
         coroutineTestRule.runBlockingTest {
             val observer = mockk<Observer<State<DetailTvShow>>>(relaxUnitFun = true)
-            coEvery { service.getDetailTvShows(movieId.toString(), Config.TOKEN, language = "en-US") } throws expected
+            coEvery { service.getDetailTvShows(movieId.toString()) } throws expected
 
 
             val result = tvShowRepository.getDetailTvShow(movieId)
@@ -152,7 +153,7 @@ class TvShowRepositoryTest {
 
             coVerifyOrder {
                 observer.onChanged(coMatch { it is State.Loading })
-                service.getDetailTvShows(cmpEq(movieId.toString()), cmpEq(Config.TOKEN), cmpEq("en-US"))
+                service.getDetailTvShows(cmpEq(movieId.toString()))
                 observer.onChanged(
                         coMatch { it is State.Error }
                 )
@@ -169,10 +170,10 @@ class TvShowRepositoryTest {
     fun getDetailMovie_should_return_data_when_success_getData() {
         val tvId = 12345
         val fakeData = FakeDataDetail.generateTvDetailResponse(tvId)
-        val expected = RemoteToDomainMapper.detailTvShow(fakeData)
+        val expected = fakeData.mapToDomain()
         coroutineTestRule.runBlockingTest {
             val observer = mockk<Observer<State<DetailTvShow>>>(relaxUnitFun = true)
-            coEvery { service.getDetailTvShows(tvId.toString(), Config.TOKEN, language = "en-US") } returns fakeData
+            coEvery { service.getDetailTvShows(tvId.toString()) } returns fakeData
 
             val result = tvShowRepository.getDetailTvShow(tvId)
             var actual: DetailTvShow? = null
@@ -185,7 +186,7 @@ class TvShowRepositoryTest {
 
             coVerifyOrder {
                 observer.onChanged(coMatch { it is State.Loading })
-                service.getDetailTvShows(cmpEq(tvId.toString()), cmpEq(Config.TOKEN), cmpEq("en-US"))
+                service.getDetailTvShows(cmpEq(tvId.toString()))
                 observer.onChanged(
                         coMatch { it is State.Success<DetailTvShow> }
                 )
