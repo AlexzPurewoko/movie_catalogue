@@ -3,6 +3,7 @@ package id.apwdevs.app.detail.ui.helper
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
@@ -151,6 +152,13 @@ abstract class DetailItemHelper(
             else (currentPos * 100) / totalRange
 
         favoriteMenuItem?.isVisible = scrollRate < 20
+
+        if(scrollRate < 15) {
+            rootBinding.nestedScroll.layoutParams = (rootBinding.nestedScroll.layoutParams as CoordinatorLayout.LayoutParams).apply {
+                this.topMargin = 10
+            }
+        }
+
 //        if(scrollRate > 20)
     }
 

@@ -28,7 +28,6 @@ class MovieShowFragment : FragmentWithState() {
     private val currentFragmentType: PageType by lazy { requireArguments().getParcelable(SHOWS_TYPE)!! }
 
     private lateinit var binding: FragmentMovieShowBinding
-    private var hasFirstInitialization: Boolean = false
 
     override val koinModules: List<Module>
         get() = listOf()
@@ -59,10 +58,6 @@ class MovieShowFragment : FragmentWithState() {
         movieShowAdapter.addLoadStateListener { state ->
             val itemCount =  movieShowAdapter.itemCount
             when {
-                !hasFirstInitialization -> {
-                    callDisplay(StateViewModel.DisplayType.RECOMMENDATION)
-                    hasFirstInitialization = true
-                }
 
                 state.refresh is LoadState.NotLoading && itemCount == 0 ->
                     callDisplay(StateViewModel.DisplayType.DATA_EMPTY)

@@ -78,6 +78,7 @@ class DetailMovieShowVM(
             _data.postValue(State.Success(
                     DataPostType(PostType.FAVORITE_STATE, isInFavaorite)
             ))
+            isFavorited = isInFavaorite
 
             val data = if(isInFavaorite){
                 favoriteUseCase.getFavoriteTvShow(itemId)
@@ -119,6 +120,8 @@ class DetailMovieShowVM(
             _data.postValue(State.Success(
                     DataPostType(PostType.FAVORITE_STATE, isInFavaorite)
             ))
+
+            isFavorited = isInFavaorite
 
             val data = if(isInFavaorite){
                 favoriteUseCase.getFavoriteMovie(itemId)

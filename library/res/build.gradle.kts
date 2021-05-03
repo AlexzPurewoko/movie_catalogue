@@ -2,8 +2,8 @@ import modules.Apps
 import modules.Libs
 
 plugins {
-    id ("com.android.library")
-    kotlin ("android")
+    id("com.android.library")
+    kotlin("android")
     id("kotlin-parcelize")
 }
 
@@ -18,13 +18,16 @@ android {
         versionName = Apps.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles( "consumer-rules.pro")
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
 
         getByName("debug") {
@@ -55,31 +58,20 @@ dependencies {
         Libs.kotlinStd,
         Libs.constraintLayout,
         Libs.cardView,
-            Libs.fragmentKtx
-//        Libs.koinCore
+        Libs.fragmentKtx
 
     ).forEach { api(it) }
     listOf(
-//            Libs.kotlinStd,
-//            Libs.coreKtx,
-//            Libs.constraintLayout,
-            Libs.circularProgressBar,
-            Libs.glide,
-//            Libs.paging,
-            Libs.coroutinesCore,
-            Libs.coroutinesAndroid,
-            Libs.corbindCore,
-            Libs.corbindMaterial,
-            Libs.corbindAppCompat,
-
-//            Libs.koinCore,
-//            Libs.koinAndroid,
-            Libs.koinAndroidViewModel,
-            Libs.lottie,
-            Libs.shimmer
+        Libs.circularProgressBar,
+        Libs.glide,
+        Libs.coroutinesCore,
+        Libs.coroutinesAndroid,
+        Libs.corbindCore,
+        Libs.corbindMaterial,
+        Libs.corbindAppCompat,
+        Libs.koinAndroidViewModel,
+        Libs.lottie,
+        Libs.shimmer
     ).forEach { api(it) }
-    testImplementation ("junit:junit:4.+")
-    androidTestImplementation ("androidx.test.ext:junit:1.1.2")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:3.3.0")
-    androidTestImplementation ("androidx.annotation:annotation:1.1.0")
+
 }

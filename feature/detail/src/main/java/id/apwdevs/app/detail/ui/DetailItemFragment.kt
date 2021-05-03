@@ -2,7 +2,9 @@ package id.apwdevs.app.detail.ui
 
 import android.os.Bundle
 import android.view.*
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
 import id.apwdevs.app.detail.R
 import id.apwdevs.app.detail.databinding.FragmentDetailBinding
 import id.apwdevs.app.detail.di.detailModule
@@ -15,6 +17,7 @@ import id.apwdevs.app.res.util.PageType
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.module.Module
 
+import id.apwdevs.app.movieshow.R as BaseR
 class DetailItemFragment : BaseFeatureFragment() {
 
     private val args: DetailItemFragmentArgs by lazy {
@@ -45,7 +48,11 @@ class DetailItemFragment : BaseFeatureFragment() {
             }
         }
         detailHelper.onBindView(viewContainer)
-        (requireActivity() as AppCompatActivity).setSupportActionBar(viewContainer.detailToolbar)
+        (requireActivity() as AppCompatActivity).apply {
+            setSupportActionBar(viewContainer.detailToolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+
         return viewContainer.root
     }
 
@@ -61,6 +68,10 @@ class DetailItemFragment : BaseFeatureFragment() {
         detailViewModel.loadData()
         detailHelper.handleClickFavorite(detailViewModel::toggleFavorite)
 
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            NavHostFragment.findNavController(this@DetailItemFragment).popBackStack()
+        }
     }
 
     override fun onDetach() {
@@ -77,6 +88,8 @@ class DetailItemFragment : BaseFeatureFragment() {
         if (item.itemId == R.id.favorite_menu) {
             detailViewModel.toggleFavorite()
             return true
+        } else if (item.itemId == android.R.id.home){
+            NavHostFragment.findNavController(this).navigate(BaseR.id.mainFragment)
         }
         return super.onOptionsItemSelected(item)
     }
