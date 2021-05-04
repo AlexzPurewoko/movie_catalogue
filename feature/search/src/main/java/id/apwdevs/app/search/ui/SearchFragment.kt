@@ -98,7 +98,7 @@ class SearchFragment : FragmentWithState() {
     private fun stateFragmentCallbackObserver(parameters: List<Any>) {
         if (parameters[0] == StateViewModel.StateCallType.RETRY)
             searchData?.let {
-                searchVewModel.search(it).observe(viewLifecycleOwner, ::searchResults)
+                searchVewModel.search(it, forceReload = true).observe(viewLifecycleOwner, ::searchResults)
             }
     }
 
