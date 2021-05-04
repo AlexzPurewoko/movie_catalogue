@@ -69,9 +69,6 @@ class DetailItemFragment : BaseFeatureFragment() {
         detailHelper.handleClickFavorite(detailViewModel::toggleFavorite)
 
 
-        requireActivity().onBackPressedDispatcher.addCallback {
-            NavHostFragment.findNavController(this@DetailItemFragment).popBackStack()
-        }
     }
 
     override fun onDetach() {

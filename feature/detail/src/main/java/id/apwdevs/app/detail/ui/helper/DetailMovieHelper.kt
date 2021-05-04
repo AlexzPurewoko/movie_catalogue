@@ -17,7 +17,7 @@ import id.apwdevs.app.res.util.convertRatingFrom10to5
 import id.apwdevs.app.res.util.getImageURL
 import id.apwdevs.app.res.util.gone
 import id.apwdevs.app.res.util.visible
-
+import id.apwdevs.app.res.R as Res
 class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: () -> Unit) :
     DetailItemHelper(onRetry) {
 
@@ -40,6 +40,7 @@ class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: (
         val context = rootBinding.root.context
         Glide.with(context)
             .load(movieData.posterPath.getImageURL())
+            .placeholder(Res.drawable.potrait_loading_placeholder)
             .into(rootBinding.posterImage)
         rootBinding.posterImage.visible()
 

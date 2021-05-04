@@ -85,7 +85,7 @@ open class MovieShowVH(
     }
 
     private fun showImg(backdropImg: AppCompatImageView, backdopImage: String?) {
-        Glide.with(backdropImg.context).load(backdopImage?.backdropImageUrlPath).into(backdropImg)
+        Glide.with(backdropImg.context).load(backdopImage?.backdropImageUrlPath).placeholder(R.drawable.search_placeholder_image).into(backdropImg)
     }
 
     private fun randomizeFont(text: AppCompatTextView) {

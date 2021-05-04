@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
+import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -29,14 +30,6 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
     private var tabLayoutMediator: TabLayoutMediator? = null
 
     private var onPageChangeCallback: ViewPager2.OnPageChangeCallback? = null
-
-    private val viewPagerAdapter: DiscoverStateFragmentAdapter by lazy {
-        DiscoverStateFragmentAdapter(this, ::onclick)
-    }
-
-    private fun onclick() {
-        TODO("Not yet implemented")
-    }
 
     override val koinModules: List<Module>
         get() = listOf(discoverViewModel)
@@ -65,7 +58,7 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
     }
 
     private fun initializeTab(tabs: TabLayout, pagerContainer: ViewPager2) {
-        pagerContainer.adapter = viewPagerAdapter
+        pagerContainer.adapter = DiscoverStateFragmentAdapter(this)
         tabLayoutMediator = TabLayoutMediator(tabs, pagerContainer) { tab, position ->
             tab.text = getString(TABS[position])
         }

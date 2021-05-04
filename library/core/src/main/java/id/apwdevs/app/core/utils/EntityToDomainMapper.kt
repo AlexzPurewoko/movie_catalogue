@@ -144,7 +144,7 @@ fun MovieEntity.mapToDomain(genres: Collection<Genres>): Movies {
     return Movies(
         movieId = id, title = title, overview = overview,
         language = language, genres = allGenres, posterPath = posterPath,
-        backdropPath = backdropPath, releaseDate = releaseDate, voteAverage = voteAverage,
+        backdropPath = backdropPath, releaseDate = releaseDate ?: "-", voteAverage = voteAverage,
         voteCount = voteCount, adult = adult
     )
 }

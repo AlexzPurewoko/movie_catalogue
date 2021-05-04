@@ -153,13 +153,9 @@ abstract class DetailItemHelper(
 
         favoriteMenuItem?.isVisible = scrollRate < 20
 
-        if(scrollRate < 15) {
-            rootBinding.nestedScroll.layoutParams = (rootBinding.nestedScroll.layoutParams as CoordinatorLayout.LayoutParams).apply {
-                this.topMargin = 10
-            }
+        rootBinding.nestedScroll.layoutParams = (rootBinding.nestedScroll.layoutParams as CoordinatorLayout.LayoutParams).apply {
+            this.topMargin = if(scrollRate < 15) 10 else -8
         }
-
-//        if(scrollRate > 20)
     }
 
     private fun disableScrollState(disabled: Boolean) {

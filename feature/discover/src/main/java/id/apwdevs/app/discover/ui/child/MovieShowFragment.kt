@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -116,6 +117,16 @@ class MovieShowFragment : FragmentWithState() {
                 BaseR.id.detailFragment, bundle
             )
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+//        childFragmentManager.commit {
+//            val list = childFragmentManager.fragments
+//            for(fg in list){
+//                remove(fg)
+//            }
+//        }
     }
 
     companion object {
