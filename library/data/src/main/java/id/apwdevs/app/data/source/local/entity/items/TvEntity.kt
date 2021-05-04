@@ -19,7 +19,7 @@ import id.apwdevs.app.data.source.local.entity.converters.GenreIdsTypeConverter
 data class TvEntity(
     @PrimaryKey(autoGenerate = false) val id: Int,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "first_air_date") val firstAirDate: String,
+    @ColumnInfo(name = "first_air_date") val firstAirDate: String?,
     @ColumnInfo(name = "overview") val overview: String,
     @ColumnInfo(name = "original_language") val language: String,
     @ColumnInfo(name = "genre_ids") val genreIds: GenreIdsTypeConverter.GenreIdData,

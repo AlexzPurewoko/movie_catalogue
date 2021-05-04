@@ -69,15 +69,6 @@ class MainFragment : Fragment() {
         outState.putInt(SAVED_FRAGMENT_KEY, currentFragmentKey)
     }
 
-    override fun onStop() {
-        super.onStop()
-//        childFragmentManager.commit {
-//            val list = childFragmentManager.fragments
-//            for(fg in list)
-//                remove(fg)
-//        }
-    }
-
 
     private fun instantiateFragments(): HashMap<Int, Fragment> {
         val qualifier = "id.apwdevs.app"
@@ -89,9 +80,6 @@ class MainFragment : Fragment() {
     }
 
     private fun attachFragmentsToFragmentManager() {
-//        val l = childFragmentManager.fragments
-//        val f = l.find { it.isVisible }
-//        Log.e("TRYFRAGMENT", "count: ${l.size}. visible {$f}, a -> $l ")
 
         if(childFragmentManager.fragments.isNotEmpty()) {
             childFragmentManager.commitNow {

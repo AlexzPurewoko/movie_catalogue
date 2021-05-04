@@ -129,7 +129,7 @@ fun TvEntity.mapToDomain(genres: Collection<Genres>): TvShow {
         else Genre(item.id, item.genreName)
     }
     return TvShow(
-        tvId = id, name = name, firstAirDate = firstAirDate, overview = overview,
+        tvId = id, name = name, firstAirDate = firstAirDate ?: "-", overview = overview,
         language = language, genres = allGenres, posterPath = posterPath,
         backdropPath = backdropPath, voteAverage = voteAverage, voteCount = voteCount
     )

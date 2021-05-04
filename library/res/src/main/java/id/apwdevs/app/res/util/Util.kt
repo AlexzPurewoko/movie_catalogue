@@ -24,5 +24,9 @@ fun View.gone() {
     visibility = View.GONE
 }
 
+fun View.changeStateDisplay(isDisplayed: Boolean){
+    visibility = if(isDisplayed) View.GONE else View.GONE
+}
+
 fun Float.convertRatingFrom10to5() =
     if(this == 0.0f) 0.0f else this / 10 * 5

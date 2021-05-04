@@ -17,8 +17,4 @@
         android:id="@+id/favorite_tab"
         android:icon="@drawable/ic_baseline_favorite_24"/>
 
-<!--    <item-->
-<!--        android:title="More"-->
-<!--        android:id="@+id/more_tab"-->
-<!--        android:icon="@drawable/ic_baseline_segment_24"/>-->
 </menu>

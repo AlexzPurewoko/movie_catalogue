@@ -45,7 +45,7 @@ fun Collection<TvShowItemResponse>.mapToEntity(page: Int): Collection<TvEntity> 
                 posterPath = it.posterPath,
                 backdropPath = it.backdropPath
                         ?: "",
-                firstAirDate = it.firstAirDate,
+                firstAirDate = it.firstAirDate ?: " - ",
                 voteAverage = it.voteAverage,
                 voteCount = it.voteCount,
                 page = page

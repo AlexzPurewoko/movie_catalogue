@@ -14,6 +14,7 @@ import id.apwdevs.app.detail.ui.adapter.SeasonAdapter
 import id.apwdevs.app.detail.ui.component.CardBackdropItem
 import id.apwdevs.app.detail.ui.component.EpisodeItem
 import id.apwdevs.app.detail.ui.component.NoDataItem
+import id.apwdevs.app.detail.util.GlobalLayoutListener
 import id.apwdevs.app.res.util.convertRatingFrom10to5
 import id.apwdevs.app.res.util.getImageURL
 import id.apwdevs.app.res.util.gone
@@ -90,6 +91,14 @@ class DetailTvShowHelper(
                 fragmentManager.commit { detach(fg) }
         }
         sectionFragments.clear()
+    }
+
+    override fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener {
+        return GlobalLayoutListener(
+            rootBinding.root,
+            contentBinding.title, contentBinding.ratingBar, contentBinding.genres,
+            callback
+        )
     }
 
 }

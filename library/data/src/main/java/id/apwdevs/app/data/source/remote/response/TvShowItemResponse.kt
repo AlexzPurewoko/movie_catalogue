@@ -6,7 +6,7 @@ import id.apwdevs.app.data.source.remote.response.parts.ItemResponse
 data class TvShowItemResponse(
 
 	@field:SerializedName("first_air_date")
-	val firstAirDate: String,
+	val firstAirDate: String?,
 
 	@field:SerializedName("overview")
 	val overview: String,

@@ -17,7 +17,7 @@ class SearchMoviePagingSource(
         val position = params.key ?: 1
         return try {
             val response = moviesNetwork.searchMovies(query, includeAdult, position)
-            val results = response.results.filter { it.title.isNotEmpty() }
+            val results = response.results.filter { it.title.isNotEmpty() && !it.releaseDate.isNullOrEmpty()}
             val totalPages = response.totalPages
             var nextKey: Int? = position + (params.loadSize / ITEM_PER_PAGE)
             nextKey =

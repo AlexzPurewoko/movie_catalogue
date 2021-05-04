@@ -5,6 +5,7 @@ import android.view.*
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import id.apwdevs.app.detail.R
 import id.apwdevs.app.detail.databinding.FragmentDetailBinding
 import id.apwdevs.app.detail.di.detailModule
@@ -48,6 +49,7 @@ class DetailItemFragment : BaseFeatureFragment() {
             }
         }
         detailHelper.onBindView(viewContainer)
+
         (requireActivity() as AppCompatActivity).apply {
             setSupportActionBar(viewContainer.detailToolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -60,7 +62,8 @@ class DetailItemFragment : BaseFeatureFragment() {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        detailHelper.initView()
+        detailHelper.init()
+
         detailViewModel.pageType = args.pageType
         detailViewModel.itemId = args.itemId
 
@@ -86,7 +89,7 @@ class DetailItemFragment : BaseFeatureFragment() {
             detailViewModel.toggleFavorite()
             return true
         } else if (item.itemId == android.R.id.home){
-            NavHostFragment.findNavController(this).navigate(BaseR.id.mainFragment)
+            findNavController().navigateUp()
         }
         return super.onOptionsItemSelected(item)
     }

@@ -1,7 +1,9 @@
 package id.apwdevs.app.detail.ui.helper
 
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -11,8 +13,10 @@ import com.google.android.material.chip.ChipGroup
 import id.apwdevs.app.core.domain.model.Genre
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.detail.databinding.FragmentDetailBinding
+import id.apwdevs.app.detail.util.GlobalLayoutListener
 import id.apwdevs.app.detail.viewmodel.DetailMovieShowVM
 import id.apwdevs.app.res.R
+import id.apwdevs.app.res.util.changeStateDisplay
 import id.apwdevs.app.res.util.gone
 import id.apwdevs.app.res.util.visible
 import java.util.*
@@ -31,10 +35,15 @@ abstract class DetailItemHelper(
     private val appBarLayoutOffsetChangeListener: AppBarLayout.OnOffsetChangedListener =
         AppBarLayout.OnOffsetChangedListener(::appBarOffsetChangeListener)
 
+    private var globalLayoutListener: GlobalLayoutListener? = null
 
-    abstract fun initView()
+
+    protected abstract fun initView()
     protected abstract fun onSuccess(data: Any?)
     protected abstract fun onLoad()
+
+    protected abstract fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener
+
     protected abstract fun onDestroy()
 
     protected fun composeGenre(chipGenre: ChipGroup, data: List<Genre>) {
@@ -59,8 +68,15 @@ abstract class DetailItemHelper(
 
     fun onBindView(bindingLayout: FragmentDetailBinding) {
         rootBinding = bindingLayout
-        rootBinding.btnRetry.setOnClickListener { onRetry() }
-        rootBinding.appBar.addOnOffsetChangedListener(appBarLayoutOffsetChangeListener)
+        rootBinding.apply {
+            btnRetry.setOnClickListener { onRetry() }
+            appBar.addOnOffsetChangedListener(appBarLayoutOffsetChangeListener)
+            posterImage.imageTintMode = PorterDuff.Mode.OVERLAY
+            posterImage.imageTintList = ColorStateList.valueOf(BASE_COLOR_TOOLBAR)
+            collapsingToolbar.setContentScrimColor(BASE_COLOR_TOOLBAR)
+            collapsingToolbar.setStatusBarScrimColor(BASE_COLOR_TOOLBAR)
+        }
+
     }
 
     fun bindObservedData(resData: State<DetailMovieShowVM.DataPostType>) {
@@ -122,10 +138,36 @@ abstract class DetailItemHelper(
         }
     }
 
+    fun init() {
+        initView()
+        globalLayoutListener = provideGlobalLayoutListener(::onReceiveFromLayoutObserver)
+        rootBinding.root.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
+    }
+
     fun destroy() {
         loading(false)
         rootBinding.appBar.removeOnOffsetChangedListener(appBarLayoutOffsetChangeListener)
+        removeGlobalLayoutListener()
+
         onDestroy()
+    }
+
+    private fun onReceiveFromLayoutObserver(
+        computeResult: Int,
+        appBarComputeResult: Int,
+        containerHeight: Int
+    ) {
+        rootBinding.appBar.layoutParams = rootBinding.appBar.layoutParams.apply {
+            height = appBarComputeResult
+        }
+    }
+
+    private fun removeGlobalLayoutListener() {
+        globalLayoutListener?.apply {
+            rootBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            release()
+        }
+        globalLayoutListener = null
     }
 
     private fun handleOnFailed() {
@@ -156,6 +198,7 @@ abstract class DetailItemHelper(
         rootBinding.nestedScroll.layoutParams = (rootBinding.nestedScroll.layoutParams as CoordinatorLayout.LayoutParams).apply {
             this.topMargin = if(scrollRate < 15) 10 else -8
         }
+
     }
 
     private fun disableScrollState(disabled: Boolean) {
@@ -192,6 +235,10 @@ abstract class DetailItemHelper(
     }
 
     private fun errorState(displayed: Boolean) {
-        rootBinding.errorDisplay.visibility = if (displayed) View.VISIBLE else View.GONE
+        rootBinding.errorDisplay.changeStateDisplay(displayed)
+    }
+
+    companion object {
+        private val BASE_COLOR_TOOLBAR = Color.parseColor("#202020")
     }
 }

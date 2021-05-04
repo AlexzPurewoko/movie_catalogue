@@ -32,7 +32,7 @@ class FavoriteTvShowRepoImpl(
         return flow {
             emit(State.Loading())
             try {
-                val data = favoriteDataSource.getFavorite(1)
+                val data = favoriteDataSource.getFavorite(id)
                 val mapper = data.mapToDomain()
                 emit(State.Success(mapper))
             } catch (e: Exception) {

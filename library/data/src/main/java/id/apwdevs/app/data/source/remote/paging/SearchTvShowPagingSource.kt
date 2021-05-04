@@ -17,7 +17,7 @@ class SearchTvShowPagingSource(
         val position = params.key ?: 1
         return try {
             val response = tvShowsNetwork.searchTvShows(query, includeAdult, position)
-            val results = response.results
+            val results = response.results.filter { it.name.isNotEmpty() && !it.firstAirDate.isNullOrEmpty()}
             val totalPages = response.totalPages
             var nextKey: Int? = position + (params.loadSize / ITEM_PER_PAGE)
             nextKey =

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import id.apwdevs.app.detail.R
+import id.apwdevs.app.res.R.drawable.search_placeholder_image
 import id.apwdevs.app.detail.data.EpisodeItemData
 import id.apwdevs.app.detail.databinding.ItemEpisodeContainerBinding
 import id.apwdevs.app.res.util.getImageURL
@@ -35,7 +36,7 @@ class EpisodeItem : Fragment() {
     private fun initializeElements() {
         with(binding) {
             title.text = data.title
-            Glide.with(requireContext()).load(data.image.getImageURL()).into(episodeImage)
+            Glide.with(requireContext()).load(data.image.getImageURL()).placeholder(search_placeholder_image).into(episodeImage)
             ratingProgress.progress = data.vote.toFloat()
             secondary.text = getString(R.string.secondary_text, data.seasonNumber, data.date)
         }
