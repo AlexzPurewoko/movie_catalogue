@@ -8,16 +8,17 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class SearchTvShowPagingSource(
-        private val tvShowsNetwork: TvShowsNetwork,
-        private val query: String,
-        private val includeAdult: Boolean = false
+    private val tvShowsNetwork: TvShowsNetwork,
+    private val query: String,
+    private val includeAdult: Boolean = false
 ) : PagingSource<Int, TvShowItemResponse>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TvShowItemResponse> {
         val position = params.key ?: 1
         return try {
             val response = tvShowsNetwork.searchTvShows(query, includeAdult, position)
-            val results = response.results.filter { it.name.isNotEmpty() && !it.firstAirDate.isNullOrEmpty()}
+            val results =
+                response.results.filter { it.name.isNotEmpty() && !it.firstAirDate.isNullOrEmpty() }
             val totalPages = response.totalPages
             var nextKey: Int? = position + (params.loadSize / ITEM_PER_PAGE)
             nextKey =

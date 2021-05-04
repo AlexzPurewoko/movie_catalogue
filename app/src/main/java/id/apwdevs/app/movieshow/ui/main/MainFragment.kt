@@ -1,7 +1,6 @@
 package id.apwdevs.app.movieshow.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -43,7 +42,7 @@ class MainFragment : Fragment() {
                 setAllCorners(CornerFamily.ROUNDED, 40.0f)
             }.build()
             it.setOnNavigationItemSelectedListener(this::bottomNavImpl)
-            it.selectedItemId = if(currentFragmentKey == 0) R.id.search_tab else currentFragmentKey
+            it.selectedItemId = if (currentFragmentKey == 0) R.id.search_tab else currentFragmentKey
         }
     }
 
@@ -81,10 +80,10 @@ class MainFragment : Fragment() {
 
     private fun attachFragmentsToFragmentManager() {
 
-        if(childFragmentManager.fragments.isNotEmpty()) {
+        if (childFragmentManager.fragments.isNotEmpty()) {
             childFragmentManager.commitNow {
                 val list = childFragmentManager.fragments
-                for(i in list){
+                for (i in list) {
                     remove(i)
                 }
             }

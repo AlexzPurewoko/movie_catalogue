@@ -45,8 +45,8 @@ class SearchTvShowPagingTest {
 
     private val service: TvShowsNetwork by inject(TvShowsNetwork::class.java)
 
-    private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply{
-        for (i in 0..totalPage){
+    private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply {
+        for (i in 0..totalPage) {
             this[i] = 0
         }
     }
@@ -59,13 +59,13 @@ class SearchTvShowPagingTest {
 
     private lateinit var mockWebServer: MockWebServer
 
-    private val context : Context
+    private val context: Context
         get() {
             return InstrumentationRegistry.getInstrumentation().targetContext
         }
 
     @Before
-    fun setup(){
+    fun setup() {
         mockWebServer = MockWebServer()
         mockWebServer.start(8080)
 
@@ -186,6 +186,7 @@ class SearchTvShowPagingTest {
             adapter.submitData(it)
         }
     }
+
     private fun receiveCallback(reqPage: Int) {
         val prev = mappingCountCallHandler[reqPage]!!
         mappingCountCallHandler[reqPage] = prev + 1

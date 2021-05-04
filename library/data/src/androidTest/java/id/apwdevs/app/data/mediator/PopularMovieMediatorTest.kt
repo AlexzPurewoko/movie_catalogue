@@ -44,8 +44,8 @@ class PopularMovieMediatorTest {
 
     private lateinit var mockWebServer: MockWebServer
 
-    private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply{
-        for (i in 0..totalPage){
+    private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply {
+        for (i in 0..totalPage) {
             this[i] = 0
         }
     }
@@ -72,16 +72,16 @@ class PopularMovieMediatorTest {
 
         val pagingCaseDb = PagingMovieCaseDbInteractor(appDatabase)
         pager = Pager(
-                config = PagingConfig(
-                        pageSize = 20,
-                        prefetchDistance = 3,
-                        initialLoadSize = 20,
-                        enablePlaceholders = false
-                ),
-                remoteMediator = PopularMovieRemoteMediator(
-                        retrofitService, pagingCaseDb
-                ),
-                pagingSourceFactory = pagingSourceFactory
+            config = PagingConfig(
+                pageSize = 20,
+                prefetchDistance = 3,
+                initialLoadSize = 20,
+                enablePlaceholders = false
+            ),
+            remoteMediator = PopularMovieRemoteMediator(
+                retrofitService, pagingCaseDb
+            ),
+            pagingSourceFactory = pagingSourceFactory
         ).flow
     }
 
@@ -92,7 +92,7 @@ class PopularMovieMediatorTest {
     }
 
     @Test
-    fun firstLoad_should_load_first_data(){
+    fun firstLoad_should_load_first_data() {
         runBlocking {
             val job = executeLaunch(this)
             delay(1000)

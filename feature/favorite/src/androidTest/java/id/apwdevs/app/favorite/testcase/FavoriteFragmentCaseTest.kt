@@ -58,7 +58,7 @@ abstract class FavoriteFragmentCaseTest : BaseAndroidTest() {
         val detailCaseTvShowDb = get(FavoriteTvShowSource::class.java)
         val gson = Gson()
 
-        return when(pageType){
+        return when (pageType) {
             PageType.MOVIES -> {
                 val genreMovies = context.readJson(AssetDataJson.GENRE_MOVIES)
                 val detailMovie = context.readJson(AssetDataJson.DETAIL_MOVIE_OK)

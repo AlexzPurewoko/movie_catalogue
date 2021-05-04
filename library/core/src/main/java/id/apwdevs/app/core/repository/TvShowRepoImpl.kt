@@ -30,9 +30,9 @@ class TvShowRepoImpl constructor(
 
     override fun discoverPopularTvShow(): Flow<PagingData<TvShow>> {
         return Pager(
-                config = Config.pageConfig(),
-                remoteMediator = PopularTvShowRemoteMediator(tvShowsNetwork, caseDb),
-                pagingSourceFactory = { caseDb.getAllDataPaging() }
+            config = Config.pageConfig(),
+            remoteMediator = PopularTvShowRemoteMediator(tvShowsNetwork, caseDb),
+            pagingSourceFactory = { caseDb.getAllDataPaging() }
         ).flow.map { pagingData ->
             getGenre()
             pagingData.map {
@@ -43,8 +43,8 @@ class TvShowRepoImpl constructor(
 
     override fun searchTvShow(query: String, includeAdult: Boolean): Flow<PagingData<TvShow>> {
         return Pager(
-                config = Config.pageConfig(),
-                pagingSourceFactory = { SearchTvShowPagingSource(tvShowsNetwork, query, includeAdult) }
+            config = Config.pageConfig(),
+            pagingSourceFactory = { SearchTvShowPagingSource(tvShowsNetwork, query, includeAdult) }
         ).flow.map { pagingData ->
             getGenre()
             pagingData.map {

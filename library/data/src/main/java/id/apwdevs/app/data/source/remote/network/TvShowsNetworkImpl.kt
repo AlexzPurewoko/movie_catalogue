@@ -9,8 +9,11 @@ import id.apwdevs.app.data.utils.Config
 
 class TvShowsNetworkImpl(
     private val apiService: ApiService
-): TvShowsNetwork {
-    override suspend fun getPopularTvShows(page: Int, language: String): PageResponse<TvShowItemResponse> {
+) : TvShowsNetwork {
+    override suspend fun getPopularTvShows(
+        page: Int,
+        language: String
+    ): PageResponse<TvShowItemResponse> {
         return apiService.getPopularTvShows(Config.TOKEN, language, page)
     }
 
@@ -18,7 +21,11 @@ class TvShowsNetworkImpl(
         return apiService.getDetailTvShows(movieId, Config.TOKEN, language)
     }
 
-    override suspend fun searchTvShows(query: String, includeAdult: Boolean, page: Int): PageResponse<TvShowItemResponse> {
+    override suspend fun searchTvShows(
+        query: String,
+        includeAdult: Boolean,
+        page: Int
+    ): PageResponse<TvShowItemResponse> {
         return apiService.searchTvShow(Config.TOKEN, page, query, includeAdult)
     }
 

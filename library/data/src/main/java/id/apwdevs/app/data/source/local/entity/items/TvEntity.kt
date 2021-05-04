@@ -5,15 +5,15 @@ import id.apwdevs.app.data.source.local.entity.RemoteKeysTvShow
 import id.apwdevs.app.data.source.local.entity.converters.GenreIdsTypeConverter
 
 @Entity(
-        tableName = "tvshows",
-        foreignKeys = [
-            ForeignKey(
-                    entity = RemoteKeysTvShow::class,
-                    parentColumns = ["tv_id"],
-                    childColumns = ["id"],
-                    onDelete = ForeignKey.CASCADE
-            )
-        ]
+    tableName = "tvshows",
+    foreignKeys = [
+        ForeignKey(
+            entity = RemoteKeysTvShow::class,
+            parentColumns = ["tv_id"],
+            childColumns = ["id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 @TypeConverters(GenreIdsTypeConverter::class)
 data class TvEntity(

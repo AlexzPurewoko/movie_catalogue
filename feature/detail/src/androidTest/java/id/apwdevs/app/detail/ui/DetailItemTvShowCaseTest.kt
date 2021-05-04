@@ -79,7 +79,7 @@ class DetailItemTvShowCaseTest : DetailItemFragmentCase() {
             "btn_retry".clickThis()
 
             data.let {
-                if(it is TvDetailResponse) {
+                if (it is TvDetailResponse) {
                     it.name.mustBeDisplayed()
                 }
             }

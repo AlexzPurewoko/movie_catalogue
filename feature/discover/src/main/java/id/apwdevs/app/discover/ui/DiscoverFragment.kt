@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
-import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -25,7 +24,8 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
 
     private lateinit var binding: FragmentDiscoverBinding
 
-    @VisibleForTesting var currentPageView: PageType? = null
+    @VisibleForTesting
+    var currentPageView: PageType? = null
 
     private var tabLayoutMediator: TabLayoutMediator? = null
 
@@ -65,7 +65,7 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
         tabLayoutMediator?.attach()
 
         onPageChangeCallback = OnPageSelectedChangeCallback {
-            currentPageView = when(it){
+            currentPageView = when (it) {
                 0 -> PageType.MOVIES
                 1 -> PageType.TV_SHOW
                 else -> null

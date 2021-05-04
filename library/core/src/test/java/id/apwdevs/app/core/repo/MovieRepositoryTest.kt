@@ -142,7 +142,7 @@ class MovieRepositoryTest {
                 observer.onChanged(coMatch { it is State.Loading })
                 service.getDetailMovies(cmpEq(movieId.toString()))
                 observer.onChanged(
-                        coMatch { it is State.Error }
+                    coMatch { it is State.Error }
                 )
             }
             confirmVerified(observer, service)
@@ -175,7 +175,7 @@ class MovieRepositoryTest {
                 observer.onChanged(coMatch { it is State.Loading })
                 service.getDetailMovies(cmpEq(movieId.toString()))
                 observer.onChanged(
-                        coMatch { it is State.Success<DetailMovie> }
+                    coMatch { it is State.Success<DetailMovie> }
                 )
             }
             confirmVerified(observer, service)

@@ -1,21 +1,30 @@
 package id.apwdevs.app.movieshow.base
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import id.apwdevs.app.movieshow.MainApplication
 import id.apwdevs.app.movieshow.util.IdlingResourceHelper
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 open class BaseViewModel(
     protected val application: Application
-): ViewModel() {
+) : ViewModel() {
     private val idlingRes: IdlingResourceHelper = (application as MainApplication).idlingRes
 
     @Suppress("unused")
-    protected fun safelyExecuteTask(dispatcher: CoroutineDispatcher = Dispatchers.Default, block: suspend CoroutineScope.() -> Unit){
+    protected fun safelyExecuteTask(
+        dispatcher: CoroutineDispatcher = Dispatchers.Default,
+        block: suspend CoroutineScope.() -> Unit
+    ) {
         viewModelScope.launch {
             idlingRes.increment()
             block.invoke(this)

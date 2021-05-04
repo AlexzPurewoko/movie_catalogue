@@ -1,11 +1,9 @@
 package id.apwdevs.app.favorite.ui.content
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.detail.ui.DetailItemFragmentArgs
@@ -17,9 +15,9 @@ import id.apwdevs.app.res.data.MovieShowItem
 import id.apwdevs.app.res.fragment.FragmentWithState
 import id.apwdevs.app.res.fragment.viewmodel.StateViewModel
 import id.apwdevs.app.res.util.PageType
+import id.apwdevs.app.res.util.changeStateDisplay
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.module.Module
-
 import id.apwdevs.app.movieshow.R as RBase
 
 
@@ -70,10 +68,10 @@ class FragmentContent : FragmentWithState() {
                 }
             }
         }
-        Log.e("JHE", "displayData: $data. toggleState: $dataHidden")
+
         super.toggleStateDisplayFragment(dataHidden)
-        binding.frameStatus.visibility = if(dataHidden) View.VISIBLE else View.INVISIBLE
-        binding.recyclerView.visibility = if(!dataHidden) View.VISIBLE else View.INVISIBLE
+        binding.frameStatus.changeStateDisplay(dataHidden)
+        binding.recyclerView.changeStateDisplay(!dataHidden)
     }
 
     private fun callDisplayType(displayType: StateViewModel.DisplayType) {
@@ -81,7 +79,7 @@ class FragmentContent : FragmentWithState() {
     }
 
     private fun onItemClick(item: MovieShowItem) {
-        Toast.makeText(requireContext(), "Item Click ${item.id}", Toast.LENGTH_LONG).show()
+
         pageType?.let {
             val bundle = DetailItemFragmentArgs(it, item.id).toBundle()
             findNavController().navigate(

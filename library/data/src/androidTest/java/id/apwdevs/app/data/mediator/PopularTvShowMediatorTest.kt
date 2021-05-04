@@ -39,7 +39,7 @@ class PopularTvShowMediatorTest {
 
     private val appDatabase: AppDatabase by lazy {
         Room.databaseBuilder(context, AppDatabase::class.java, "appdb.db")
-                .build()
+            .build()
     }
 
     private lateinit var mockWebServer: MockWebServer
@@ -71,16 +71,16 @@ class PopularTvShowMediatorTest {
 
         val pagingCaseDb = PagingTvShowCaseDbInteractor(appDatabase)
         pager = Pager(
-                config = PagingConfig(
-                        pageSize = 20,
-                        prefetchDistance = 3,
-                        initialLoadSize = 20,
-                        enablePlaceholders = false
-                ),
-                remoteMediator = PopularTvShowRemoteMediator(
-                        retrofitService, pagingCaseDb
-                ),
-                pagingSourceFactory = pagingSourceFactory
+            config = PagingConfig(
+                pageSize = 20,
+                prefetchDistance = 3,
+                initialLoadSize = 20,
+                enablePlaceholders = false
+            ),
+            remoteMediator = PopularTvShowRemoteMediator(
+                retrofitService, pagingCaseDb
+            ),
+            pagingSourceFactory = pagingSourceFactory
         ).flow
     }
 

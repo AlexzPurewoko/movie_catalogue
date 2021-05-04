@@ -1,6 +1,5 @@
 package id.apwdevs.app.detail.util
 
-import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.widget.AppCompatRatingBar
@@ -15,7 +14,7 @@ class GlobalLayoutListener(
     ratingBarRefs: AppCompatRatingBar,
     chipGroupRefs: ChipGroup,
     callbackResult: (computeResult: Int, appBarComputeResult: Int, containerHeight: Int) -> Unit
-): ViewTreeObserver.OnGlobalLayoutListener {
+) : ViewTreeObserver.OnGlobalLayoutListener {
 
     private val weakTextTitleRef = WeakReference(textTitleRefs)
     private val weakRatingBarRef = WeakReference(ratingBarRefs)
@@ -23,13 +22,13 @@ class GlobalLayoutListener(
     private val weakRootView = WeakReference(container)
     private val weakCallbackResult = WeakReference(callbackResult)
 
-    var iterations = 0
+    private var iterations = 0
 
     override fun onGlobalLayout() {
 
         // To prevent infinite call loops from viewTreeObserver,
         // we need to define the max iterations of call
-        if(iterations > MAX_ITERATIONS) return
+        if (iterations > MAX_ITERATIONS) return
 
         // getting all marginTop of view
         val marginTopTitle = marginTopOf(weakTextTitleRef)
@@ -46,7 +45,7 @@ class GlobalLayoutListener(
         // container sizes
         val containerHeight = heightOf(weakRootView)
 
-        if(
+        if (
             containerHeight != 0 &&
             marginTopTitle != 0 && marginTopRatingBar != 0 && marginTopChipGroup != 0 &&
             textTitleHeight != 0 && ratingBarHeight != 0 && chipGroupHeight != 0
@@ -61,15 +60,18 @@ class GlobalLayoutListener(
         }
     }
 
-    private fun <T: View> marginTopOf(viewRef: WeakReference<T>): Int {
+    private fun <T : View> marginTopOf(viewRef: WeakReference<T>): Int {
         return getVProps(viewRef) { it?.marginTop }
     }
 
-    private fun <T: View> heightOf(viewRef: WeakReference<T>): Int {
+    private fun <T : View> heightOf(viewRef: WeakReference<T>): Int {
         return getVProps(viewRef) { it?.measuredHeight }
     }
 
-    private inline fun <T: View> getVProps(viewRef: WeakReference<T>, retValue: (View?) -> Int?): Int{
+    private inline fun <T : View> getVProps(
+        viewRef: WeakReference<T>,
+        retValue: (View?) -> Int?
+    ): Int {
         return retValue(viewRef.get()) ?: 0
     }
 

@@ -148,16 +148,16 @@ fun DetailMovie.mapToEntity(): FavDetailMovie {
 @JvmName("mapDetailTvShowIntoEntity")
 fun DetailTvShow.mapToEntity(): FavDetailTvShow {
     return FavDetailTvShow(
-            favDetailTvShow = extractTvShowEntityFromDomain(this),
-            genres = domainGenreToEntityRoom(genres),
-            productionCompanies = domainProductCompaniesToEntityRoom(productionCompanies),
-            creators = domainCreatorsToEntityRoom(creators, id),
-            lastAndNextEpisodeToAir = concatEpisodeToAirFromDomain(
-                lastEpisodeToAir,
-                nextEpisodeToAir,
-                id
-            ),
-            seasons = domainTvSeasonToRoomEntity(seasons, id)
-        )
+        favDetailTvShow = extractTvShowEntityFromDomain(this),
+        genres = domainGenreToEntityRoom(genres),
+        productionCompanies = domainProductCompaniesToEntityRoom(productionCompanies),
+        creators = domainCreatorsToEntityRoom(creators, id),
+        lastAndNextEpisodeToAir = concatEpisodeToAirFromDomain(
+            lastEpisodeToAir,
+            nextEpisodeToAir,
+            id
+        ),
+        seasons = domainTvSeasonToRoomEntity(seasons, id)
+    )
 
 }

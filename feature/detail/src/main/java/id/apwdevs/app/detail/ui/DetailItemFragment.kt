@@ -2,9 +2,7 @@ package id.apwdevs.app.detail.ui
 
 import android.os.Bundle
 import android.view.*
-import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import id.apwdevs.app.detail.R
 import id.apwdevs.app.detail.databinding.FragmentDetailBinding
@@ -18,15 +16,14 @@ import id.apwdevs.app.res.util.PageType
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.module.Module
 
-import id.apwdevs.app.movieshow.R as BaseR
 class DetailItemFragment : BaseFeatureFragment() {
 
     private val args: DetailItemFragmentArgs by lazy {
         DetailItemFragmentArgs.fromBundle(requireArguments())
     }
 
-
     private val detailViewModel: DetailMovieShowVM by viewModel()
+
     lateinit var detailHelper: DetailItemHelper
 
     override val koinModules: List<Module>
@@ -64,13 +61,14 @@ class DetailItemFragment : BaseFeatureFragment() {
 
         detailHelper.init()
 
-        detailViewModel.pageType = args.pageType
-        detailViewModel.itemId = args.itemId
+        detailViewModel.apply {
+            pageType = args.pageType
+            itemId = args.itemId
 
-        detailViewModel.data.observe(viewLifecycleOwner, detailHelper::bindObservedData)
-        detailViewModel.loadData()
-        detailHelper.handleClickFavorite(detailViewModel::toggleFavorite)
-
+            data.observe(viewLifecycleOwner, detailHelper::bindObservedData)
+            loadData()
+            detailHelper.handleClickFavorite(::toggleFavorite)
+        }
 
     }
 
@@ -88,7 +86,7 @@ class DetailItemFragment : BaseFeatureFragment() {
         if (item.itemId == R.id.favorite_menu) {
             detailViewModel.toggleFavorite()
             return true
-        } else if (item.itemId == android.R.id.home){
+        } else if (item.itemId == android.R.id.home) {
             findNavController().navigateUp()
         }
         return super.onOptionsItemSelected(item)

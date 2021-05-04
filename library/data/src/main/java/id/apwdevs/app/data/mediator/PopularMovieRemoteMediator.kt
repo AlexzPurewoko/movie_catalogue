@@ -1,7 +1,6 @@
 package id.apwdevs.app.data.mediator
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -35,19 +34,17 @@ class PopularMovieRemoteMediator(
     ): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> {
-                Log.d("TRY", "remote mediator REFRESH")
                 val remoteKeys = getRemoteKeysClosestToCurrentPosition(state)
                 remoteKeys?.nextKey?.minus(1) ?: STARTING_PAGE_INDEX
             }
             LoadType.PREPEND -> {
-                Log.d("TRY", "remote mediator PREPEND")
                 val remoteKeys = getRemoteKeyForFirstItem(state)
 
                 remoteKeys?.prevKey ?: return MediatorResult.Success(endOfPaginationReached = true)
             }
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state)
-remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = true)
+                remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = true)
             }
         }
         try {
@@ -58,9 +55,10 @@ remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = tr
             caseDb.provideTransaction {
                 if (loadType == LoadType.REFRESH) {
                     caseDb.clearRemoteKeys()
-                } else if (loadType == LoadType.APPEND && page - 2 > 0) {
-                    deletePrevKeys(page)
                 }
+//                else if (loadType == LoadType.APPEND && page - 2 > 0) {
+//                    deletePrevKeys(page)
+//                }
                 val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val keys = items.map {
@@ -80,6 +78,7 @@ remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = tr
         }
     }
 
+    @Suppress("unused")
     private suspend fun deletePrevKeys(currentPage: Int) {
         val pageToBeDeleted = currentPage - 2
         val postQuery =

@@ -1,10 +1,8 @@
 package id.apwdevs.app.movieshow
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.navigation.NavHostController
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +11,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if(!findNavController(R.id.nav_host_fragment).navigateUp())
+        if (!findNavController(R.id.nav_host_fragment).navigateUp())
             super.onBackPressed()
     }
 }

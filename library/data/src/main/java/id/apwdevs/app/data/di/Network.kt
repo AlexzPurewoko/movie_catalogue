@@ -17,16 +17,18 @@ import java.util.concurrent.TimeUnit
 
 val networkModule = module {
 
-    factory <Converter.Factory> {
+    factory<Converter.Factory> {
         GsonConverterFactory.create(Gson())
     }
 
-    single { OkHttpClient.Builder().apply {
-        addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-        readTimeout(10, TimeUnit.SECONDS)
-        writeTimeout(10, TimeUnit.SECONDS)
-        callTimeout(10, TimeUnit.SECONDS)
-    }.build() }
+    single {
+        OkHttpClient.Builder().apply {
+            addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            readTimeout(10, TimeUnit.SECONDS)
+            writeTimeout(10, TimeUnit.SECONDS)
+            callTimeout(10, TimeUnit.SECONDS)
+        }.build()
+    }
 
     single {
         Retrofit.Builder().apply {

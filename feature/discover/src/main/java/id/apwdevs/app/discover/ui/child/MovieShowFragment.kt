@@ -1,12 +1,10 @@
 package id.apwdevs.app.discover.ui.child
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -18,6 +16,7 @@ import id.apwdevs.app.res.data.MovieShowItem
 import id.apwdevs.app.res.fragment.FragmentWithState
 import id.apwdevs.app.res.fragment.viewmodel.StateViewModel
 import id.apwdevs.app.res.util.PageType
+import id.apwdevs.app.res.util.changeStateDisplay
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.module.Module
 import id.apwdevs.app.movieshow.R as BaseR
@@ -55,16 +54,13 @@ class MovieShowFragment : FragmentWithState() {
 
     private fun initAdapter() {
 
-        // will add removeload statelistener next
         movieShowAdapter.addLoadStateListener { state ->
-            val itemCount =  movieShowAdapter.itemCount
+            val itemCount = movieShowAdapter.itemCount
             when {
 
                 state.refresh is LoadState.NotLoading && itemCount == 0 ->
                     callDisplay(StateViewModel.DisplayType.DATA_EMPTY)
-                state.mediator?.refresh is LoadState.Error ->{
-                    val o = state.mediator?.refresh as? LoadState.Error
-                    Log.e("MEDIATOR ERROR", "ERROR MESSAGE", o?.error)
+                state.mediator?.refresh is LoadState.Error -> {
                     callDisplay(StateViewModel.DisplayType.ERROR)
                 }
                 state.refresh is LoadState.Loading && state.mediator?.refresh is LoadState.Loading ->
@@ -75,7 +71,6 @@ class MovieShowFragment : FragmentWithState() {
 
             }
 
-            Log.e("STATE", "state: ${state.refresh}, mediator: ${state.mediator?.refresh}")
         }
 
     }
@@ -85,7 +80,7 @@ class MovieShowFragment : FragmentWithState() {
         callStateFragmentToDisplaySomething(displayType)
     }
 
-    override fun mapOfTextDisplay(): HashMap<StateViewModel.DisplayType, Int>  = hashMapOf(
+    override fun mapOfTextDisplay(): HashMap<StateViewModel.DisplayType, Int> = hashMapOf(
         StateViewModel.DisplayType.DATA_EMPTY to R.string.discover_data_empty,
         StateViewModel.DisplayType.ERROR to R.string.discover_data_error,
         StateViewModel.DisplayType.LOADING to R.string.discover_data_loading
@@ -93,12 +88,12 @@ class MovieShowFragment : FragmentWithState() {
 
     override fun toggleStateDisplayFragment(displayed: Boolean) {
         super.toggleStateDisplayFragment(displayed)
-        binding.recyclerView.visibility = if (displayed) View.GONE else View.VISIBLE
-        binding.frameStatus.visibility = if (displayed) View.VISIBLE else View.INVISIBLE
+        binding.recyclerView.changeStateDisplay(!displayed)
+        binding.frameStatus.changeStateDisplay(displayed)
     }
 
     override fun provideCallbackFromStateDisplay(parameters: List<Any>) {
-        if(parameters[0] === StateViewModel.StateCallType.RETRY){
+        if (parameters[0] === StateViewModel.StateCallType.RETRY) {
             movieShowViewModel.discoverPopular(currentFragmentType)
                 .observe(viewLifecycleOwner, this::observingData)
         }
@@ -117,16 +112,6 @@ class MovieShowFragment : FragmentWithState() {
                 BaseR.id.detailFragment, bundle
             )
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        childFragmentManager.commit {
-//            val list = childFragmentManager.fragments
-//            for(fg in list){
-//                remove(fg)
-//            }
-//        }
     }
 
     companion object {

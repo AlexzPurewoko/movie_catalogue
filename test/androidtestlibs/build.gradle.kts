@@ -25,13 +25,7 @@ android {
     }
 
     buildTypes {
-//        getByName("release") {
-//            isMinifyEnabled = true
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//        }
+
         getByName("debug") {
             debuggable(true)
         }
@@ -64,10 +58,4 @@ dependencies {
         TestLibs.mockWebServer
     ).forEach { api(it) }
 
-}
-
-allprojects {
-    configurations.all {
-        resolutionStrategy.force("org.objenesis:objenesis:2.6")
-    }
 }

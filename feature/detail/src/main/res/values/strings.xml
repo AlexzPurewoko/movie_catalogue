@@ -17,5 +17,9 @@
     <string name="favorite_button">Favorite Button</string>
     <string name="poster_seasons_content_description">Poster Seasons</string>
     <string name="okay">Okay</string>
-    <string name="episode_count">%1$d Episodes</string>
+    <plurals name="episode_count">
+        <item quantity="zero">No Episodes</item>
+        <item quantity="one">%1$d Episode</item>
+        <item quantity="other">%1$d Episodes</item>
+    </plurals>
 </resources>

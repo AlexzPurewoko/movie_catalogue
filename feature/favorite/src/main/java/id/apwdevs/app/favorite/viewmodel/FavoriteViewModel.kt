@@ -19,7 +19,7 @@ class FavoriteViewModel(
         favoriteUseCase.getAllFavoriteMovies()
             .map {
                 it.copyTo { list ->
-                    list.map {mov -> mov.mapToItem() }
+                    list.map { mov -> mov.mapToItem() }
                 }
             }
             .toLiveData(viewModelScope.coroutineContext)

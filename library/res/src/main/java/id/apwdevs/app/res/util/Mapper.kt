@@ -7,13 +7,13 @@ import id.apwdevs.app.res.data.MovieShowItem
 @JvmName("mapMovieDomainToMovieShowItem")
 fun Movies.mapToItem() =
     MovieShowItem(
-       movieId,
-       title,
-       overview,
-       backdropPath,
-       genres,
-       voteCount,
-       voteAverage
+        movieId,
+        title,
+        overview,
+        backdropPath,
+        genres,
+        voteCount,
+        voteAverage
     )
 
 @JvmName("mapTvShowDomainToMovieShowItem")

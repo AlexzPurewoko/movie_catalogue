@@ -1,8 +1,8 @@
 import modules.Apps
 
 plugins {
-    id ("com.android.library")
-    kotlin ("android")
+    id("com.android.library")
+    kotlin("android")
     id("jacoco-plugin")
 }
 
@@ -17,14 +17,17 @@ android {
         versionName = Apps.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles( "consumer-rules.pro")
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
 
         getByName("release") {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
 
     }
@@ -40,7 +43,8 @@ android {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs.toMutableList().apply { add("-Xopt-in=kotlin.RequiresOptIn") }
+        freeCompilerArgs =
+            freeCompilerArgs.toMutableList().apply { add("-Xopt-in=kotlin.RequiresOptIn") }
     }
 
 }

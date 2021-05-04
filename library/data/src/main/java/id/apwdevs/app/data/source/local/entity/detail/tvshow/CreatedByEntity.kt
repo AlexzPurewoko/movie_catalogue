@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class CreatedByEntity (
+data class CreatedByEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")
     val id: Int,
@@ -38,4 +38,4 @@ data class CreatedByEntity (
     @ColumnInfo(name = "profile_path")
     val profilePath: String?,
 
-)
+    )

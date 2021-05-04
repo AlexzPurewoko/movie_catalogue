@@ -4,10 +4,10 @@ import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import id.apwdevs.app.libs.data.stub.genres
 import id.apwdevs.app.data.source.local.room.AppDatabase
 import id.apwdevs.app.data.source.local.room.dao.FavTvShowDao
 import id.apwdevs.app.libs.data.DetailTvShowDBStub
+import id.apwdevs.app.libs.data.stub.genres
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert
@@ -23,7 +23,7 @@ class DetailTvShowTest {
 
     @Before
     fun composeDb() {
-        val ctx =  ApplicationProvider.getApplicationContext<Context>()
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(ctx, AppDatabase::class.java).build()
         dao = db.favTvShowDetail()
 

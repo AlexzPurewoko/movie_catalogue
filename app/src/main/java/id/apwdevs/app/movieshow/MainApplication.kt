@@ -15,7 +15,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
 @Suppress("unused")
-open class MainApplication: Application() {
+open class MainApplication : Application() {
 
     val idlingRes: IdlingResourceHelper by lazy { provideIdling() }
 
@@ -32,22 +32,22 @@ open class MainApplication: Application() {
             androidContext(this@MainApplication)
             androidLogger(Level.DEBUG)
             modules(
-                    dbModules,
-                    dbAccessModule,
-                    netModules,
-                    netWorkAccessModule,
-                    repoModule,
-                    useCaseModule,
+                dbModules,
+                dbAccessModule,
+                netModules,
+                netWorkAccessModule,
+                repoModule,
+                useCaseModule,
             )
         }
     }
 
 
     private fun provideIdling(): IdlingResourceHelper {
-        return if(BuildConfig.DEBUG)
-                Class.forName("id.apwdevs.app.movieshow.DebugUtilKt")
-                    .getDeclaredMethod("getProvideIdling")
-                    .invoke(null) as IdlingResourceHelper
-            else IdlingResourceHelper()
+        return if (BuildConfig.DEBUG)
+            Class.forName("id.apwdevs.app.movieshow.DebugUtilKt")
+                .getDeclaredMethod("getProvideIdling")
+                .invoke(null) as IdlingResourceHelper
+        else IdlingResourceHelper()
     }
 }

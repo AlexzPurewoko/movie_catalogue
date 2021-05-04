@@ -34,28 +34,32 @@ class MoviesNetworkImplTest {
         movieNetwork = MoviesNetworkImpl(apiService)
     }
 
-    @Test fun `should call getPopularMovies from api source`(){
+    @Test
+    fun `should call getPopularMovies from api source`() {
         runBlocking {
             movieNetwork.getPopularMovies(1)
             coVerify(exactly = 1) { apiService.getPopularMovies(token, language, 1) }
         }
     }
 
-    @Test fun `should call getDetailMovies from api source`(){
+    @Test
+    fun `should call getDetailMovies from api source`() {
         runBlocking {
             movieNetwork.getDetailMovies(movieId)
             coVerify(exactly = 1) { apiService.getDetailMovies(movieId, token, language) }
         }
     }
 
-    @Test fun `should call searchMovies from api source`(){
+    @Test
+    fun `should call searchMovies from api source`() {
         runBlocking {
             movieNetwork.searchMovies(query, true)
-            coVerify(exactly = 1) { apiService.searchMovies(token, 1, query, true)}
+            coVerify(exactly = 1) { apiService.searchMovies(token, 1, query, true) }
         }
     }
 
-    @Test fun `should call getMovieGenre from api source`(){
+    @Test
+    fun `should call getMovieGenre from api source`() {
         runBlocking {
             movieNetwork.getMovieGenre()
             coVerify(exactly = 1) { apiService.getMovieGenre(token) }

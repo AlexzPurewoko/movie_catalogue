@@ -19,7 +19,8 @@ class FavoriteMovieRepoImpl(
             try {
                 val data = favoriteDataSource.getAllFavorite()
                 val genres = favoriteDataSource.genres()
-                val mapped = data.mapToDomain(genres){ favoriteDataSource.genreMapper(it) }.toList()
+                val mapped =
+                    data.mapToDomain(genres) { favoriteDataSource.genreMapper(it) }.toList()
 
                 emit(State.Success(mapped))
             } catch (e: Exception) {

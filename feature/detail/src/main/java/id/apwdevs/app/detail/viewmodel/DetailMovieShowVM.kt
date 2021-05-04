@@ -33,7 +33,7 @@ class DetailMovieShowVM(
 
 
     fun loadData() {
-        when(pageType){
+        when (pageType) {
             PageType.MOVIES -> loadDetailMovie()
             PageType.TV_SHOW -> loadDetailTvShow()
             null -> throw NullPointerException("pageType cannot be null!")
@@ -43,31 +43,37 @@ class DetailMovieShowVM(
     fun toggleFavorite() {
         safelyExecuteTask(Dispatchers.IO) {
             // if any progress performed, then return
-            if(_data.value is State.Loading) return@safelyExecuteTask
+            if (_data.value is State.Loading) return@safelyExecuteTask
             _data.postValue(State.Loading(FAVORITE_LOADING_TAG))
 
-            if(isFavorited){
-                favoriteUseCase.unFavorite(itemId, when(pageType){
-                    PageType.MOVIES -> DataType.MOVIES
-                    PageType.TV_SHOW -> DataType.TVSHOW
-                    null -> throw NullPointerException("pageType cannot be null!")
-                })
+            if (isFavorited) {
+                favoriteUseCase.unFavorite(
+                    itemId, when (pageType) {
+                        PageType.MOVIES -> DataType.MOVIES
+                        PageType.TV_SHOW -> DataType.TVSHOW
+                        null -> throw NullPointerException("pageType cannot be null!")
+                    }
+                )
             } else {
-                when(pageType) {
+                when (pageType) {
                     PageType.MOVIES -> favoriteUseCase.saveFavoriteMovie(itemData as DetailMovie)
                     PageType.TV_SHOW -> favoriteUseCase.saveFavoriteTvShow(itemData as DetailTvShow)
                 }
             }
 
-            isFavorited = favoriteUseCase.checkIsInFavorite(itemId, when(pageType){
-                PageType.MOVIES -> DataType.MOVIES
-                PageType.TV_SHOW -> DataType.TVSHOW
-                null -> throw NullPointerException("pageType cannot be null!")
-            })
+            isFavorited = favoriteUseCase.checkIsInFavorite(
+                itemId, when (pageType) {
+                    PageType.MOVIES -> DataType.MOVIES
+                    PageType.TV_SHOW -> DataType.TVSHOW
+                    null -> throw NullPointerException("pageType cannot be null!")
+                }
+            )
 
-            _data.postValue(State.Success(
-                DataPostType(PostType.FAVORITE_STATE, isFavorited)
-            ))
+            _data.postValue(
+                State.Success(
+                    DataPostType(PostType.FAVORITE_STATE, isFavorited)
+                )
+            )
         }
     }
 
@@ -75,12 +81,14 @@ class DetailMovieShowVM(
         safelyExecuteTask(Dispatchers.IO) {
             _data.postValue(State.Loading())
             val isInFavaorite = favoriteUseCase.checkIsInFavorite(itemId, DataType.TVSHOW)
-            _data.postValue(State.Success(
+            _data.postValue(
+                State.Success(
                     DataPostType(PostType.FAVORITE_STATE, isInFavaorite)
-            ))
+                )
+            )
             isFavorited = isInFavaorite
 
-            val data = if(isInFavaorite){
+            val data = if (isInFavaorite) {
                 favoriteUseCase.getFavoriteTvShow(itemId)
             } else {
                 detailUseCase.getDetailTvShow(itemId)
@@ -89,26 +97,29 @@ class DetailMovieShowVM(
             var mappedData: TvShowDetail? = null
             try {
                 data.collect { retData ->
-                    when (retData){
+                    when (retData) {
                         is State.Error -> retData.error?.let {
                             throw it
                         }
-                        is State.Loading -> {}
+                        is State.Loading -> {
+                        }
                         is State.Success -> {
                             itemData = retData.data
                             mappedData = retData.data?.mapToItem()
                         }
                     }
                 }
-            } catch (e: Throwable){
+            } catch (e: Throwable) {
 
                 _data.postValue(State.Error(e))
                 return@safelyExecuteTask
             }
 
-            _data.postValue(State.Success(
+            _data.postValue(
+                State.Success(
                     DataPostType(PostType.DATA, mappedData)
-            ))
+                )
+            )
 
         }
     }
@@ -117,13 +128,15 @@ class DetailMovieShowVM(
         safelyExecuteTask(Dispatchers.IO) {
             _data.postValue(State.Loading())
             val isInFavaorite = favoriteUseCase.checkIsInFavorite(itemId, DataType.MOVIES)
-            _data.postValue(State.Success(
+            _data.postValue(
+                State.Success(
                     DataPostType(PostType.FAVORITE_STATE, isInFavaorite)
-            ))
+                )
+            )
 
             isFavorited = isInFavaorite
 
-            val data = if(isInFavaorite){
+            val data = if (isInFavaorite) {
                 favoriteUseCase.getFavoriteMovie(itemId)
             } else {
                 detailUseCase.getDetailMovie(itemId)
@@ -132,26 +145,29 @@ class DetailMovieShowVM(
             var mappedData: MovieDetail? = null
             try {
                 data.collect { retData ->
-                    when (retData){
+                    when (retData) {
                         is State.Error -> retData.error?.let {
                             throw it
                         }
-                        is State.Loading -> {}
+                        is State.Loading -> {
+                        }
                         is State.Success -> {
                             itemData = retData.data
                             mappedData = retData.data?.mapToItem()
                         }
                     }
                 }
-            } catch (e: Throwable){
+            } catch (e: Throwable) {
 
                 _data.postValue(State.Error(e))
                 return@safelyExecuteTask
             }
 
-            _data.postValue(State.Success(
-                DataPostType(PostType.DATA, mappedData)
-            ))
+            _data.postValue(
+                State.Success(
+                    DataPostType(PostType.DATA, mappedData)
+                )
+            )
 
         }
     }

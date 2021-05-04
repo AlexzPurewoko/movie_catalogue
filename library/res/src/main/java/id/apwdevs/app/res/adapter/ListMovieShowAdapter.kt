@@ -21,7 +21,7 @@ import kotlin.random.Random
 
 class ListMovieShowAdapter(
     private val listener: (MovieShowItem) -> Unit
-): PagingDataAdapter<MovieShowItem, MovieShowVH>(COMPARATOR) {
+) : PagingDataAdapter<MovieShowItem, MovieShowVH>(COMPARATOR) {
 
     override fun onBindViewHolder(holder: MovieShowVH, position: Int) {
         getItem(position)?.let { holder.bind(it, listener) }
@@ -51,7 +51,7 @@ class ListMovieShowAdapter(
 
 open class MovieShowVH(
     private val views: ItemShowsBinding
-): RecyclerView.ViewHolder(views.root) {
+) : RecyclerView.ViewHolder(views.root) {
 
     fun bind(item: MovieShowItem, listener: (MovieShowItem) -> Unit) {
         views.apply {
@@ -71,7 +71,7 @@ open class MovieShowVH(
     }
 
     private fun generateGenres(genresGroup: ChipGroup, genreCollection: List<Genre>) {
-        if(genresGroup.childCount != 0) return
+        if (genresGroup.childCount != 0) return
         genreCollection.forEach {
             val chip = Chip(genresGroup.context)
             chip.text = it.genreName
@@ -85,7 +85,8 @@ open class MovieShowVH(
     }
 
     private fun showImg(backdropImg: AppCompatImageView, backdopImage: String?) {
-        Glide.with(backdropImg.context).load(backdopImage?.backdropImageUrlPath).placeholder(R.drawable.search_placeholder_image).into(backdropImg)
+        Glide.with(backdropImg.context).load(backdopImage?.backdropImageUrlPath)
+            .placeholder(R.drawable.landscape_placeholder_image).into(backdropImg)
     }
 
     private fun randomizeFont(text: AppCompatTextView) {
@@ -103,11 +104,7 @@ open class MovieShowVH(
         fun create(parent: ViewGroup): MovieShowVH {
 
             val bindingView = ItemShowsBinding.inflate(
-                LayoutInflater.from(parent.context)
-            )
-            bindingView.root.layoutParams = RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT,
-                RecyclerView.LayoutParams.WRAP_CONTENT
+                LayoutInflater.from(parent.context), parent, false
             )
             return MovieShowVH(
                 bindingView

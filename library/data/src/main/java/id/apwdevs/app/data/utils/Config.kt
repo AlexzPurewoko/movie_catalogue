@@ -1,6 +1,8 @@
 package id.apwdevs.app.data.utils
 
+import id.apwdevs.app.data.BuildConfig
+
 object Config {
-    const val TOKEN = "131c08e19c45d462045c48a28e581dfe"
-    const val BASE_URL = "https://api.themoviedb.org/3/"
+    const val TOKEN = BuildConfig.API_TOKEN
+    const val BASE_URL = BuildConfig.BASE_URL
 }

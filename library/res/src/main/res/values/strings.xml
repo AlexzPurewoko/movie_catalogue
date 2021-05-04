@@ -3,4 +3,6 @@
     <string name="movies">Movie</string>
     <string name="tvshows">Tv Show</string>
     <string name="retry">Retry</string>
+    <string name="search_hint">Movie…</string>
+    <string name="search_button_content_description">Search Button</string>
 </resources>

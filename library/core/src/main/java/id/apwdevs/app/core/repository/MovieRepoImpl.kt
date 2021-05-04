@@ -27,9 +27,9 @@ class MovieRepoImpl constructor(
     private val genres = mutableListOf<Genres>()
     override fun discoverPopularMovies(): Flow<PagingData<Movies>> {
         return Pager(
-                config = Config.pageConfig(),
-                remoteMediator = PopularMovieRemoteMediator(moviesNetwork, caseDb),
-                pagingSourceFactory = { caseDb.getAllDataPaging() }
+            config = Config.pageConfig(),
+            remoteMediator = PopularMovieRemoteMediator(moviesNetwork, caseDb),
+            pagingSourceFactory = { caseDb.getAllDataPaging() }
         ).flow.map { pagingData ->
             getGenre()
             pagingData.map {
@@ -40,8 +40,8 @@ class MovieRepoImpl constructor(
 
     override fun searchMovies(query: String, includeAdult: Boolean): Flow<PagingData<Movies>> {
         return Pager(
-                config = Config.pageConfig(),
-                pagingSourceFactory = { SearchMoviePagingSource(moviesNetwork, query, includeAdult) }
+            config = Config.pageConfig(),
+            pagingSourceFactory = { SearchMoviePagingSource(moviesNetwork, query, includeAdult) }
         ).flow.map { pagingData ->
             getGenre()
             pagingData.map {

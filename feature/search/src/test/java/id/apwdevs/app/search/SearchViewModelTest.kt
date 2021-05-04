@@ -231,7 +231,8 @@ class SearchViewModelTest {
             val observer = mockk<Observer<Boolean>>()
 
             every { observer.onChanged(capture(captor)) } answers { nothing }
-            searchViewModel.initViewInteractions(textChanges, checkedChanges, spinnerChanges).observeForever(observer)
+            searchViewModel.initViewInteractions(textChanges, checkedChanges, spinnerChanges)
+                .observeForever(observer)
 
             Assert.assertTrue(captor.isCaptured)
 

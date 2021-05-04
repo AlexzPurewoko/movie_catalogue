@@ -15,7 +15,7 @@ import org.hamcrest.Matchers
 import org.junit.Assert
 import org.junit.Test
 
-class MovieShowFragmentInteractionTest: BaseAndroidTest() {
+class MovieShowFragmentInteractionTest : BaseAndroidTest() {
 
     private lateinit var fragment: DiscoverFragment
 
@@ -37,7 +37,7 @@ class MovieShowFragmentInteractionTest: BaseAndroidTest() {
     }
 
     @Test
-    fun should_display_correct_fragment_when_swiping(){
+    fun should_display_correct_fragment_when_swiping() {
         swipeLeft()
         Assert.assertEquals(PageType.TV_SHOW, fragment.currentPageView)
 

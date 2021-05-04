@@ -11,7 +11,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.QueueDispatcher
 import org.junit.Assert
 
-class DiscoverTvShowFragmentTest: MovieShowFragmentCaseTest() {
+class DiscoverTvShowFragmentTest : MovieShowFragmentCaseTest() {
     override val pageType: PageType
         get() = PageType.TV_SHOW
 

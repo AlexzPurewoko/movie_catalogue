@@ -37,7 +37,6 @@ class PopularTvShowRemoteMediator(
             }
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeyForFirstItem(state)
-//                    ?: throw InvalidObjectException("Remote Key and the prev Key should not be null")
 
                 remoteKeys?.prevKey ?: return MediatorResult.Success(endOfPaginationReached = true)
             }
@@ -54,9 +53,10 @@ class PopularTvShowRemoteMediator(
             caseDb.provideTransaction {
                 if (loadType == LoadType.REFRESH) {
                     caseDb.clearRemoteKeys()
-                } else if (loadType == LoadType.APPEND && page - 2 > 0) {
-                    deletePrevKeys(page)
                 }
+//                else if (loadType == LoadType.APPEND && page - 2 > 0) {
+//                    deletePrevKeys(page)
+//                }
                 val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val keys = items.map {
@@ -77,6 +77,7 @@ class PopularTvShowRemoteMediator(
         }
     }
 
+    @Suppress("unused")
     private suspend fun deletePrevKeys(currentPage: Int) {
         val pageToBeDeleted = currentPage - 2
         val postQuery =

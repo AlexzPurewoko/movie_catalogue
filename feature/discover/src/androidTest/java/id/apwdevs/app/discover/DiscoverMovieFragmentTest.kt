@@ -21,7 +21,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.core.Is
 import org.junit.Assert
 
-class DiscoverMovieFragmentTest: MovieShowFragmentCaseTest() {
+class DiscoverMovieFragmentTest : MovieShowFragmentCaseTest() {
 
     override val pageType: PageType
         get() = PageType.MOVIES

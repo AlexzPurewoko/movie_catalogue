@@ -10,7 +10,7 @@ import okhttp3.mockwebserver.RecordedRequest
 class PopularTvShowPagingDispatcher(
     context: Context,
     private val callback: (requestPage: Int) -> Unit
-): ScopeDispatcher(context) {
+) : ScopeDispatcher(context) {
 
     override val mappingRequest = mapOf(
         "/tv/popular?api_key=${Config.TOKEN}&language=en-US&page=1" to AssetDataJson.TVSHOW_PAGE_1,

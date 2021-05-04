@@ -9,9 +9,12 @@ import id.apwdevs.app.data.utils.Config
 
 class MoviesNetworkImpl(
     private val apiService: ApiService
-): MoviesNetwork {
+) : MoviesNetwork {
 
-    override suspend fun getPopularMovies(page: Int, language: String): PageResponse<MovieItemResponse> {
+    override suspend fun getPopularMovies(
+        page: Int,
+        language: String
+    ): PageResponse<MovieItemResponse> {
         return apiService.getPopularMovies(Config.TOKEN, language, page)
     }
 
@@ -19,7 +22,11 @@ class MoviesNetworkImpl(
         return apiService.getDetailMovies(movieId, Config.TOKEN, language)
     }
 
-    override suspend fun searchMovies(query: String, includeAdult: Boolean, page: Int): PageResponse<MovieItemResponse> {
+    override suspend fun searchMovies(
+        query: String,
+        includeAdult: Boolean,
+        page: Int
+    ): PageResponse<MovieItemResponse> {
         return apiService.searchMovies(Config.TOKEN, page, query, includeAdult)
     }
 

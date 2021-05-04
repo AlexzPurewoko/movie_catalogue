@@ -10,8 +10,17 @@ import id.apwdevs.app.data.source.remote.response.moviedetail.MovieDetailRespons
  * These interfaces are collection methods to get movie data from API.
  */
 interface MoviesNetwork {
-    suspend fun getPopularMovies(page: Int, language: String = "en-US") : PageResponse<MovieItemResponse>
-    suspend fun getDetailMovies(movieId: String, language: String = "en-US") : MovieDetailResponse
-    suspend fun searchMovies(query: String, includeAdult: Boolean, page: Int = 1) : PageResponse<MovieItemResponse>
+    suspend fun getPopularMovies(
+        page: Int,
+        language: String = "en-US"
+    ): PageResponse<MovieItemResponse>
+
+    suspend fun getDetailMovies(movieId: String, language: String = "en-US"): MovieDetailResponse
+    suspend fun searchMovies(
+        query: String,
+        includeAdult: Boolean,
+        page: Int = 1
+    ): PageResponse<MovieItemResponse>
+
     suspend fun getMovieGenre(language: String = "en-US"): GenreResponse
 }

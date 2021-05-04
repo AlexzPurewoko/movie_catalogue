@@ -10,7 +10,7 @@ import okhttp3.mockwebserver.RecordedRequest
 class PopularMoviePagingDispatcher(
     context: Context,
     private val callback: (requestPage: Int) -> Unit
-): ScopeDispatcher(context) {
+) : ScopeDispatcher(context) {
 
     override val mappingRequest = mapOf(
         "/movie/popular?api_key=${Config.TOKEN}&language=en-US&page=1" to AssetDataJson.MOVIE_PAGE_1,
@@ -18,6 +18,7 @@ class PopularMoviePagingDispatcher(
         "/movie/popular?api_key=${Config.TOKEN}&language=en-US&page=3" to AssetDataJson.MOVIE_PAGE_3,
         "/genre/movie/list?api_key=${Config.TOKEN}&language=en-US" to AssetDataJson.GENRE_MOVIES
     )
+
     override fun dispatch(request: RecordedRequest): MockResponse {
         request.requestUrl?.queryParameter("page")?.let { callback(it.toInt()) }
         return super.dispatch(request)

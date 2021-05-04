@@ -2,9 +2,12 @@ import modules.Apps
 import modules.KaptLibs
 import modules.Libs
 
+val apiToken: String by project
+val baseUrl: String by project
+
 plugins {
-    id ("com.android.library")
-    kotlin ("android")
+    id("com.android.library")
+    kotlin("android")
     kotlin("kapt")
     id("jacoco-plugin")
 }
@@ -20,14 +23,20 @@ android {
         versionName = Apps.versionName
 
         testInstrumentationRunner = "id.apwdevs.app.test.androdtest.runner.AppTestRunner"
-        consumerProguardFiles( "consumer-rules.pro")
+
+        buildConfigField("String", "API_TOKEN", apiToken)
+        buildConfigField("String", "BASE_URL", baseUrl)
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
 
         getByName("release") {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
 
         getByName("debug") {
@@ -48,7 +57,8 @@ android {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs.toMutableList().apply { add("-Xopt-in=kotlin.RequiresOptIn") }
+        freeCompilerArgs =
+            freeCompilerArgs.toMutableList().apply { add("-Xopt-in=kotlin.RequiresOptIn") }
     }
 
 }

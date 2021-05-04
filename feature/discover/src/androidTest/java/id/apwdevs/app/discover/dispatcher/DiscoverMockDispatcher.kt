@@ -5,7 +5,7 @@ import id.apwdevs.app.data.utils.Config
 import id.apwdevs.app.libs.util.AssetDataJson
 import id.apwdevs.app.libs.util.ScopeDispatcher
 
-class DiscoverMockDispatcher(context: Context): ScopeDispatcher(context) {
+class DiscoverMockDispatcher(context: Context) : ScopeDispatcher(context) {
 
     private val apiKey = Config.TOKEN
 

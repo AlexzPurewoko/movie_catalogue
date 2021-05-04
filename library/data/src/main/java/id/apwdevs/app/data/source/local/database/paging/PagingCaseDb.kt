@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.sqlite.db.SupportSQLiteQuery
 import id.apwdevs.app.data.source.local.entity.Genres
 
-interface PagingCaseDb<Data: Any, RemoteKey: Any> {
+interface PagingCaseDb<Data : Any, RemoteKey : Any> {
 
     // movie
     suspend fun insert(data: List<Data>)
@@ -22,7 +22,7 @@ interface PagingCaseDb<Data: Any, RemoteKey: Any> {
 
     suspend fun getAllRemoteKey(): List<RemoteKey>
 
-    suspend fun deleteKey(query: SupportSQLiteQuery) : Long
+    suspend fun deleteKey(query: SupportSQLiteQuery): Long
 
     suspend fun remoteKeysId(id: Long): RemoteKey?
 

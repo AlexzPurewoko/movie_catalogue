@@ -1,6 +1,6 @@
 package id.apwdevs.app.core.domain.model.detail
 
-data class ProductionCompany (
+data class ProductionCompany(
     val productionId: Int,
     val logoPath: String?,
     val name: String,

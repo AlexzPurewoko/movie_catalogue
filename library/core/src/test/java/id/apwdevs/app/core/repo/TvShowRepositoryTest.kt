@@ -58,7 +58,9 @@ class TvShowRepositoryTest {
 
     @Before
     fun setup() {
-        appDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).allowMainThreadQueries().build()
+        appDatabase =
+            Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).allowMainThreadQueries()
+                .build()
         pagingCaseDb = spyk(PagingTvShowCaseDbInteractor(appDatabase))
         MockKAnnotations.init(this)
         tvShowRepository = TvShowRepoImpl(service, pagingCaseDb)
@@ -155,7 +157,7 @@ class TvShowRepositoryTest {
                 observer.onChanged(coMatch { it is State.Loading })
                 service.getDetailTvShows(cmpEq(movieId.toString()))
                 observer.onChanged(
-                        coMatch { it is State.Error }
+                    coMatch { it is State.Error }
                 )
             }
             confirmVerified(observer, service)
@@ -188,7 +190,7 @@ class TvShowRepositoryTest {
                 observer.onChanged(coMatch { it is State.Loading })
                 service.getDetailTvShows(cmpEq(tvId.toString()))
                 observer.onChanged(
-                        coMatch { it is State.Success<DetailTvShow> }
+                    coMatch { it is State.Success<DetailTvShow> }
                 )
             }
             confirmVerified(observer, service)

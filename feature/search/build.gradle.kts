@@ -50,13 +50,3 @@ dependencies {
     }
     androidTestImplementation(project(":test:androidtestlibs"))
 }
-allprojects {
-    configurations.all {
-        resolutionStrategy {
-            exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-debug")
-        }
-        resolutionStrategy.force("org.objenesis:objenesis:2.6")
-    }
-
-
-}

@@ -29,11 +29,16 @@ class SeasonViewHolder(
 
     fun bind(data: TvShowSeason) {
         binding.apply {
-            Glide.with(binding.root.context)
+            val context = root.context
+            Glide.with(context)
                 .load(data.posterPath.getImageURL("w154"))
                 .into(seasonImage)
             seasonName.text = data.name
-            episodeCount.text = binding.root.context.getString(R.string.episode_count, data.episodeCount)
+            episodeCount.text = context.resources.getQuantityString(
+                R.plurals.episode_count,
+                data.episodeCount,
+                data.episodeCount
+            )
             seasonDate.text = data.airDate
         }
     }

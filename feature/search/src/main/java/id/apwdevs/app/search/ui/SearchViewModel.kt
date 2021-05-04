@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.filter
 import androidx.paging.map
 import id.apwdevs.app.core.domain.usecase.SearchUseCase
 import id.apwdevs.app.movieshow.base.BaseViewModel
@@ -32,9 +31,6 @@ class SearchVewModel(
     fun search(
         searchParameter: SearchData
     ): LiveData<PagingData<SearchItem>> {
-//        if (savedSearchParameters == searchParameter && _searchResults != null) {
-//            return _searchResults as LiveData<PagingData<SearchItem>>
-//        }
         val (query, pageType, includeAdult) = searchParameter
         savedSearchParameters = searchParameter
         _searchResults = when (pageType) {

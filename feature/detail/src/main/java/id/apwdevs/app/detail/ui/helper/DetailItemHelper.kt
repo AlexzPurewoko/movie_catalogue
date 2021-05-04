@@ -39,7 +39,9 @@ abstract class DetailItemHelper(
 
 
     protected abstract fun initView()
+
     protected abstract fun onSuccess(data: Any?)
+
     protected abstract fun onLoad()
 
     protected abstract fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener
@@ -87,13 +89,13 @@ abstract class DetailItemHelper(
                 widgetFav.isEnabled = false
                 favoriteMenuItem?.isEnabled = false
 
-                if(resData.loadingTag != DetailMovieShowVM.FAVORITE_LOADING_TAG){
+                if (resData.loadingTag != DetailMovieShowVM.FAVORITE_LOADING_TAG) {
                     onLoad()
                     loading(true)
                 }
             }
             is State.Success -> {
-                when(resData.data?.postType) {
+                when (resData.data?.postType) {
                     DetailMovieShowVM.PostType.DATA -> {
                         errorState(false)
                         loading(false)
@@ -195,9 +197,10 @@ abstract class DetailItemHelper(
 
         favoriteMenuItem?.isVisible = scrollRate < 20
 
-        rootBinding.nestedScroll.layoutParams = (rootBinding.nestedScroll.layoutParams as CoordinatorLayout.LayoutParams).apply {
-            this.topMargin = if(scrollRate < 15) 10 else -8
-        }
+        rootBinding.nestedScroll.layoutParams =
+            (rootBinding.nestedScroll.layoutParams as CoordinatorLayout.LayoutParams).apply {
+                this.topMargin = if (scrollRate < 15) 10 else -8
+            }
 
     }
 

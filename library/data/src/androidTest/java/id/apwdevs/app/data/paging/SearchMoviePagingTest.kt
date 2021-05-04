@@ -74,13 +74,13 @@ class SearchMoviePagingTest {
 
         mockWebServer.dispatcher = SearchMoviePagingDispatcher(context, ::receiveCallback)
         pager = Pager(
-                config = PagingConfig(
-                        pageSize = 20,
-                        prefetchDistance = 3, // distance backward to get pages
-                        enablePlaceholders = false,
-                        initialLoadSize = 20
-                ),
-                pagingSourceFactory = { SearchMoviePagingSource(service, query) }
+            config = PagingConfig(
+                pageSize = 20,
+                prefetchDistance = 3, // distance backward to get pages
+                enablePlaceholders = false,
+                initialLoadSize = 20
+            ),
+            pagingSourceFactory = { SearchMoviePagingSource(service, query) }
         ).flow
     }
 

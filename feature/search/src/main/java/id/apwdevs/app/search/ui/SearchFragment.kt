@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -134,7 +133,6 @@ class SearchFragment : FragmentWithState() {
     }
 
     private fun anyClickFromItem(item: SearchItem) {
-        Toast.makeText(requireContext(), item.title, Toast.LENGTH_LONG).show()
         searchData?.let {
             val bundle = DetailItemFragmentArgs(it.pageType, item.id).toBundle()
             findNavController().navigate(

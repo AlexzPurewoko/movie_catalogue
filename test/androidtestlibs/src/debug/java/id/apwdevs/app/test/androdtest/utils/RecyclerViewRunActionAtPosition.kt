@@ -9,15 +9,17 @@ import androidx.test.espresso.matcher.ViewMatchers
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 
-class RecyclerViewRunActionAtPosition<T: RecyclerView.ViewHolder>(
+class RecyclerViewRunActionAtPosition<T : RecyclerView.ViewHolder>(
     private val position: Int,
     private val selectedViewToPerform: (T) -> View,
     private val viewAction: ViewAction
 ) : ViewAction {
 
     override fun getConstraints(): Matcher<View> =
-        Matchers.allOf(ViewMatchers.isAssignableFrom(RecyclerView::class.java),
-            ViewMatchers.isDisplayed())
+        Matchers.allOf(
+            ViewMatchers.isAssignableFrom(RecyclerView::class.java),
+            ViewMatchers.isDisplayed()
+        )
 
     override fun getDescription(): String =
         "Performing ViewActions on position: $position"
