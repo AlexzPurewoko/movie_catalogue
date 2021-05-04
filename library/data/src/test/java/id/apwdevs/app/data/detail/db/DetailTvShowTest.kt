@@ -4,10 +4,10 @@ import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import id.apwdevs.app.data.db.detail.stub.genres
 import id.apwdevs.app.data.source.local.room.AppDatabase
 import id.apwdevs.app.data.source.local.room.dao.FavTvShowDao
 import id.apwdevs.app.libs.data.DetailTvShowDBStub
+import id.apwdevs.app.libs.data.stub.genres
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert
@@ -23,7 +23,7 @@ class DetailTvShowTest {
 
     @Before
     fun composeDb() {
-        val ctx =  ApplicationProvider.getApplicationContext<Context>()
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(ctx, AppDatabase::class.java).build()
         dao = db.favTvShowDetail()
 
@@ -91,27 +91,6 @@ class DetailTvShowTest {
         }
     }
 
-    @Test
-    fun should_success_retrieve_data_with_offset() {
-        runBlocking {
-            val data = listOf(
-                DetailTvShowDBStub.favDetailTvShow(1),
-                DetailTvShowDBStub.favDetailTvShow(2),
-                DetailTvShowDBStub.favDetailTvShow(3),
-                DetailTvShowDBStub.favDetailTvShow(4),
-            )
-
-            data.forEach { dao.insertFavDetailTvShow(it) }
-
-            val offsetTests: suspend (Int, Int, Int) -> Unit = { expectedSize, offsetStart, offsetEnd ->
-                val d = dao.getTvShowEntity(offsetStart, offsetEnd)
-                Assert.assertEquals(expectedSize, d.size)
-            }
-            offsetTests(4, 0, 4)
-            offsetTests(1, 0, 1)
-            offsetTests(2, 0, 2)
-        }
-    }
 
     @Test(expected = SQLiteConstraintException::class)
     fun should_failed_if_try_to_add_same_tvshow() {

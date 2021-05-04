@@ -2,7 +2,7 @@ package id.apwdevs.app.res.data
 
 import id.apwdevs.app.core.domain.model.Genre
 
-data class MovieShowItem (
+data class MovieShowItem(
     val id: Int,
     val title: String,
     val overview: String?,

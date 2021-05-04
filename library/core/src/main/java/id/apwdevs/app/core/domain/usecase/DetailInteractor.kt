@@ -8,9 +8,9 @@ import id.apwdevs.app.core.utils.State
 import kotlinx.coroutines.flow.Flow
 
 class DetailInteractor constructor(
-        private val movieRepository: MovieRepository,
-        private val tvShowRepository: TvShowRepository
-): DetailUseCase {
+    private val movieRepository: MovieRepository,
+    private val tvShowRepository: TvShowRepository
+) : DetailUseCase {
     override fun getDetailMovie(id: Int): Flow<State<DetailMovie>> {
         return movieRepository.getDetailMovie(id)
     }

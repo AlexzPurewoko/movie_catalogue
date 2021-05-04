@@ -8,8 +8,8 @@ import id.apwdevs.app.core.domain.usecase.DetailUseCase
 import id.apwdevs.app.core.domain.usecase.FavUseCase
 import id.apwdevs.app.core.utils.DataType
 import id.apwdevs.app.core.utils.State
+import id.apwdevs.app.detail.util.mapToItem
 import id.apwdevs.app.detail.viewmodel.DetailMovieShowVM
-import id.apwdevs.app.detail.viewmodel.MapHelper
 import id.apwdevs.app.libs.data.FakeDomain
 import id.apwdevs.app.libs.rule.TestCoroutineRule
 import id.apwdevs.app.movieshow.MainApplication
@@ -42,15 +42,12 @@ class DetailViewModelTest {
     lateinit var detailUseCase: DetailUseCase
 
     @MockK
-    lateinit var favoriteObserver: Observer<State<Boolean>>
-
-    @MockK
     lateinit var dataObserver: Observer<State<Any>>
 
     private lateinit var detailViewModel: DetailMovieShowVM
 
     @Before
-    fun setup(){
+    fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
         val applicationMock = mockk<MainApplication>(relaxed = true)
         detailViewModel = DetailMovieShowVM(applicationMock, detailUseCase, favoriteUseCase)
@@ -63,7 +60,7 @@ class DetailViewModelTest {
         val fakeData = FakeDomain.generateDetailMovieDomain(id)
         val expectedActual = DetailMovieShowVM.DataPostType(
             DetailMovieShowVM.PostType.DATA,
-            MapHelper.fromDomainMovieIntoMovieDetail(fakeData)
+            fakeData.mapToItem()
         )
         coEvery { favoriteUseCase.checkIsInFavorite(id, dataType) } returns false
         every { detailUseCase.getDetailMovie(id) } returns flow {
@@ -86,7 +83,10 @@ class DetailViewModelTest {
 
         assertNotNull(detailViewModel.data)
         assertTrue(detailViewModel.data.value is State.Success<*>)
-        assertEquals(expectedActual, (detailViewModel.data.value as State.Success<DetailMovieShowVM.DataPostType>).data)
+        assertEquals(
+            expectedActual,
+            (detailViewModel.data.value as State.Success<DetailMovieShowVM.DataPostType>).data
+        )
     }
 
     @Test
@@ -95,8 +95,8 @@ class DetailViewModelTest {
         val dataType = DataType.MOVIES
         val fakeData = FakeDomain.generateDetailMovieDomain(id)
         val expectedActual = DetailMovieShowVM.DataPostType(
-                DetailMovieShowVM.PostType.DATA,
-                MapHelper.fromDomainMovieIntoMovieDetail(fakeData)
+            DetailMovieShowVM.PostType.DATA,
+            fakeData.mapToItem()
         )
         coEvery { favoriteUseCase.checkIsInFavorite(id, dataType) } returns true
         every { favoriteUseCase.getFavoriteMovie(id) } returns flow {
@@ -119,7 +119,10 @@ class DetailViewModelTest {
 
         assertNotNull(detailViewModel.data)
         assertTrue(detailViewModel.data.value is State.Success<*>)
-        assertEquals(expectedActual, (detailViewModel.data.value as State.Success<DetailMovieShowVM.DataPostType>).data)
+        assertEquals(
+            expectedActual,
+            (detailViewModel.data.value as State.Success<DetailMovieShowVM.DataPostType>).data
+        )
     }
 
     @Test
@@ -159,8 +162,8 @@ class DetailViewModelTest {
         val dataType = DataType.TVSHOW
         val fakeData = FakeDomain.generateDetailTvDomain(id)
         val expectedActual = DetailMovieShowVM.DataPostType(
-                DetailMovieShowVM.PostType.DATA,
-                MapHelper.fromDomainTvShowIntoTvShowDetail(fakeData)
+            DetailMovieShowVM.PostType.DATA,
+            fakeData.mapToItem()
         )
         coEvery { favoriteUseCase.checkIsInFavorite(id, dataType) } returns false
         every { detailUseCase.getDetailTvShow(id) } returns flow {
@@ -183,41 +186,48 @@ class DetailViewModelTest {
 
         assertNotNull(detailViewModel.data)
         assertTrue(detailViewModel.data.value is State.Success<*>)
-        assertEquals(expectedActual, (detailViewModel.data.value as State.Success<DetailMovieShowVM.DataPostType>).data)
+        assertEquals(
+            expectedActual,
+            (detailViewModel.data.value as State.Success<DetailMovieShowVM.DataPostType>).data
+        )
     }
 
     @Test
-    fun `load detail tvshow should load from local only if has been saved in favorite`() = testCoroutineRule.runBlockingTest{
-        val id = 1
-        val dataType = DataType.TVSHOW
-        val fakeData = FakeDomain.generateDetailTvDomain(id)
-        val expectedActual = DetailMovieShowVM.DataPostType(
+    fun `load detail tvshow should load from local only if has been saved in favorite`() =
+        testCoroutineRule.runBlockingTest {
+            val id = 1
+            val dataType = DataType.TVSHOW
+            val fakeData = FakeDomain.generateDetailTvDomain(id)
+            val expectedActual = DetailMovieShowVM.DataPostType(
                 DetailMovieShowVM.PostType.DATA,
-                MapHelper.fromDomainTvShowIntoTvShowDetail(fakeData)
-        )
-        coEvery { favoriteUseCase.checkIsInFavorite(id, dataType) } returns true
-        every { favoriteUseCase.getFavoriteTvShow(id) } returns flow {
-            emit(State.Loading())
-            emit(State.Success(fakeData))
+                fakeData.mapToItem()
+            )
+            coEvery { favoriteUseCase.checkIsInFavorite(id, dataType) } returns true
+            every { favoriteUseCase.getFavoriteTvShow(id) } returns flow {
+                emit(State.Loading())
+                emit(State.Success(fakeData))
+            }
+
+            detailViewModel.pageType = PageType.TV_SHOW
+            detailViewModel.itemId = id
+
+            detailViewModel.data.observeForever(dataObserver)
+            detailViewModel.loadData()
+
+            coVerify(exactly = 1) { favoriteUseCase.checkIsInFavorite(id, dataType) }
+            verify(exactly = 1) { favoriteUseCase.getFavoriteTvShow(id) }
+            verify(exactly = 1) { dataObserver.onChanged(match { it is State.Loading }) }
+            verify(exactly = 2) { dataObserver.onChanged(match { it is State.Success }) }
+            verify(exactly = 0) { detailUseCase.getDetailTvShow(id) }
+            verify { dataObserver.onChanged(match { it is State.Success }) }
+
+            assertNotNull(detailViewModel.data)
+            assertTrue(detailViewModel.data.value is State.Success<*>)
+            assertEquals(
+                expectedActual,
+                (detailViewModel.data.value as State.Success<DetailMovieShowVM.DataPostType>).data
+            )
         }
-
-        detailViewModel.pageType = PageType.TV_SHOW
-        detailViewModel.itemId = id
-
-        detailViewModel.data.observeForever(dataObserver)
-        detailViewModel.loadData()
-
-        coVerify(exactly = 1) { favoriteUseCase.checkIsInFavorite(id, dataType) }
-        verify(exactly = 1) { favoriteUseCase.getFavoriteTvShow(id) }
-        verify(exactly = 1) { dataObserver.onChanged(match { it is State.Loading }) }
-        verify(exactly = 2) { dataObserver.onChanged(match { it is State.Success }) }
-        verify(exactly = 0) { detailUseCase.getDetailTvShow(id) }
-        verify { dataObserver.onChanged(match { it is State.Success }) }
-
-        assertNotNull(detailViewModel.data)
-        assertTrue(detailViewModel.data.value is State.Success<*>)
-        assertEquals(expectedActual, (detailViewModel.data.value as State.Success<DetailMovieShowVM.DataPostType>).data)
-    }
 
     @Test
     fun `load detail tvshow should fail if any error when receive data from network`() {
@@ -250,39 +260,64 @@ class DetailViewModelTest {
 
     @Test
     fun `toggleFavorite movie must trigger delete when has been favorited`() {
-        testFavorite(true, false, PageType.MOVIES, DataType.MOVIES)
+        testFavorite(
+            initialIsFavorited = true,
+            resultFavorited = false,
+            pageType = PageType.MOVIES,
+            dataType = DataType.MOVIES
+        )
     }
 
     @Test
     fun `toggleFavorite movie must trigger save when hasn't been favorite`() {
-        testFavorite(false, true, PageType.MOVIES, DataType.MOVIES)
+        testFavorite(
+            initialIsFavorited = false,
+            resultFavorited = true,
+            pageType = PageType.MOVIES,
+            dataType = DataType.MOVIES
+        )
     }
 
     @Test
     fun `toggleFavorite tvshow must trigger delete when has been favorited`() {
-        testFavorite(true, false, PageType.TV_SHOW, DataType.TVSHOW)
+        testFavorite(
+            initialIsFavorited = true,
+            resultFavorited = false,
+            pageType = PageType.TV_SHOW,
+            dataType = DataType.TVSHOW
+        )
     }
 
     @Test
     fun `toggleFavorite tvshow must trigger save when hasn't been favorite`() {
-        testFavorite(false, true, PageType.TV_SHOW, DataType.TVSHOW)
+        testFavorite(
+            initialIsFavorited = false,
+            resultFavorited = true,
+            pageType = PageType.TV_SHOW,
+            dataType = DataType.TVSHOW
+        )
     }
 
-    private fun testFavorite(initialIsFavorited: Boolean, resultFavorited: Boolean, pageType: PageType, dataType: DataType) {
+    private fun testFavorite(
+        initialIsFavorited: Boolean,
+        resultFavorited: Boolean,
+        pageType: PageType,
+        dataType: DataType
+    ) {
         val id = 1
         val captureSlot = mutableListOf<State<DetailMovieShowVM.DataPostType>>()
-        val fakeData: Any = when(pageType){
+        val fakeData: Any = when (pageType) {
             PageType.MOVIES -> FakeDomain.generateDetailMovieDomain(id)
             PageType.TV_SHOW -> FakeDomain.generateDetailTvDomain(id)
         }
         coEvery { favoriteUseCase.checkIsInFavorite(id, dataType) } returns resultFavorited
-        coEvery { favoriteUseCase.unFavorite(id, dataType) } answers {nothing}
+        coEvery { favoriteUseCase.unFavorite(id, dataType) } answers { nothing }
         coEvery {
-            when(pageType){
+            when (pageType) {
                 PageType.MOVIES -> favoriteUseCase.saveFavoriteMovie(fakeData as DetailMovie)
                 PageType.TV_SHOW -> favoriteUseCase.saveFavoriteTvShow(fakeData as DetailTvShow)
             }
-        } answers {nothing}
+        } answers { nothing }
         every { dataObserver.onChanged(capture(captureSlot)) } just Runs
 
         detailViewModel.itemId = id
@@ -306,10 +341,17 @@ class DetailViewModelTest {
                 }
         }
         coVerify(exactly = 1) { favoriteUseCase.checkIsInFavorite(id, dataType) }
-        assertEquals(DetailMovieShowVM.FAVORITE_LOADING_TAG, (captureSlot[0] as State.Loading).loadingTag)
         assertEquals(
-                DetailMovieShowVM.DataPostType(DetailMovieShowVM.PostType.FAVORITE_STATE, resultFavorited),
-                (captureSlot[1] as State.Success).data)
+            DetailMovieShowVM.FAVORITE_LOADING_TAG,
+            (captureSlot[0] as State.Loading).loadingTag
+        )
+        assertEquals(
+            DetailMovieShowVM.DataPostType(
+                DetailMovieShowVM.PostType.FAVORITE_STATE,
+                resultFavorited
+            ),
+            (captureSlot[1] as State.Success).data
+        )
 
         assertEquals(resultFavorited, detailViewModel.isFavorited)
     }

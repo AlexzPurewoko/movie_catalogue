@@ -16,8 +16,9 @@
             android:id="@+id/backdrop_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="@string/backdrop_image"
             android:scaleType="centerCrop"
-            tools:srcCompat="@drawable/test" />
+            tools:srcCompat="@drawable/landscape_placeholder_image" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/save_btn"
@@ -26,6 +27,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_margin="4dp"
+            android:contentDescription="@string/save_image"
             android:src="@drawable/ic_baseline_save_alt_24"
             app:fabSize="mini" />
     </RelativeLayout>

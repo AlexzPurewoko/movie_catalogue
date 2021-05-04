@@ -13,7 +13,7 @@ interface RemoteKeysTvShowDao {
     suspend fun getAll(): List<RemoteKeysTvShow>
 
     @RawQuery
-    suspend fun deleteKeys(query: SupportSQLiteQuery) : Long
+    suspend fun deleteKeys(query: SupportSQLiteQuery): Long
 
     @Query("SELECT * FROM remote_keys_tvshow WHERE tv_id=:tvId")
     suspend fun remoteKeysTvShowId(tvId: Long): RemoteKeysTvShow?

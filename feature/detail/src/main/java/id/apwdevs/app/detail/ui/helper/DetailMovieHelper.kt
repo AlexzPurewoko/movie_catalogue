@@ -13,10 +13,12 @@ import id.apwdevs.app.detail.data.MovieDetail
 import id.apwdevs.app.detail.databinding.ContentDetailMovieBinding
 import id.apwdevs.app.detail.ui.component.CardBackdropItem
 import id.apwdevs.app.detail.ui.component.NoDataItem
+import id.apwdevs.app.detail.util.GlobalLayoutListener
 import id.apwdevs.app.res.util.convertRatingFrom10to5
 import id.apwdevs.app.res.util.getImageURL
 import id.apwdevs.app.res.util.gone
 import id.apwdevs.app.res.util.visible
+import id.apwdevs.app.res.R as Res
 
 class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: () -> Unit) :
     DetailItemHelper(onRetry) {
@@ -32,6 +34,7 @@ class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: (
         )
         contentBinding.root.visibility = View.GONE
         rootBinding.nestedScroll.addView(contentBinding.root)
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -40,6 +43,7 @@ class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: (
         val context = rootBinding.root.context
         Glide.with(context)
             .load(movieData.posterPath.getImageURL())
+            .placeholder(Res.drawable.potrait_loading_placeholder)
             .into(rootBinding.posterImage)
         rootBinding.posterImage.visible()
 
@@ -58,11 +62,13 @@ class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: (
         }
     }
 
+
     override fun onLoad() {
         contentBinding.root.gone()
     }
 
     override fun onDestroy() {
+
         backdropImageSection?.let {
             if (!fragmentManager.isDestroyed && fragmentManager.fragments.contains(it))
                 fragmentManager.commit {
@@ -70,6 +76,14 @@ class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: (
                 }
         }
         backdropImageSection = null
+    }
+
+    override fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener {
+        return GlobalLayoutListener(
+            rootBinding.root,
+            contentBinding.title, contentBinding.ratingBar, contentBinding.genres,
+            callback
+        )
     }
 
     private fun composeBackdrop(backdropPath: String?, titleMovie: String) {
@@ -86,3 +100,4 @@ class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: (
 
 
 }
+

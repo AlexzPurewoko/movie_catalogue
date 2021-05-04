@@ -2,13 +2,16 @@ package id.apwdevs.app.search.ui
 
 import android.app.Application
 import android.os.Parcelable
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
 import id.apwdevs.app.core.domain.usecase.SearchUseCase
 import id.apwdevs.app.movieshow.base.BaseViewModel
 import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.search.model.SearchItem
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.parcelize.Parcelize
 import ru.ldralighieri.corbind.internal.InitialValueFlow
@@ -24,12 +27,15 @@ class SearchVewModel(
     private val _listenInteractions: MutableLiveData<Boolean> = MutableLiveData()
     private var _searchResults: LiveData<PagingData<SearchItem>>? = null
 
+    @FlowPreview
     fun search(
-        searchParameter: SearchData
+        searchParameter: SearchData,
+        forceReload: Boolean = false
     ): LiveData<PagingData<SearchItem>> {
-        if (savedSearchParameters == searchParameter && _searchResults != null) {
-            return _searchResults as LiveData<PagingData<SearchItem>>
-        }
+
+        if(!forceReload && searchParameter == savedSearchParameters && _searchResults != null)
+            return _searchResults!!
+
         val (query, pageType, includeAdult) = searchParameter
         savedSearchParameters = searchParameter
         _searchResults = when (pageType) {
@@ -42,6 +48,7 @@ class SearchVewModel(
         return _searchResults as LiveData<PagingData<SearchItem>>
     }
 
+    @FlowPreview
     fun initViewInteractions(
         textSearchChanges: InitialValueFlow<CharSequence>,
         adultCheckChanges: InitialValueFlow<Boolean>,
@@ -65,7 +72,9 @@ class SearchVewModel(
             transform = { anyTextChanges, anyCheckedChanges, anyItemSpinnerChanges ->
                 anyTextChanges or anyCheckedChanges or anyItemSpinnerChanges
             }
-        ).onEach(::applyInteractions).launchIn(viewModelScope)
+        )
+            .debounce(300)
+            .onEach(::applyInteractions).launchIn(viewModelScope)
 
         return _listenInteractions
     }

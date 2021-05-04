@@ -5,6 +5,6 @@
         android:id="@+id/favorite_menu"
         android:contentDescription="@string/favorite_menu"
         android:icon="@drawable/ic_baseline_favorite_border_24"
-        android:title="Favorite"
+        android:title="@string/tab_favorite"
         app:showAsAction="ifRoom" />
 </menu>

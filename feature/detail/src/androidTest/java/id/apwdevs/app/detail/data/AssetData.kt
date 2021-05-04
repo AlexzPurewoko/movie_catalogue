@@ -1,5 +1,6 @@
 package id.apwdevs.app.detail.data
 
+@Suppress("unused")
 object AssetData {
     const val DETAIL_MOVIE_OK = "detail_movie_791373_OK.json"
     const val DETAIL_TVSHOW_OK = "detail_tvshow_88396_OK.json"

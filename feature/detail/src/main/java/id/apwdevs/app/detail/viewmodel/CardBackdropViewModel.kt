@@ -61,6 +61,7 @@ class CardBackdropViewModel(app: Application) : AndroidViewModel(app) {
         bitmap.recycle()
     }
 
+    @Suppress("BlockingMethodInNonBlockingContext")
     @WorkerThread
     @Throws(CancellationException::class, ExecutionException::class)
     private fun getImg(imageUrl: String): Flow<Bitmap?> = flow {
@@ -83,8 +84,4 @@ class CardBackdropViewModel(app: Application) : AndroidViewModel(app) {
         SUCCESS,
         STARTING
     }
-}
-
-class ImageStorageHandler {
-
 }

@@ -1,8 +1,14 @@
 package id.apwdevs.app.core.di
 
-import id.apwdevs.app.core.domain.repository.*
+import id.apwdevs.app.core.domain.repository.FavMovieRepository
+import id.apwdevs.app.core.domain.repository.FavTvShowRepository
+import id.apwdevs.app.core.domain.repository.MovieRepository
+import id.apwdevs.app.core.domain.repository.TvShowRepository
 import id.apwdevs.app.core.domain.usecase.*
-import id.apwdevs.app.core.repository.*
+import id.apwdevs.app.core.repository.FavoriteMovieRepoImpl
+import id.apwdevs.app.core.repository.FavoriteTvShowRepoImpl
+import id.apwdevs.app.core.repository.MovieRepoImpl
+import id.apwdevs.app.core.repository.TvShowRepoImpl
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -12,8 +18,6 @@ val useCaseModule = module {
     factory<FavUseCase> { FavInteractor(get(), get()) }
     factory<DiscoverPopularUseCase> { DiscoverPopularInteractor(get(), get()) }
 
-    // deprecated! will be deleted
-    factory<FavoriteUseCase> { FavoriteInteractor(get(), get()) }
 }
 
 val repoModule = module {
@@ -23,7 +27,4 @@ val repoModule = module {
     factory<FavMovieRepository> { FavoriteMovieRepoImpl(get()) }
     factory<FavTvShowRepository> { FavoriteTvShowRepoImpl(get()) }
 
-    // deprecated implementation will be deleted later.
-    factory<FavoriteMovieRepository> { FavMovieRepositoryImpl(get()) }
-    factory<FavoriteTvShowRepository> { FavTvShowRepositoryImpl(get()) }
 }

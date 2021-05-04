@@ -17,27 +17,29 @@ import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 import id.apwdevs.app.data.source.local.entity.items.TvEntity
 import id.apwdevs.app.data.source.local.room.dao.*
 
-@Database(entities = [
+@Database(
+    entities = [
 
-    RemoteKeysMovie::class,
-    RemoteKeysTvShow::class,
+        RemoteKeysMovie::class,
+        RemoteKeysTvShow::class,
 
-    Genres::class,
-    TvEntity::class,
-    MovieEntity::class,
+        Genres::class,
+        TvEntity::class,
+        MovieEntity::class,
 
-    // helper entities
-    GenreMapper::class,
-    ProductionCompanies::class,
-    ProductionCompaniesMapper::class,
-    CreatedByEntity::class,
-    EpisodesToAir::class,
-    TvShowSeason::class,
+        // helper entities
+        GenreMapper::class,
+        ProductionCompanies::class,
+        ProductionCompaniesMapper::class,
+        CreatedByEntity::class,
+        EpisodesToAir::class,
+        TvShowSeason::class,
 
-    FavDetailMovieEntity::class,
-    FavDetailTvShowEntity::class
-], version = 1, exportSchema = false)
-abstract class AppDatabase: RoomDatabase() {
+        FavDetailMovieEntity::class,
+        FavDetailTvShowEntity::class
+    ], version = 1, exportSchema = false
+)
+abstract class AppDatabase : RoomDatabase() {
 
     abstract fun genreDao(): GenreDao
     abstract fun movieDao(): MovieDao

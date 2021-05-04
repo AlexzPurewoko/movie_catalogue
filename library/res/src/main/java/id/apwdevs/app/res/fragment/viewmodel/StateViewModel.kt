@@ -30,6 +30,7 @@ class StateViewModel : ViewModel() {
         DATA_EMPTY
     }
 
+    @Suppress("unused")
     enum class StateCallType {
         RETRY,
         OTHERS

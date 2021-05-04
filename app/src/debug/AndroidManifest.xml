@@ -3,10 +3,10 @@
 
 
     <application
-        android:vmSafeMode="true"
         android:usesCleartextTraffic="true"
+        android:vmSafeMode="true"
         tools:targetApi="m">
-        <activity android:name="id.apwdevs.app.movieshow.FragmentTestActivity"/>
+        <activity android:name="id.apwdevs.app.movieshow.FragmentTestActivity" />
     </application>
 
 </manifest>

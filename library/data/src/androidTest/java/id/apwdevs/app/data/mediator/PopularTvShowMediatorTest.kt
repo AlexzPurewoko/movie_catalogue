@@ -8,10 +8,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.mediator.dispatcher.PopularTvShowPagingDispatcher
+import id.apwdevs.app.data.source.local.database.paging.PagingTvShowCaseDbInteractor
 import id.apwdevs.app.data.source.local.entity.items.TvEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingTvShowCaseDbInteractor
-import id.apwdevs.app.data.source.remote.service.ApiService
+import id.apwdevs.app.data.source.remote.network.TvShowsNetwork
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -25,8 +25,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import org.koin.java.KoinJavaComponent.inject
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest
@@ -36,16 +35,11 @@ class PopularTvShowMediatorTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val retrofitService: ApiService by lazy {
-        Retrofit.Builder()
-                .baseUrl("http://localhost:8080")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build().create(ApiService::class.java)
-    }
+    private val retrofitService: TvShowsNetwork by inject(TvShowsNetwork::class.java)
 
     private val appDatabase: AppDatabase by lazy {
         Room.databaseBuilder(context, AppDatabase::class.java, "appdb.db")
-                .build()
+            .build()
     }
 
     private lateinit var mockWebServer: MockWebServer
@@ -77,16 +71,16 @@ class PopularTvShowMediatorTest {
 
         val pagingCaseDb = PagingTvShowCaseDbInteractor(appDatabase)
         pager = Pager(
-                config = PagingConfig(
-                        pageSize = 20,
-                        prefetchDistance = 3,
-                        initialLoadSize = 20,
-                        enablePlaceholders = false
-                ),
-                remoteMediator = PopularTvShowRemoteMediator(
-                        retrofitService, pagingCaseDb
-                ),
-                pagingSourceFactory = pagingSourceFactory
+            config = PagingConfig(
+                pageSize = 20,
+                prefetchDistance = 3,
+                initialLoadSize = 20,
+                enablePlaceholders = false
+            ),
+            remoteMediator = PopularTvShowRemoteMediator(
+                retrofitService, pagingCaseDb
+            ),
+            pagingSourceFactory = pagingSourceFactory
         ).flow
     }
 

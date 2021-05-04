@@ -9,11 +9,11 @@ import id.apwdevs.app.res.databinding.ItemShowsBinding
 
 class FavoriteMovieShowAdapter(
     private val listener: (MovieShowItem) -> Unit
-): RecyclerView.Adapter<FavoriteViewHolder>() {
+) : RecyclerView.Adapter<FavoriteViewHolder>() {
 
     private val listData: MutableList<MovieShowItem> = mutableListOf()
 
-    fun update(dataColllection: Collection<MovieShowItem>){
+    fun update(dataColllection: Collection<MovieShowItem>) {
         listData.apply {
             clear()
             addAll(dataColllection)
@@ -32,16 +32,12 @@ class FavoriteMovieShowAdapter(
     override fun getItemCount(): Int = listData.size
 }
 
-class FavoriteViewHolder(view: ItemShowsBinding): MovieShowVH(view) {
+class FavoriteViewHolder(view: ItemShowsBinding) : MovieShowVH(view) {
 
     companion object {
-        fun create(parent: ViewGroup): FavoriteViewHolder{
+        fun create(parent: ViewGroup): FavoriteViewHolder {
             val bindingView = ItemShowsBinding.inflate(
-                LayoutInflater.from(parent.context)
-            )
-            bindingView.root.layoutParams = RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT,
-                RecyclerView.LayoutParams.WRAP_CONTENT
+                LayoutInflater.from(parent.context), parent, false
             )
             return FavoriteViewHolder(
                 bindingView

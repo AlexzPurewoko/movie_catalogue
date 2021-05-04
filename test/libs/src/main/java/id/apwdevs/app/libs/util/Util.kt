@@ -7,7 +7,7 @@ import kotlinx.coroutines.test.TestCoroutineScope
 import okhttp3.mockwebserver.MockResponse
 
 
-fun Context.provideResponse(customAssetJson: String, responseCode: Int) : MockResponse {
+fun Context.provideResponse(customAssetJson: String, responseCode: Int): MockResponse {
 
     return MockResponse()
         .setResponseCode(responseCode)

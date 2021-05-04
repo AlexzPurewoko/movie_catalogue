@@ -11,9 +11,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.paging.dispatcher.SearchTvShowPagingDispatcher
+import id.apwdevs.app.data.source.remote.network.TvShowsNetwork
 import id.apwdevs.app.data.source.remote.paging.SearchTvShowPagingSource
 import id.apwdevs.app.data.source.remote.response.TvShowItemResponse
-import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -27,8 +27,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import org.koin.java.KoinJavaComponent.inject
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest
@@ -37,15 +36,17 @@ class SearchTvShowPagingTest {
     private val query = "A"
     private val totalPage = 4
 
-    private val service: ApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl("http://localhost:8080")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(ApiService::class.java)
-    }
+//    private val service: ApiService by lazy {
+//        Retrofit.Builder()
+//            .baseUrl("http://localhost:8080")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build().create(ApiService::class.java)
+//    }
 
-    private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply{
-        for (i in 0..totalPage){
+    private val service: TvShowsNetwork by inject(TvShowsNetwork::class.java)
+
+    private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply {
+        for (i in 0..totalPage) {
             this[i] = 0
         }
     }
@@ -58,13 +59,13 @@ class SearchTvShowPagingTest {
 
     private lateinit var mockWebServer: MockWebServer
 
-    private val context : Context
+    private val context: Context
         get() {
             return InstrumentationRegistry.getInstrumentation().targetContext
         }
 
     @Before
-    fun setup(){
+    fun setup() {
         mockWebServer = MockWebServer()
         mockWebServer.start(8080)
 
@@ -185,6 +186,7 @@ class SearchTvShowPagingTest {
             adapter.submitData(it)
         }
     }
+
     private fun receiveCallback(reqPage: Int) {
         val prev = mappingCountCallHandler[reqPage]!!
         mappingCountCallHandler[reqPage] = prev + 1

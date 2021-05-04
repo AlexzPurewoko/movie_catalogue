@@ -2,29 +2,30 @@ package id.apwdevs.app.data.source.remote.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import id.apwdevs.app.data.source.remote.network.TvShowsNetwork
 import id.apwdevs.app.data.source.remote.response.TvShowItemResponse
-import id.apwdevs.app.data.source.remote.service.ApiService
-import id.apwdevs.app.data.utils.Config
 import retrofit2.HttpException
 import java.io.IOException
 
 class SearchTvShowPagingSource(
-        private val apiService: ApiService,
-        private val query: String,
-        private val includeAdult: Boolean = false
+    private val tvShowsNetwork: TvShowsNetwork,
+    private val query: String,
+    private val includeAdult: Boolean = false
 ) : PagingSource<Int, TvShowItemResponse>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TvShowItemResponse> {
         val position = params.key ?: 1
         return try {
-            val response = apiService.searchTvShow(Config.TOKEN, position, query, includeAdult)
-            val results = response.results
+            val response = tvShowsNetwork.searchTvShows(query, includeAdult, position)
+            val results =
+                response.results.filter { it.name.isNotEmpty() && !it.firstAirDate.isNullOrEmpty() }
             val totalPages = response.totalPages
             var nextKey: Int? = position + (params.loadSize / ITEM_PER_PAGE)
             nextKey =
                 if (nextKey!! > totalPages)
                     null
                 else nextKey
+
 
             LoadResult.Page(
                 data = results,

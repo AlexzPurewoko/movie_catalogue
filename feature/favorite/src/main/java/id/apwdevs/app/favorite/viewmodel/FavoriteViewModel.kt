@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import id.apwdevs.app.core.domain.usecase.FavUseCase
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.favorite.util.Mapper
 import id.apwdevs.app.movieshow.base.BaseViewModel
 import id.apwdevs.app.res.data.MovieShowItem
+import id.apwdevs.app.res.util.mapToItem
 import kotlinx.coroutines.flow.map
 
 class FavoriteViewModel(
@@ -19,7 +19,7 @@ class FavoriteViewModel(
         favoriteUseCase.getAllFavoriteMovies()
             .map {
                 it.copyTo { list ->
-                    list.map {mov -> Mapper.mapDomainMovieToMovieShowItem(mov) }
+                    list.map { mov -> mov.mapToItem() }
                 }
             }
             .toLiveData(viewModelScope.coroutineContext)
@@ -28,7 +28,7 @@ class FavoriteViewModel(
         favoriteUseCase.getAllFavoriteTvShows()
             .map {
                 it.copyTo { list ->
-                    list.map { tvShow -> Mapper.mapDomainTvShowToMovieShowItem(tvShow) }
+                    list.map { tvShow -> tvShow.mapToItem() }
                 }
             }
             .toLiveData(viewModelScope.coroutineContext)

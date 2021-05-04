@@ -3,4 +3,7 @@
     <string name="display_empty">Empty Results</string>
     <string name="display_recommendation">Let\'s Search Whatever you Like</string>
     <string name="display_error">Error while Searching</string>
+    <string name="search_loading">Searching</string>
+    <string name="navigate_to_detail_content_description">Navigate To Detail</string>
+    <string name="adult_chip">Adult</string>
 </resources>

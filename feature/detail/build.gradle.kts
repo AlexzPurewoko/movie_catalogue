@@ -1,7 +1,4 @@
-import modules.AndroidTestLibs
 import modules.Apps
-import modules.Libs
-import modules.TestLibs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {

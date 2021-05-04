@@ -20,7 +20,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.core.Is.`is`
 import org.junit.Assert
 
-class FavoriteTvShowFragmentTest: FavoriteFragmentCaseTest() {
+class FavoriteTvShowFragmentTest : FavoriteFragmentCaseTest() {
 
     override fun should_display_no_data_if_not_have_data_in_database() {
         runBlocking {
@@ -33,7 +33,8 @@ class FavoriteTvShowFragmentTest: FavoriteFragmentCaseTest() {
 
     override fun should_display_data_if_have_any_data_in_database() {
         runBlocking {
-            val expectedResponse = prepopulateDataInMemoryDatabase(PageType.TV_SHOW) as TvDetailResponse
+            val expectedResponse =
+                prepopulateDataInMemoryDatabase(PageType.TV_SHOW) as TvDetailResponse
 
             launchFragment()
 

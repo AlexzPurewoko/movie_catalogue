@@ -7,7 +7,7 @@ import id.apwdevs.app.data.source.local.entity.detail.ProductionCompaniesMapper
 import id.apwdevs.app.data.source.local.entity.detail.tvshow.*
 
 @Dao
-abstract class FavTvShowDao{
+abstract class FavTvShowDao {
 
     @Transaction
     open suspend fun insertFavDetailTvShow(favDetail: FavDetailTvShow) {
@@ -39,10 +39,10 @@ abstract class FavTvShowDao{
     protected abstract suspend fun insertAllGenreMapper(genreMapper: List<GenreMapper>)
 
     @Insert
-    protected abstract suspend fun insertAllProdCompaniesMapper(productionCompaniesMapper : List<ProductionCompaniesMapper>)
+    protected abstract suspend fun insertAllProdCompaniesMapper(productionCompaniesMapper: List<ProductionCompaniesMapper>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract suspend fun insertAllProdCompanies(productionCompanies : List<ProductionCompanies>)
+    protected abstract suspend fun insertAllProdCompanies(productionCompanies: List<ProductionCompanies>)
 
     @Insert
     protected abstract suspend fun insertCreatorsEntity(createdByEntity: List<CreatedByEntity>)
@@ -70,13 +70,8 @@ abstract class FavTvShowDao{
      * For paging source
      */
 
-    @Deprecated("will be deleted because not using paging")
     @Query("SELECT COUNT() FROM fav_detail_tvshow")
     abstract suspend fun getCount(): Long
-
-    @Deprecated("will be deleted because not using paging")
-    @Query("SELECT * FROM fav_detail_tvshow LIMIT :startOffset,:endOffset")
-    abstract suspend fun getTvShowEntity(startOffset: Int, endOffset: Int): List<FavDetailTvShowEntity>
 
     @Query("SELECT * FROM fav_detail_tvshow")
     abstract suspend fun getTvShowEntities(): List<FavDetailTvShowEntity>

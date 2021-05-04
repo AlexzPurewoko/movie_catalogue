@@ -45,7 +45,6 @@ class StateDisplayFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         instantiateMaps(savedInstanceState)
         binding.btnRetry.setOnClickListener(::onRetryClick)
-        Log.e("VIEWMODELSHARE", "VIEWMODEL $viewModelShare")
         viewModelShare?.stateFragmentDisplay?.observe(viewLifecycleOwner, ::stateDisplayObserver)
     }
 
@@ -55,44 +54,23 @@ class StateDisplayFragment : Fragment() {
     }
 
     private fun instantiateMaps(savedInstanceState: Bundle?) {
-        if(savedInstanceState != null){
-            val savedMaps = savedInstanceState.getSerializable(DISPLAY_TEXT_MAPS_KEY) as? HashMap<StateViewModel.DisplayType, Int>
-            if(savedMaps != null){
+        if (savedInstanceState != null) {
+            val savedMaps =
+                savedInstanceState.getSerializable(DISPLAY_TEXT_MAPS_KEY) as? HashMap<StateViewModel.DisplayType, Int>
+            if (savedMaps != null) {
                 textMaps = savedMaps
                 return
             }
         }
 
         arguments?.let {
-            textMaps = it.getSerializable(DISPLAY_TEXT_MAPS_KEY) as? HashMap<StateViewModel.DisplayType, Int>
+            textMaps =
+                it.getSerializable(DISPLAY_TEXT_MAPS_KEY) as? HashMap<StateViewModel.DisplayType, Int>
         }
     }
 
     private fun stateDisplayObserver(displayState: StateViewModel.DisplayType) {
-//        var displayText = ""
-//        when (displayState) {
-//            StateViewModel.DisplayType.RECOMMENDATION -> {
-//                changeAnim(ANIMATION_RECOMMENDATION)
-//                displayText = getString(R.string.display_recommendation)
-//                toggleViewButton(false)
-//            }
-//            StateViewModel.DisplayType.ERROR -> {
-//                changeAnim(ANIMATION_ERROR)
-//                displayText = getString(R.string.display_error)
-//                toggleViewButton(true)
-//            }
-//            StateViewModel.DisplayType.LOADING -> {
-//                changeAnim(ANIMATION_LOADING)
-//                toggleViewButton(false)
-//            }
-//            StateViewModel.DisplayType.DATA_EMPTY -> {
-//                changeAnim(ANIMATION_DATA_EMPTY)
-//                displayText = getString(R.string.display_empty)
-//                toggleViewButton(true)
-//            }
-//        }
-//        stateForTests = "${javaClass.simpleName}.$displayState"
-//        binding.titleExplanation.text = displayText
+
         val toggleButton = when (displayState) {
             StateViewModel.DisplayType.RECOMMENDATION, StateViewModel.DisplayType.LOADING ->
                 false
@@ -102,9 +80,9 @@ class StateDisplayFragment : Fragment() {
         applyDisplay(displayState, toggleButton)
     }
 
-    private fun applyDisplay(displayState: StateViewModel.DisplayType, toggleButton: Boolean){
+    private fun applyDisplay(displayState: StateViewModel.DisplayType, toggleButton: Boolean) {
         changeAnim(
-            when(displayState){
+            when (displayState) {
                 StateViewModel.DisplayType.RECOMMENDATION -> ANIMATION_RECOMMENDATION
                 StateViewModel.DisplayType.ERROR -> ANIMATION_ERROR
                 StateViewModel.DisplayType.LOADING -> ANIMATION_LOADING

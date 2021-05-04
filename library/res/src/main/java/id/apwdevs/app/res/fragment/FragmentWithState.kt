@@ -19,8 +19,10 @@ abstract class FragmentWithState : BaseFeatureFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         referenceStateFragment = StateDisplayFragment.newInstance(mapOfTextDisplay())
-        stateViewModel.callbackFromStateDisplay.observe(viewLifecycleOwner,
-            ::provideCallbackFromStateDisplay)
+        stateViewModel.callbackFromStateDisplay.observe(
+            viewLifecycleOwner,
+            ::provideCallbackFromStateDisplay
+        )
 
     }
 
@@ -50,12 +52,4 @@ abstract class FragmentWithState : BaseFeatureFragment() {
 
     protected abstract fun provideCallbackFromStateDisplay(parameters: List<Any>)
 
-//    override fun onDestroy() {
-//        referenceStateFragment?.let {
-//            val fg = childFragmentManager.fragments.find { f -> f.tag == it.tag }
-//            fg?.let { f -> childFragmentManager.commit { detach(f) } }
-//            referenceStateFragment = null
-//        }
-//        super.onDestroy()
-//    }
 }

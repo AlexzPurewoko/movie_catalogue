@@ -8,8 +8,8 @@ plugins {
 }
 
 android {
-    compileSdkVersion(modules.Apps.compileSdk)
-    buildToolsVersion(modules.Apps.buildToolsVersion)
+    compileSdkVersion(Apps.compileSdk)
+    buildToolsVersion(Apps.buildToolsVersion)
 
     defaultConfig {
         applicationId = "id.apwdevs.app.discover"
@@ -40,25 +40,15 @@ tasks.withType<KotlinCompile>().configureEach {
 
 dependencies {
     api(project(":library:res"))
+
     implementation(project(":app"))
 
     testImplementation(project(":test:libs"))
+
     androidTestImplementation(project(":test:libs")) {
         isTransitive = false
     }
+
     androidTestImplementation(project(":test:androidtestlibs"))
 
-//    listOf(
-//        Libs.kotlin,
-//        Libs.coreKtx,
-//
-//                Libs.koinCore,
-//            Libs.koinAndroid,
-//            Libs.koinAndroidViewModel
-//    ).forEach { implementation(it) }
-//    testIMplementation(":t")
-//    testImplementation("junit:junit:4.+")
-//    androidTestImplementation("androidx.test.ext:junit:1.1.2")
-//    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
-//    androidTestImplementation("androidx.annotation:annotation:1.1.0")
 }

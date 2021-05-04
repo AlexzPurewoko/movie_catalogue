@@ -5,8 +5,8 @@ import modules.TestLibs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id ("com.android.application")
-    kotlin ("android")
+    id("com.android.application")
+    kotlin("android")
     id("jacoco-plugin")
 }
 
@@ -30,10 +30,13 @@ android {
 
         getByName("release") {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
 
-        getByName("debug"){
+        getByName("debug") {
             debuggable(true)
             applicationIdSuffix = ".debug"
         }
@@ -68,40 +71,12 @@ dependencies {
         .forEach { implementation(project(it)) }
 
     listOf(
-        Libs.kotlin,
-        Libs.coreKtx,
-        Libs.appcompat,
-        Libs.googleMaterial,
-        Libs.constraintLayout,
-        Libs.koinCore,
-        Libs.koinAndroid
-    ).forEach { implementation(it) }
-
-    listOf(
         Libs.navigationUiKtx,
-            Libs.navigationKtx,
-            Libs.navigationDynamicModule
-    ).forEach{ api(it) }
-    testImplementation ("junit:junit:4.+")
+        Libs.navigationKtx,
+        Libs.navigationDynamicModule
+    ).forEach { api(it) }
     debugImplementation(AndroidTestLibs.fragment)
     debugImplementation(AndroidTestLibs.espressoIdlingResource)
     debugImplementation(project(":test:assetDebug"))
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.3.0")
-    androidTestImplementation ("androidx.test.ext:junit:1.1.2")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:3.3.0")
-
-    listOf(
-        AndroidTestLibs.navigation,
-        AndroidTestLibs.androidxJunit,
-        AndroidTestLibs.androidxAnnotatation,
-        TestLibs.mockWebServer
-
-    ).forEach { androidTestImplementation(it) }
-
-
     debugImplementation(AndroidTestLibs.fragment)
-    androidTestImplementation(Libs.coreKtx)
-    androidTestImplementation(TestLibs.junit)
-//    androidTestImplementation(project(":res"))
-    androidTestImplementation("androidx.test:rules:1.3.0")
 }

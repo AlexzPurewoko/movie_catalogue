@@ -1,4 +1,4 @@
-package id.apwdevs.app.data.db.detail.stub
+package id.apwdevs.app.libs.data.stub
 
 import id.apwdevs.app.data.source.local.entity.Genres
 import id.apwdevs.app.data.source.local.entity.detail.ProductionCompanies
