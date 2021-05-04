@@ -15,8 +15,8 @@
         tools:listitem="@layout/item_shows" />
 
     <FrameLayout
+        android:id="@+id/frameStatus"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/frameStatus"/>
+        android:layout_height="match_parent" />
 
 </FrameLayout>

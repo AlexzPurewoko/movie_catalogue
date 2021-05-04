@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 data class SpokenLanguage(
 
-	@field:SerializedName("name")
-	val name: String,
+    @field:SerializedName("name")
+    val name: String,
 
-	@field:SerializedName("iso_639_1")
-	val iso6391: String,
+    @field:SerializedName("iso_639_1")
+    val iso6391: String,
 
-	@field:SerializedName("english_name")
-	val englishName: String?
+    @field:SerializedName("english_name")
+    val englishName: String?
 )

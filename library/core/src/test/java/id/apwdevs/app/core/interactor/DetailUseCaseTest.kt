@@ -23,7 +23,7 @@ class DetailUseCaseTest {
     @MockK
     lateinit var tvShowRepository: TvShowRepository
 
-    lateinit var detailUseCase: DetailUseCase
+    private lateinit var detailUseCase: DetailUseCase
 
     @Before
     fun setup() {

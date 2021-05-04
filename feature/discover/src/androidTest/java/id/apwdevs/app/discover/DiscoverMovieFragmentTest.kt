@@ -6,7 +6,7 @@ import androidx.test.espresso.action.ViewActions.click
 import id.apwdevs.app.discover.case.MovieShowFragmentCaseTest
 import id.apwdevs.app.discover.dispatcher.DiscoverMockDispatcher
 import id.apwdevs.app.discover.dispatcher.EmptyMockDispatcher
-import id.apwdevs.app.res.adapter.ListMovieShowAdapter
+import id.apwdevs.app.movieshow.R
 import id.apwdevs.app.res.adapter.MovieShowVH
 import id.apwdevs.app.res.databinding.ItemShowsBinding
 import id.apwdevs.app.res.util.PageType
@@ -21,9 +21,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.core.Is
 import org.junit.Assert
 
-import id.apwdevs.app.movieshow.R
-
-class DiscoverMovieFragmentTest: MovieShowFragmentCaseTest() {
+class DiscoverMovieFragmentTest : MovieShowFragmentCaseTest() {
 
     override val pageType: PageType
         get() = PageType.MOVIES

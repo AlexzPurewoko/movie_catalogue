@@ -4,13 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import id.apwdevs.app.core.domain.usecase.FavUseCase
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.favorite.util.Mapper
 import id.apwdevs.app.favorite.viewmodel.FavoriteViewModel
 import id.apwdevs.app.libs.data.FakeDomain
 import id.apwdevs.app.libs.rule.TestCoroutineRule
 import id.apwdevs.app.libs.util.runTest
 import id.apwdevs.app.movieshow.MainApplication
 import id.apwdevs.app.res.data.MovieShowItem
+import id.apwdevs.app.res.util.mapToItem
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -60,52 +60,56 @@ class FavoriteViewModelTest {
     }
 
     @Test
-    fun `getAllFavoriteMovies() should return data when retrieve success`() = runTest(testCoroutineRule) {
-        val fakeData = FakeDomain.generateListMovieDomains()
-        val state = State.Success(fakeData)
-        val mappedState = state.copyTo {
-            it.map { movie -> Mapper.mapDomainMovieToMovieShowItem(movie) }
-        }
-        val fakeFlowState = flow {
-            emit(state)
-        }
-        every { favoriteUseCase.getAllFavoriteMovies() } returns fakeFlowState
-        val result = viewModel.getFavoriteMovies()
-        var resultLiveData: State<List<MovieShowItem>>? = null
-        result.observeForever {
-            mockObserver.onChanged(it)
-            resultLiveData = it
-        }
+    fun `getAllFavoriteMovies() should return data when retrieve success`() =
+        runTest(testCoroutineRule) {
+            val fakeData = FakeDomain.generateListMovieDomains()
+            val state = State.Success(fakeData)
+            val mappedState = state.copyTo {
+                it.map { movie -> movie.mapToItem() }
+            }
+            val fakeFlowState = flow {
+                emit(state)
+            }
+            every { favoriteUseCase.getAllFavoriteMovies() } returns fakeFlowState
+            val result = viewModel.getFavoriteMovies()
+            var resultLiveData: State<List<MovieShowItem>>? = null
+            result.observeForever {
+                mockObserver.onChanged(it)
+                resultLiveData = it
+            }
 
-        verify(exactly = 1) { mockObserver.onChanged(match { it is State.Success && it.data == mappedState.data }) }
+            verify(exactly = 1) { mockObserver.onChanged(match { it is State.Success && it.data == mappedState.data }) }
 
-        Assert.assertNotNull(resultLiveData)
-        Assert.assertEquals(mappedState.data, resultLiveData?.data)
-    }
+            Assert.assertNotNull(resultLiveData)
+            Assert.assertEquals(mappedState.data, resultLiveData?.data)
+        }
 
     @Test
-    fun `getAllFavoriteMovies() should throw error when failed to retrieve data`() = runTest(testCoroutineRule) {
+    fun `getAllFavoriteMovies() should throw error when failed to retrieve data`() =
+        runTest(testCoroutineRule) {
 
-        val throwable = Exception("Error")
-        val fakeFlowState = flow {
-            emit(State.Error(throwable))
+            val throwable = Exception("Error")
+            val fakeFlowState = flow {
+                emit(State.Error(throwable))
+            }
+
+            every { favoriteUseCase.getAllFavoriteMovies() } returns fakeFlowState
+
+            var resultLiveData: State<List<MovieShowItem>>? = null
+            viewModel.getFavoriteMovies().observeForever {
+                mockObserver.onChanged(it)
+                resultLiveData = it
+            }
+
+            verify(exactly = 1) {
+                mockObserver.onChanged(match {
+                    it is State.Error
+                })
+            }
+
+            Assert.assertNotNull(resultLiveData)
+            Assert.assertEquals(throwable, resultLiveData?.error)
         }
-
-        every { favoriteUseCase.getAllFavoriteMovies() } returns fakeFlowState
-
-        var resultLiveData: State<List<MovieShowItem>>? = null
-        viewModel.getFavoriteMovies().observeForever {
-            mockObserver.onChanged(it)
-            resultLiveData = it
-        }
-
-        verify(exactly = 1) { mockObserver.onChanged(match {
-            it is State.Error
-        }) }
-
-        Assert.assertNotNull(resultLiveData)
-        Assert.assertEquals(throwable, resultLiveData?.error)
-    }
 
     @Test
     fun `getFavoriteTvShows() should call method from usecase`() = runTest(testCoroutineRule) {
@@ -115,52 +119,56 @@ class FavoriteViewModelTest {
     }
 
     @Test
-    fun `getAllFavoriteTvShows() should return data when retrieve success`() = runTest(testCoroutineRule) {
-        val fakeData = FakeDomain.generateListTvDomains()
-        val state = State.Success(fakeData)
-        val mappedState = state.copyTo {
-            it.map { tvShow -> Mapper.mapDomainTvShowToMovieShowItem(tvShow) }
-        }
-        val fakeFlowState = flow {
-            emit(state)
-        }
-        every { favoriteUseCase.getAllFavoriteTvShows() } returns fakeFlowState
+    fun `getAllFavoriteTvShows() should return data when retrieve success`() =
+        runTest(testCoroutineRule) {
+            val fakeData = FakeDomain.generateListTvDomains()
+            val state = State.Success(fakeData)
+            val mappedState = state.copyTo {
+                it.map { tvShow -> tvShow.mapToItem() }
+            }
+            val fakeFlowState = flow {
+                emit(state)
+            }
+            every { favoriteUseCase.getAllFavoriteTvShows() } returns fakeFlowState
 
-        val result = viewModel.getFavoriteTvShows()
-        var resultLiveData: State<List<MovieShowItem>>? = null
-        result.observeForever {
-            mockObserver.onChanged(it)
-            resultLiveData = it
+            val result = viewModel.getFavoriteTvShows()
+            var resultLiveData: State<List<MovieShowItem>>? = null
+            result.observeForever {
+                mockObserver.onChanged(it)
+                resultLiveData = it
+            }
+
+            verify(exactly = 1) { mockObserver.onChanged(match { it is State.Success && it.data == mappedState.data }) }
+
+            Assert.assertNotNull(resultLiveData)
+            Assert.assertEquals(mappedState.data, resultLiveData?.data)
         }
-
-        verify(exactly = 1) { mockObserver.onChanged(match { it is State.Success && it.data == mappedState.data }) }
-
-        Assert.assertNotNull(resultLiveData)
-        Assert.assertEquals(mappedState.data, resultLiveData?.data)
-    }
 
     @Test
-    fun `getAllFavoriteTvShows() should throw error when failed to retrieve data`() = runTest(testCoroutineRule) {
+    fun `getAllFavoriteTvShows() should throw error when failed to retrieve data`() =
+        runTest(testCoroutineRule) {
 
-        val throwable = Exception("Error")
-        val fakeFlowState = flow {
-            emit(State.Error(throwable))
+            val throwable = Exception("Error")
+            val fakeFlowState = flow {
+                emit(State.Error(throwable))
+            }
+
+            every { favoriteUseCase.getAllFavoriteTvShows() } returns fakeFlowState
+
+            var resultLiveData: State<List<MovieShowItem>>? = null
+            viewModel.getFavoriteTvShows().observeForever {
+                mockObserver.onChanged(it)
+                resultLiveData = it
+            }
+
+            verify(exactly = 1) {
+                mockObserver.onChanged(match {
+                    it is State.Error
+                })
+            }
+
+            Assert.assertNotNull(resultLiveData)
+            Assert.assertEquals(throwable, resultLiveData?.error)
         }
-
-        every { favoriteUseCase.getAllFavoriteTvShows() } returns fakeFlowState
-
-        var resultLiveData: State<List<MovieShowItem>>? = null
-        viewModel.getFavoriteTvShows().observeForever {
-            mockObserver.onChanged(it)
-            resultLiveData = it
-        }
-
-        verify(exactly = 1) { mockObserver.onChanged(match {
-            it is State.Error
-        }) }
-
-        Assert.assertNotNull(resultLiveData)
-        Assert.assertEquals(throwable, resultLiveData?.error)
-    }
 
 }

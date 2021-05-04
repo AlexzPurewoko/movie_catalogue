@@ -8,11 +8,11 @@ import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.repository.FavMovieRepository
 import id.apwdevs.app.core.repository.FavoriteMovieRepoImpl
-import id.apwdevs.app.core.utils.DomainToEntityMapper
 import id.apwdevs.app.core.utils.State
+import id.apwdevs.app.core.utils.mapToEntity
+import id.apwdevs.app.data.source.local.database.favlocal.FavoriteMovieDataSource
+import id.apwdevs.app.data.source.local.database.favlocal.FavoriteMovieSource
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.favlocal.FavoriteMovieDataSource
-import id.apwdevs.app.data.source.local.room.dbcase.favlocal.FavoriteMovieSource
 import id.apwdevs.app.libs.data.FakeDomain
 import io.mockk.*
 import kotlinx.coroutines.delay
@@ -78,7 +78,7 @@ class FavoriteMovieRepositoryTest {
 
             coVerifyOrder {
 
-                favDataSource.save(DomainToEntityMapper.favDetailMovie(fakeData))
+                favDataSource.save(fakeData.mapToEntity())
                 observer.onChanged(match {
                     it is State.Loading
                 })
@@ -120,7 +120,7 @@ class FavoriteMovieRepositoryTest {
 
             coVerifyOrder {
 
-                favDataSource.save(DomainToEntityMapper.favDetailMovie(fakeData))
+                favDataSource.save(fakeData.mapToEntity())
                 observer.onChanged(match {
                     it is State.Loading
                 })
@@ -161,7 +161,7 @@ class FavoriteMovieRepositoryTest {
     fun save_should_success_when_saving_data() {
         runBlocking {
             val fakeData = FakeDomain.generateDetailMovieDomain(1)
-            val fakeMapper = DomainToEntityMapper.favDetailMovie(fakeData)
+            val fakeMapper = fakeData.mapToEntity()
             favoriteRepo.save(fakeData)
 
             val isFav = favoriteRepo.checkIsFavorite(1)

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import id.apwdevs.app.core.domain.model.detail.TvShowSeason
+import id.apwdevs.app.detail.R
 import id.apwdevs.app.detail.databinding.ItemSeasonsBinding
 import id.apwdevs.app.res.util.getImageURL
 
@@ -28,11 +29,16 @@ class SeasonViewHolder(
 
     fun bind(data: TvShowSeason) {
         binding.apply {
-            Glide.with(binding.root.context)
+            val context = root.context
+            Glide.with(context)
                 .load(data.posterPath.getImageURL("w154"))
                 .into(seasonImage)
             seasonName.text = data.name
-            episodeCount.text = "${data.episodeCount} Episodes"
+            episodeCount.text = context.resources.getQuantityString(
+                R.plurals.episode_count,
+                data.episodeCount,
+                data.episodeCount
+            )
             seasonDate.text = data.airDate
         }
     }

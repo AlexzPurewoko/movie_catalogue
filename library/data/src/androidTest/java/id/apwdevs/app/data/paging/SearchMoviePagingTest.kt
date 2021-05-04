@@ -11,9 +11,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.paging.dispatcher.SearchMoviePagingDispatcher
+import id.apwdevs.app.data.source.remote.network.MoviesNetwork
 import id.apwdevs.app.data.source.remote.paging.SearchMoviePagingSource
 import id.apwdevs.app.data.source.remote.response.MovieItemResponse
-import id.apwdevs.app.data.source.remote.service.ApiService
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -27,8 +27,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import org.koin.java.KoinJavaComponent
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest
@@ -37,12 +36,14 @@ class SearchMoviePagingTest {
     private val query = "A"
     private val totalPage = 4
 
-    private val service: ApiService by lazy {
-        Retrofit.Builder()
-                .baseUrl("http://localhost:8080")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build().create(ApiService::class.java)
-    }
+//    private val service: ApiService by lazy {
+//        Retrofit.Builder()
+//                .baseUrl("http://localhost:8080")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build().create(ApiService::class.java)
+//    }
+
+    private val service: MoviesNetwork by KoinJavaComponent.inject(MoviesNetwork::class.java)
 
     private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply {
         for (i in 0..totalPage) {
@@ -73,13 +74,13 @@ class SearchMoviePagingTest {
 
         mockWebServer.dispatcher = SearchMoviePagingDispatcher(context, ::receiveCallback)
         pager = Pager(
-                config = PagingConfig(
-                        pageSize = 20,
-                        prefetchDistance = 3, // distance backward to get pages
-                        enablePlaceholders = false,
-                        initialLoadSize = 20
-                ),
-                pagingSourceFactory = { SearchMoviePagingSource(service, query) }
+            config = PagingConfig(
+                pageSize = 20,
+                prefetchDistance = 3, // distance backward to get pages
+                enablePlaceholders = false,
+                initialLoadSize = 20
+            ),
+            pagingSourceFactory = { SearchMoviePagingSource(service, query) }
         ).flow
     }
 

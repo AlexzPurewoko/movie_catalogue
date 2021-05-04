@@ -3,6 +3,7 @@ package id.apwdevs.app.detail.ui
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import id.apwdevs.app.detail.R
 import id.apwdevs.app.detail.databinding.FragmentDetailBinding
 import id.apwdevs.app.detail.di.detailModule
@@ -10,7 +11,6 @@ import id.apwdevs.app.detail.ui.helper.DetailItemHelper
 import id.apwdevs.app.detail.ui.helper.DetailMovieHelper
 import id.apwdevs.app.detail.ui.helper.DetailTvShowHelper
 import id.apwdevs.app.detail.viewmodel.DetailMovieShowVM
-import id.apwdevs.app.detail.viewmodel.DetailViewModel
 import id.apwdevs.app.res.BaseFeatureFragment
 import id.apwdevs.app.res.util.PageType
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -22,8 +22,8 @@ class DetailItemFragment : BaseFeatureFragment() {
         DetailItemFragmentArgs.fromBundle(requireArguments())
     }
 
-
     private val detailViewModel: DetailMovieShowVM by viewModel()
+
     lateinit var detailHelper: DetailItemHelper
 
     override val koinModules: List<Module>
@@ -46,7 +46,12 @@ class DetailItemFragment : BaseFeatureFragment() {
             }
         }
         detailHelper.onBindView(viewContainer)
-        (requireActivity() as AppCompatActivity).setSupportActionBar(viewContainer.detailToolbar)
+
+        (requireActivity() as AppCompatActivity).apply {
+            setSupportActionBar(viewContainer.detailToolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+
         return viewContainer.root
     }
 
@@ -54,13 +59,16 @@ class DetailItemFragment : BaseFeatureFragment() {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        detailHelper.initView()
-        detailViewModel.pageType = args.pageType
-        detailViewModel.itemId = args.itemId
+        detailHelper.init()
 
-        detailViewModel.data.observe(viewLifecycleOwner, detailHelper::bindObservedData)
-        detailViewModel.loadData()
-        detailHelper.handleClickFavorite(detailViewModel::toggleFavorite)
+        detailViewModel.apply {
+            pageType = args.pageType
+            itemId = args.itemId
+
+            data.observe(viewLifecycleOwner, detailHelper::bindObservedData)
+            loadData()
+            detailHelper.handleClickFavorite(::toggleFavorite)
+        }
 
     }
 
@@ -78,6 +86,8 @@ class DetailItemFragment : BaseFeatureFragment() {
         if (item.itemId == R.id.favorite_menu) {
             detailViewModel.toggleFavorite()
             return true
+        } else if (item.itemId == android.R.id.home) {
+            findNavController().navigateUp()
         }
         return super.onOptionsItemSelected(item)
     }

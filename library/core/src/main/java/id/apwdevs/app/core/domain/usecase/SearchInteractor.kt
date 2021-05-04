@@ -8,9 +8,9 @@ import id.apwdevs.app.core.domain.repository.TvShowRepository
 import kotlinx.coroutines.flow.Flow
 
 class SearchInteractor constructor(
-        private val movieRepository: MovieRepository,
-        private val tvShowRepository: TvShowRepository
-): SearchUseCase {
+    private val movieRepository: MovieRepository,
+    private val tvShowRepository: TvShowRepository
+) : SearchUseCase {
     override fun searchMovie(query: String, includeAdult: Boolean): Flow<PagingData<Movies>> {
         return movieRepository.searchMovies(query, includeAdult)
     }

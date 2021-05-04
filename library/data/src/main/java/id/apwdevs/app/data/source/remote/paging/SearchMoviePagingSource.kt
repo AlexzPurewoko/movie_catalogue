@@ -2,23 +2,23 @@ package id.apwdevs.app.data.source.remote.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import id.apwdevs.app.data.source.remote.network.MoviesNetwork
 import id.apwdevs.app.data.source.remote.response.MovieItemResponse
-import id.apwdevs.app.data.source.remote.service.ApiService
-import id.apwdevs.app.data.utils.Config
 import retrofit2.HttpException
 import java.io.IOException
 
 class SearchMoviePagingSource(
-        private val apiService: ApiService,
-        private val query: String,
-        private val includeAdult: Boolean = false
+    private val moviesNetwork: MoviesNetwork,
+    private val query: String,
+    private val includeAdult: Boolean = false
 ) : PagingSource<Int, MovieItemResponse>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieItemResponse> {
         val position = params.key ?: 1
         return try {
-            val response = apiService.searchMovies(Config.TOKEN, position, query, includeAdult)
-            val results = response.results
+            val response = moviesNetwork.searchMovies(query, includeAdult, position)
+            val results =
+                response.results.filter { it.title.isNotEmpty() && !it.releaseDate.isNullOrEmpty() }
             val totalPages = response.totalPages
             var nextKey: Int? = position + (params.loadSize / ITEM_PER_PAGE)
             nextKey =

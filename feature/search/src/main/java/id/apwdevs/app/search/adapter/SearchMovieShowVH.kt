@@ -10,6 +10,7 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar
 import id.apwdevs.app.res.util.backdropImageUrlPath
 import id.apwdevs.app.search.databinding.ItemResultSearchBinding
 import id.apwdevs.app.search.model.SearchItem
+import id.apwdevs.app.res.R as Res
 
 class SearchMovieShowVH(
     private val binding: ItemResultSearchBinding
@@ -37,7 +38,9 @@ class SearchMovieShowVH(
     }
 
     private fun showImg(backdropImg: AppCompatImageView, backdopImage: String?) {
-        Glide.with(backdropImg.context).load(backdopImage?.backdropImageUrlPath).into(backdropImg)
+        Glide.with(backdropImg.context).load(backdopImage?.backdropImageUrlPath)
+            .placeholder(Res.drawable.landscape_placeholder_image)
+            .into(backdropImg)
     }
 
     companion object {

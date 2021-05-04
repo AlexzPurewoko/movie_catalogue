@@ -6,16 +6,16 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-        tableName = "seasons_tvshow",
-        foreignKeys = [
-            ForeignKey(
-                    entity = FavDetailTvShowEntity::class,
-                    parentColumns = ["id"],
-                    childColumns = ["owner_id"],
-                    onUpdate = ForeignKey.CASCADE,
-                    onDelete = ForeignKey.CASCADE
-            )
-        ]
+    tableName = "seasons_tvshow",
+    foreignKeys = [
+        ForeignKey(
+            entity = FavDetailTvShowEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["owner_id"],
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class TvShowSeason(
     @PrimaryKey

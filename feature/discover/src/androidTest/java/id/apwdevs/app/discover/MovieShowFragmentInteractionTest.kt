@@ -9,14 +9,13 @@ import id.apwdevs.app.discover.ui.DiscoverFragment
 import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.test.androdtest.BaseAndroidTest
 import id.apwdevs.app.test.androdtest.utils.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.junit.Assert
 import org.junit.Test
 
-class MovieShowFragmentInteractionTest: BaseAndroidTest() {
+class MovieShowFragmentInteractionTest : BaseAndroidTest() {
 
     private lateinit var fragment: DiscoverFragment
 
@@ -38,7 +37,7 @@ class MovieShowFragmentInteractionTest: BaseAndroidTest() {
     }
 
     @Test
-    fun should_display_correct_fragment_when_swiping(){
+    fun should_display_correct_fragment_when_swiping() {
         swipeLeft()
         Assert.assertEquals(PageType.TV_SHOW, fragment.currentPageView)
 

@@ -20,8 +20,7 @@ import org.hamcrest.MatcherAssert
 import org.hamcrest.core.Is
 import org.junit.Assert
 
-class FavoriteMovieFragmentTest: FavoriteFragmentCaseTest() {
-
+class FavoriteMovieFragmentTest : FavoriteFragmentCaseTest() {
 
 
     override fun should_display_no_data_if_not_have_data_in_database() {
@@ -35,7 +34,8 @@ class FavoriteMovieFragmentTest: FavoriteFragmentCaseTest() {
 
     override fun should_display_data_if_have_any_data_in_database() {
         runBlocking {
-            val expectedMovieResponse = prepopulateDataInMemoryDatabase(PageType.MOVIES) as MovieDetailResponse
+            val expectedMovieResponse =
+                prepopulateDataInMemoryDatabase(PageType.MOVIES) as MovieDetailResponse
 
             launchFragment()
 
@@ -47,7 +47,8 @@ class FavoriteMovieFragmentTest: FavoriteFragmentCaseTest() {
                 RecyclerViewCheckItemAssertion {
                     Assert.assertEquals(1, it.adapter?.itemCount)
 
-                    val actualItemName = it[0].findViewById<TextView>(id.apwdevs.app.res.R.id.title).text.toString()
+                    val actualItemName =
+                        it[0].findViewById<TextView>(id.apwdevs.app.res.R.id.title).text.toString()
                     Assert.assertEquals(expectedMovieResponse.title, actualItemName)
                 }
             )
@@ -70,7 +71,7 @@ class FavoriteMovieFragmentTest: FavoriteFragmentCaseTest() {
             prepopulateDataInMemoryDatabase(PageType.MOVIES)
 
             val fg = launchFragment()
-            val ids = id.apwdevs.app.movieshow.R.navigation.main_nav
+            val ids = R.navigation.main_nav
             val navController = TestNavHostController(context)
 
             launch(Dispatchers.Main) {

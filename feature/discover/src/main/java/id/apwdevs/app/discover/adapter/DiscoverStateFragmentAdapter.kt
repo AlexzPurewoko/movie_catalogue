@@ -5,15 +5,15 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import id.apwdevs.app.discover.ui.child.MovieShowFragment
 import id.apwdevs.app.res.util.PageType
 
-class DiscoverStateFragmentAdapter(fm: Fragment, onclick: () -> Unit) : FragmentStateAdapter(fm) {
-    private val listFragment = listOf(
-        MovieShowFragment.newInstance(PageType.MOVIES),
-        MovieShowFragment.newInstance(PageType.TV_SHOW)
-    )
+class DiscoverStateFragmentAdapter(fm: Fragment) : FragmentStateAdapter(fm) {
 
-    override fun getItemCount(): Int = listFragment.size
+    override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment {
-        return listFragment[position]
+        return when (position) {
+            0 -> MovieShowFragment.newInstance(PageType.MOVIES)
+            1 -> MovieShowFragment.newInstance(PageType.TV_SHOW)
+            else -> throw IllegalStateException("Invalid Fragment!")
+        }
     }
 }

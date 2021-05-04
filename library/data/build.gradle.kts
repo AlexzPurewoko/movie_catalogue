@@ -1,8 +1,13 @@
-import modules.*
+import modules.Apps
+import modules.KaptLibs
+import modules.Libs
+
+val apiToken: String by project
+val baseUrl: String by project
 
 plugins {
-    id ("com.android.library")
-    kotlin ("android")
+    id("com.android.library")
+    kotlin("android")
     kotlin("kapt")
     id("jacoco-plugin")
 }
@@ -17,15 +22,21 @@ android {
         versionCode = Apps.versionCode
         versionName = Apps.versionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles( "consumer-rules.pro")
+        testInstrumentationRunner = "id.apwdevs.app.test.androdtest.runner.AppTestRunner"
+
+        buildConfigField("String", "API_TOKEN", apiToken)
+        buildConfigField("String", "BASE_URL", baseUrl)
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
 
         getByName("release") {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
 
         getByName("debug") {
@@ -38,13 +49,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    packagingOptions {
-        exclude("META-INF/AL2.0")
-        exclude("META-INF/LGPL2.1")
-        exclude("META-INF/licenses/**")
-        exclude("META-INF/*.kotlin_module")
-        exclude("**/attach_hostpot_windows.dll")
-    }
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -53,7 +57,8 @@ android {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs.toMutableList().apply { add("-Xopt-in=kotlin.RequiresOptIn") }
+        freeCompilerArgs =
+            freeCompilerArgs.toMutableList().apply { add("-Xopt-in=kotlin.RequiresOptIn") }
     }
 
 }
@@ -74,20 +79,9 @@ dependencies {
 
     kapt(KaptLibs.roomCompiler)
 
-    testImplementation(TestLibs.junit)
-    debugImplementation(project(":test:assetDebug"))
-
-    listOf(
-            AndroidTestLibs.androidxJunit,
-            AndroidTestLibs.espressoCore,
-            AndroidTestLibs.androidxAnnotatation
-    ).forEach { androidTestImplementation(it) }
-
     testImplementation(project(":test:libs"))
-    androidTestImplementation(project(":test:libs"))
-}
-configurations.all {
-    resolutionStrategy {
-        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-debug")
+    androidTestImplementation(project(":test:androidtestlibs"))
+    androidTestImplementation(project(":test:libs")) {
+        isTransitive = false
     }
 }

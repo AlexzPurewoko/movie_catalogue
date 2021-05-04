@@ -1,8 +1,11 @@
 package id.apwdevs.app.detail.ui.helper
 
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.chip.Chip
@@ -10,9 +13,10 @@ import com.google.android.material.chip.ChipGroup
 import id.apwdevs.app.core.domain.model.Genre
 import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.detail.databinding.FragmentDetailBinding
+import id.apwdevs.app.detail.util.GlobalLayoutListener
 import id.apwdevs.app.detail.viewmodel.DetailMovieShowVM
-import id.apwdevs.app.detail.viewmodel.DetailViewModel.Resource
 import id.apwdevs.app.res.R
+import id.apwdevs.app.res.util.changeStateDisplay
 import id.apwdevs.app.res.util.gone
 import id.apwdevs.app.res.util.visible
 import java.util.*
@@ -31,10 +35,17 @@ abstract class DetailItemHelper(
     private val appBarLayoutOffsetChangeListener: AppBarLayout.OnOffsetChangedListener =
         AppBarLayout.OnOffsetChangedListener(::appBarOffsetChangeListener)
 
+    private var globalLayoutListener: GlobalLayoutListener? = null
 
-    abstract fun initView()
+
+    protected abstract fun initView()
+
     protected abstract fun onSuccess(data: Any?)
+
     protected abstract fun onLoad()
+
+    protected abstract fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener
+
     protected abstract fun onDestroy()
 
     protected fun composeGenre(chipGenre: ChipGroup, data: List<Genre>) {
@@ -59,25 +70,32 @@ abstract class DetailItemHelper(
 
     fun onBindView(bindingLayout: FragmentDetailBinding) {
         rootBinding = bindingLayout
-        rootBinding.btnRetry.setOnClickListener { onRetry() }
-        rootBinding.appBar.addOnOffsetChangedListener(appBarLayoutOffsetChangeListener)
+        rootBinding.apply {
+            btnRetry.setOnClickListener { onRetry() }
+            appBar.addOnOffsetChangedListener(appBarLayoutOffsetChangeListener)
+            posterImage.imageTintMode = PorterDuff.Mode.OVERLAY
+            posterImage.imageTintList = ColorStateList.valueOf(BASE_COLOR_TOOLBAR)
+            collapsingToolbar.setContentScrimColor(BASE_COLOR_TOOLBAR)
+            collapsingToolbar.setStatusBarScrimColor(BASE_COLOR_TOOLBAR)
+        }
+
     }
 
     fun bindObservedData(resData: State<DetailMovieShowVM.DataPostType>) {
         val widgetFav = rootBinding.favoriteFab
         when (resData) {
-            is State.Error -> handleOnFailed(resData.error)
+            is State.Error -> handleOnFailed()
             is State.Loading -> {
                 widgetFav.isEnabled = false
                 favoriteMenuItem?.isEnabled = false
 
-                if(resData.loadingTag != DetailMovieShowVM.FAVORITE_LOADING_TAG){
+                if (resData.loadingTag != DetailMovieShowVM.FAVORITE_LOADING_TAG) {
                     onLoad()
                     loading(true)
                 }
             }
             is State.Success -> {
-                when(resData.data?.postType) {
+                when (resData.data?.postType) {
                     DetailMovieShowVM.PostType.DATA -> {
                         errorState(false)
                         loading(false)
@@ -122,13 +140,39 @@ abstract class DetailItemHelper(
         }
     }
 
+    fun init() {
+        initView()
+        globalLayoutListener = provideGlobalLayoutListener(::onReceiveFromLayoutObserver)
+        rootBinding.root.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
+    }
+
     fun destroy() {
         loading(false)
         rootBinding.appBar.removeOnOffsetChangedListener(appBarLayoutOffsetChangeListener)
+        removeGlobalLayoutListener()
+
         onDestroy()
     }
 
-    private fun handleOnFailed(error: Throwable?) {
+    private fun onReceiveFromLayoutObserver(
+        computeResult: Int,
+        appBarComputeResult: Int,
+        containerHeight: Int
+    ) {
+        rootBinding.appBar.layoutParams = rootBinding.appBar.layoutParams.apply {
+            height = appBarComputeResult
+        }
+    }
+
+    private fun removeGlobalLayoutListener() {
+        globalLayoutListener?.apply {
+            rootBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            release()
+        }
+        globalLayoutListener = null
+    }
+
+    private fun handleOnFailed() {
         with(rootBinding) {
             favoriteFab.isEnabled = false
             disableScrollState(true)
@@ -152,12 +196,12 @@ abstract class DetailItemHelper(
             else (currentPos * 100) / totalRange
 
         favoriteMenuItem?.isVisible = scrollRate < 20
-//        if(scrollRate > 20)
-    }
 
-    private fun errorToMessage(error: Throwable?): String {
-        val err = error?.message ?: "Unidentified Error"
-        return rootBinding.root.context.resources.getString(id.apwdevs.app.detail.R.string.display_error)
+        rootBinding.nestedScroll.layoutParams =
+            (rootBinding.nestedScroll.layoutParams as CoordinatorLayout.LayoutParams).apply {
+                this.topMargin = if (scrollRate < 15) 10 else -8
+            }
+
     }
 
     private fun disableScrollState(disabled: Boolean) {
@@ -194,6 +238,10 @@ abstract class DetailItemHelper(
     }
 
     private fun errorState(displayed: Boolean) {
-        rootBinding.errorDisplay.visibility = if (displayed) View.VISIBLE else View.GONE
+        rootBinding.errorDisplay.changeStateDisplay(displayed)
+    }
+
+    companion object {
+        private val BASE_COLOR_TOOLBAR = Color.parseColor("#202020")
     }
 }

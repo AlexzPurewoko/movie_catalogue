@@ -25,6 +25,6 @@ class TestCoroutineRule : TestRule {
     }
 
     fun runBlockingTest(block: suspend TestCoroutineScope.() -> Unit) =
-            testCoroutineScope.runBlockingTest(block)
+        testCoroutineScope.runBlockingTest(block)
 
 }

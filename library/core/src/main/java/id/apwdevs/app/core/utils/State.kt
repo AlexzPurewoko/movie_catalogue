@@ -6,10 +6,10 @@ sealed class State<out T>(val data: T?, val error: Throwable?) {
     class Error(error: Throwable?) : State<Nothing>(null, error)
 
     fun <To> copyTo(mapCall: (from: T) -> To): State<To> {
-        return when(this) {
+        return when (this) {
             is Loading -> Loading()
             is Error -> Error(error)
-            is Success -> Success(data?.let {mapCall(it)})
+            is Success -> Success(data?.let { mapCall(it) })
         }
     }
 }

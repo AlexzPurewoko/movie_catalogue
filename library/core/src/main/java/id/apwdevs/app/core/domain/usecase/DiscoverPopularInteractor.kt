@@ -8,8 +8,8 @@ import id.apwdevs.app.core.domain.repository.TvShowRepository
 import kotlinx.coroutines.flow.Flow
 
 class DiscoverPopularInteractor constructor(
-        private val movieRepository: MovieRepository,
-        private val tvshowRepository: TvShowRepository
+    private val movieRepository: MovieRepository,
+    private val tvshowRepository: TvShowRepository
 ) : DiscoverPopularUseCase {
     override fun discoverPopularMovies(): Flow<PagingData<Movies>> {
         return movieRepository.discoverPopularMovies()

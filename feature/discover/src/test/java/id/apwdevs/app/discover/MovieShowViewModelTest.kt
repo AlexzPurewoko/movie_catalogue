@@ -3,9 +3,7 @@ package id.apwdevs.app.discover
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.PagingData
-import androidx.paging.map
 import id.apwdevs.app.core.domain.usecase.DiscoverPopularUseCase
-import id.apwdevs.app.core.utils.State
 import id.apwdevs.app.discover.ui.child.MovieShowViewModel
 import id.apwdevs.app.libs.data.FakeDomain
 import id.apwdevs.app.libs.rule.TestCoroutineRule
@@ -13,7 +11,6 @@ import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import id.apwdevs.app.libs.util.runTest
 import id.apwdevs.app.movieshow.MainApplication
 import id.apwdevs.app.res.data.MovieShowItem
-import id.apwdevs.app.res.util.Mapper
 import id.apwdevs.app.res.util.PageType
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -46,8 +43,6 @@ class MovieShowViewModelTest {
 
     private lateinit var captureSlot: CapturingSlot<PagingData<MovieShowItem>>
 
-    private val application = MainApplication()
-
     private lateinit var viewModel: MovieShowViewModel
 
     private lateinit var adapter: RecyclerTestAdapter<MovieShowItem>
@@ -55,7 +50,8 @@ class MovieShowViewModelTest {
     @Before
     fun startup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
-        viewModel = MovieShowViewModel(discoverUseCase)
+        val app = mockk<MainApplication>(relaxed = true)
+        viewModel = MovieShowViewModel(app, discoverUseCase)
         captureSlot = slot()
 
         adapter = RecyclerTestAdapter()
@@ -69,27 +65,28 @@ class MovieShowViewModelTest {
     }
 
     @Test
-    fun `discoverPopular() movie should return data when retrieve success`() = runTest(testCoroutineRule) {
-        val fakeData = FakeDomain.generateListMovieDomains()
-        PagingData.from(fakeData)
-        val pagingData = PagingData.from(fakeData)
-        val fakeFlowState = flow { emit(pagingData) }
+    fun `discoverPopular() movie should return data when retrieve success`() =
+        runTest(testCoroutineRule) {
+            val fakeData = FakeDomain.generateListMovieDomains()
+            PagingData.from(fakeData)
+            val pagingData = PagingData.from(fakeData)
+            val fakeFlowState = flow { emit(pagingData) }
 
-        every { discoverUseCase.discoverPopularMovies() } returns fakeFlowState
-        every { mockObserver.onChanged(capture(captureSlot)) } answers { nothing }
+            every { discoverUseCase.discoverPopularMovies() } returns fakeFlowState
+            every { mockObserver.onChanged(capture(captureSlot)) } answers { nothing }
 
-        val result = viewModel.discoverPopular(PageType.MOVIES)
-        result.observeForever(mockObserver)
+            val result = viewModel.discoverPopular(PageType.MOVIES)
+            result.observeForever(mockObserver)
 
-        val job = launch { adapter.submitData(captureSlot.captured) }
-        delay(1000)
+            val job = launch { adapter.submitData(captureSlot.captured) }
+            delay(1000)
 
-        Assert.assertEquals(5, adapter.itemCount)
-        verify(exactly = 1) { discoverUseCase.discoverPopularMovies() }
-        confirmVerified(discoverUseCase)
-        job.cancel()
+            Assert.assertEquals(5, adapter.itemCount)
+            verify(exactly = 1) { discoverUseCase.discoverPopularMovies() }
+            confirmVerified(discoverUseCase)
+            job.cancel()
 
-    }
+        }
 
     @Test
     fun `discoverPopular() tvshow should call method from usecase`() = runTest(testCoroutineRule) {
@@ -99,25 +96,26 @@ class MovieShowViewModelTest {
     }
 
     @Test
-    fun `discoverPopular() tvshow should return data when retrieve success`() = runTest(testCoroutineRule) {
-        val fakeData = FakeDomain.generateListTvDomains()
-        PagingData.from(fakeData)
-        val pagingData = PagingData.from(fakeData)
-        val fakeFlowState = flow { emit(pagingData) }
+    fun `discoverPopular() tvshow should return data when retrieve success`() =
+        runTest(testCoroutineRule) {
+            val fakeData = FakeDomain.generateListTvDomains()
+            PagingData.from(fakeData)
+            val pagingData = PagingData.from(fakeData)
+            val fakeFlowState = flow { emit(pagingData) }
 
-        every { discoverUseCase.discoverPopularTvShow() } returns fakeFlowState
-        every { mockObserver.onChanged(capture(captureSlot)) } answers { nothing }
+            every { discoverUseCase.discoverPopularTvShow() } returns fakeFlowState
+            every { mockObserver.onChanged(capture(captureSlot)) } answers { nothing }
 
-        val result = viewModel.discoverPopular(PageType.TV_SHOW)
-        result.observeForever(mockObserver)
+            val result = viewModel.discoverPopular(PageType.TV_SHOW)
+            result.observeForever(mockObserver)
 
-        val job = launch { adapter.submitData(captureSlot.captured) }
-        delay(1000)
+            val job = launch { adapter.submitData(captureSlot.captured) }
+            delay(1000)
 
-        Assert.assertEquals(5, adapter.itemCount)
-        verify(exactly = 1) { discoverUseCase.discoverPopularTvShow() }
-        confirmVerified(discoverUseCase)
-        job.cancel()
-    }
+            Assert.assertEquals(5, adapter.itemCount)
+            verify(exactly = 1) { discoverUseCase.discoverPopularTvShow() }
+            confirmVerified(discoverUseCase)
+            job.cancel()
+        }
 
 }

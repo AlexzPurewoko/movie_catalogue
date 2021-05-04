@@ -8,10 +8,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import id.apwdevs.app.data.mediator.dispatcher.PopularMoviePagingDispatcher
+import id.apwdevs.app.data.source.local.database.paging.PagingMovieCaseDbInteractor
 import id.apwdevs.app.data.source.local.entity.items.MovieEntity
 import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingMovieCaseDbInteractor
-import id.apwdevs.app.data.source.remote.service.ApiService
+import id.apwdevs.app.data.source.remote.network.MoviesNetwork
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -25,8 +25,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import org.koin.java.KoinJavaComponent.inject
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest
@@ -36,12 +35,7 @@ class PopularMovieMediatorTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val retrofitService: ApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl("http://localhost:8080")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(ApiService::class.java)
-    }
+    private val retrofitService: MoviesNetwork by inject(MoviesNetwork::class.java)
 
     private val appDatabase: AppDatabase by lazy {
         Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
@@ -50,8 +44,8 @@ class PopularMovieMediatorTest {
 
     private lateinit var mockWebServer: MockWebServer
 
-    private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply{
-        for (i in 0..totalPage){
+    private val mappingCountCallHandler: HashMap<Int, Int> = HashMap<Int, Int>().apply {
+        for (i in 0..totalPage) {
             this[i] = 0
         }
     }
@@ -78,16 +72,16 @@ class PopularMovieMediatorTest {
 
         val pagingCaseDb = PagingMovieCaseDbInteractor(appDatabase)
         pager = Pager(
-                config = PagingConfig(
-                        pageSize = 20,
-                        prefetchDistance = 3,
-                        initialLoadSize = 20,
-                        enablePlaceholders = false
-                ),
-                remoteMediator = PopularMovieRemoteMediator(
-                        retrofitService, pagingCaseDb
-                ),
-                pagingSourceFactory = pagingSourceFactory
+            config = PagingConfig(
+                pageSize = 20,
+                prefetchDistance = 3,
+                initialLoadSize = 20,
+                enablePlaceholders = false
+            ),
+            remoteMediator = PopularMovieRemoteMediator(
+                retrofitService, pagingCaseDb
+            ),
+            pagingSourceFactory = pagingSourceFactory
         ).flow
     }
 
@@ -98,7 +92,7 @@ class PopularMovieMediatorTest {
     }
 
     @Test
-    fun firstLoad_should_load_first_data(){
+    fun firstLoad_should_load_first_data() {
         runBlocking {
             val job = executeLaunch(this)
             delay(1000)

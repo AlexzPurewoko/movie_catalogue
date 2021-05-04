@@ -36,13 +36,13 @@ abstract class FavDetailMovieDao {
     protected abstract suspend fun insertAllGenreMapper(genreMapper: List<GenreMapper>)
 
     @Insert
-    protected abstract suspend fun insertAllProdCompaniesMapper(productionCompaniesMapper : List<ProductionCompaniesMapper>)
+    protected abstract suspend fun insertAllProdCompaniesMapper(productionCompaniesMapper: List<ProductionCompaniesMapper>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract suspend fun insertAllProdCompanies(productionCompanies : List<ProductionCompanies>)
+    protected abstract suspend fun insertAllProdCompanies(productionCompanies: List<ProductionCompanies>)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    protected abstract suspend fun insertFavDetailMovieEntity(favDetailMovieEntity : FavDetailMovieEntity)
+    protected abstract suspend fun insertFavDetailMovieEntity(favDetailMovieEntity: FavDetailMovieEntity)
 
 
     // delete
@@ -75,13 +75,8 @@ abstract class FavDetailMovieDao {
     /**
      * For paging source only
      */
-    @Deprecated("will be deleted because not using paging")
     @Query("SELECT COUNT() FROM fav_detail_movie")
     abstract suspend fun getCount(): Long
-
-    @Deprecated("will be deleted because not using paging")
-    @Query("SELECT * FROM fav_detail_movie LIMIT :startOffset,:endOffset")
-    abstract suspend fun getDetailMovieEntity(startOffset: Int, endOffset: Int): List<FavDetailMovieEntity>
 
     @Query("SELECT * FROM fav_detail_movie")
     abstract suspend fun getMovieEntities(): List<FavDetailMovieEntity>

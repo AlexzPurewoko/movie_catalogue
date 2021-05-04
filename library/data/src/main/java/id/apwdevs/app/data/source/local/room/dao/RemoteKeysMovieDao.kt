@@ -15,7 +15,7 @@ interface RemoteKeysMovieDao {
     suspend fun getAll(): List<RemoteKeysMovie>
 
     @RawQuery
-    suspend fun deleteKeys(query: SupportSQLiteQuery) : Long
+    suspend fun deleteKeys(query: SupportSQLiteQuery): Long
 
     @Query("SELECT * FROM remote_keys_movie WHERE movie_id=:movieId")
     suspend fun remoteKeysMovieId(movieId: Long): RemoteKeysMovie?

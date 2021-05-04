@@ -9,8 +9,8 @@ plugins {
 }
 
 android {
-    compileSdkVersion(modules.Apps.compileSdk)
-    buildToolsVersion(modules.Apps.buildToolsVersion)
+    compileSdkVersion(Apps.compileSdk)
+    buildToolsVersion(Apps.buildToolsVersion)
 
     defaultConfig {
         applicationId = "id.apwdevs.app.search"
@@ -49,14 +49,4 @@ dependencies {
         isTransitive = false
     }
     androidTestImplementation(project(":test:androidtestlibs"))
-}
-allprojects {
-    configurations.all {
-        resolutionStrategy {
-            exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-debug")
-        }
-        resolutionStrategy.force("org.objenesis:objenesis:2.6")
-    }
-
-
 }

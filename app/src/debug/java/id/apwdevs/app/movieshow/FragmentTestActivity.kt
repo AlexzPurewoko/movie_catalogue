@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commitNow
 
-class FragmentTestActivity: AppCompatActivity() {
+class FragmentTestActivity : AppCompatActivity() {
 
     private val frameLayout: FrameLayout by lazy {
         FrameLayout(this).apply {

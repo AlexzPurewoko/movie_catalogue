@@ -12,16 +12,16 @@ import id.apwdevs.app.favorite.adapter.FavoriteFragmentAdapter
 import id.apwdevs.app.favorite.databinding.FragmentFavoriteBinding
 import id.apwdevs.app.favorite.di.favoriteModule
 import id.apwdevs.app.res.BaseFeatureFragment
+import id.apwdevs.app.res.util.OnPageSelectedChangeCallback
 import id.apwdevs.app.res.util.PageType
 import org.koin.core.module.Module
-import java.lang.ref.WeakReference
 
-typealias SelectedFunc = (Int) -> Unit
 class FavoriteFragment : BaseFeatureFragment() {
 
     private lateinit var binding: FragmentFavoriteBinding
 
-    @VisibleForTesting var currentPageView: PageType? = null
+    @VisibleForTesting
+    var currentPageView: PageType? = null
 
     private var tabLayoutMediator: TabLayoutMediator? = null
 
@@ -55,9 +55,9 @@ class FavoriteFragment : BaseFeatureFragment() {
 
     }
 
-    private fun registerPageChangeCallback(){
+    private fun registerPageChangeCallback() {
         onPageChangeCallback = OnPageSelectedChangeCallback {
-            currentPageView = when(it){
+            currentPageView = when (it) {
                 0 -> PageType.MOVIES
                 1 -> PageType.TV_SHOW
                 else -> null
@@ -83,16 +83,4 @@ class FavoriteFragment : BaseFeatureFragment() {
         )
     }
 
-
-    private class OnPageSelectedChangeCallback(
-        onSelected: SelectedFunc
-    ): ViewPager2.OnPageChangeCallback() {
-
-        private val weakReference: WeakReference<SelectedFunc> = WeakReference(onSelected)
-
-        override fun onPageSelected(position: Int) {
-            weakReference.get()?.invoke(position)
-        }
-
-    }
 }

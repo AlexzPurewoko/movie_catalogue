@@ -6,7 +6,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.module.Module
 
-abstract class BaseFeatureFragment: Fragment() {
+abstract class BaseFeatureFragment : Fragment() {
     protected abstract val koinModules: List<Module>
     override fun onAttach(context: Context) {
         super.onAttach(context)

@@ -3,7 +3,7 @@ package id.apwdevs.app.favorite.testcase
 import id.apwdevs.app.test.androdtest.BaseAndroidTest
 import org.junit.Test
 
-abstract class FavoriteFragmentInteractionCaseTest: BaseAndroidTest() {
+abstract class FavoriteFragmentInteractionCaseTest : BaseAndroidTest() {
 
     @Test
     abstract fun should_display_correct_ui()

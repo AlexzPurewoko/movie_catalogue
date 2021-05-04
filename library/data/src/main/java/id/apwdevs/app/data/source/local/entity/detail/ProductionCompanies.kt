@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "production_companies",
 )
-data class ProductionCompanies (
+data class ProductionCompanies(
 
     @PrimaryKey
     @ColumnInfo(name = "production_id")

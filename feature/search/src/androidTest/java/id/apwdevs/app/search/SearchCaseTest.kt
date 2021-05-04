@@ -7,19 +7,15 @@ import androidx.test.espresso.action.ViewActions.click
 import id.apwdevs.app.search.adapter.SearchMovieShowVH
 import id.apwdevs.app.search.databinding.ItemResultSearchBinding
 import id.apwdevs.app.search.ui.SearchFragment
-import id.apwdevs.app.search.ui.StateDisplayFragment
 import id.apwdevs.app.test.androdtest.BaseAndroidTest
 import id.apwdevs.app.test.androdtest.utils.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import okhttp3.mockwebserver.Dispatcher
+import kotlinx.coroutines.*
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.`is`
 import org.junit.Assert
 import org.junit.Test
 
+@FlowPreview
 class SearchCaseTest : BaseAndroidTest() {
 
     private lateinit var mockDispatcher: SearchMockDispatcher
@@ -56,9 +52,10 @@ class SearchCaseTest : BaseAndroidTest() {
     }
 
     @Test
-    fun shouldDisplay_data_when_searching_success() {
+    fun shouldDisplay_data_when_searching_success() = runBlocking {
         "text_search".fillViewWithText("a")
 
+        delay(1000)
         // recyclerview must be not hidden.
         "recyclerView".thisViewMustBeDisplayed()
         "frame_status_container".viewMustBeHidden()
@@ -71,19 +68,20 @@ class SearchCaseTest : BaseAndroidTest() {
     }
 
     @Test
-    fun shouldDisplay_explanation_when_any_error_during_searching() {
+    fun shouldDisplay_explanation_when_any_error_during_searching() = runBlocking {
         "text_search".fillViewWithText("b")
 
+        delay(1000)
         "recyclerView".viewMustBeHidden()
         "frame_status_container".thisViewMustBeDisplayed()
 
         // check if display error displays quickly
 
         val stateFragments =
-            searchFragment.childFragmentManager.fragments[0] as? StateDisplayFragment
+            searchFragment.childFragmentManager.fragments[0] as? id.apwdevs.app.res.fragment.StateDisplayFragment
         Assert.assertEquals(
             stateFragments?.stateForTests,
-            "${StateDisplayFragment::class.java.simpleName}.ERROR"
+            "${id.apwdevs.app.res.fragment.StateDisplayFragment::class.java.simpleName}.ERROR"
         )
     }
 
@@ -96,7 +94,7 @@ class SearchCaseTest : BaseAndroidTest() {
             "Tv Show".clickThisText()
 
             // to take the effect, we must delay because ui changes
-            delay(150)
+            delay(500)
             // recyclerview must be not hidden.
             "recyclerView".thisViewMustBeDisplayed()
             "frame_status_container".viewMustBeHidden()
@@ -113,15 +111,15 @@ class SearchCaseTest : BaseAndroidTest() {
             "Adult".clickThisText()
 
             // to take the effect, we must specify short delay because ui changes
-            delay(150)
+            delay(500)
             "recyclerView".viewMustBeHidden()
             "frame_status_container".thisViewMustBeDisplayed()
 
             val stateFragments =
-                searchFragment.childFragmentManager.fragments[0] as? StateDisplayFragment
+                searchFragment.childFragmentManager.fragments[0] as? id.apwdevs.app.res.fragment.StateDisplayFragment
             Assert.assertEquals(
                 stateFragments?.stateForTests,
-                "${StateDisplayFragment::class.java.simpleName}.DATA_EMPTY"
+                "${id.apwdevs.app.res.fragment.StateDisplayFragment::class.java.simpleName}.DATA_EMPTY"
             )
         }
 

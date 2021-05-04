@@ -1,22 +1,16 @@
 package id.apwdevs.app.core.repo
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.paging.cachedIn
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import id.apwdevs.app.core.domain.model.DetailMovie
 import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.repository.MovieRepository
 import id.apwdevs.app.core.repository.MovieRepoImpl
-import id.apwdevs.app.core.utils.RemoteToDomainMapper
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.data.source.local.room.AppDatabase
-import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingCaseMovieDb
-import id.apwdevs.app.data.source.local.room.dbcase.paging.PagingMovieCaseDbInteractor
-import id.apwdevs.app.data.source.remote.service.ApiService
-import id.apwdevs.app.data.utils.Config
+import id.apwdevs.app.core.utils.mapToDomain
+import id.apwdevs.app.data.source.local.database.paging.PagingCaseMovieDb
+import id.apwdevs.app.data.source.remote.network.MoviesNetwork
 import id.apwdevs.app.libs.data.FakeDataDetail
 import id.apwdevs.app.libs.rule.TestCoroutineRule
 import id.apwdevs.app.libs.util.RecyclerTestAdapter
@@ -45,23 +39,15 @@ class MovieRepositoryTest {
     val coroutineTestRule = TestCoroutineRule()
 
     @MockK
-    lateinit var service: ApiService
+    lateinit var service: MoviesNetwork
 
+    @MockK
     lateinit var pagingCaseDb: PagingCaseMovieDb
-
-    lateinit var appDatabase: AppDatabase
-
-    private val context: Context by lazy {
-        ApplicationProvider.getApplicationContext()
-    }
-
 
     private lateinit var movieRepository: MovieRepository
 
     @Before
     fun setup() {
-        appDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).allowMainThreadQueries().build()
-        pagingCaseDb = spyk(PagingMovieCaseDbInteractor(appDatabase))
         MockKAnnotations.init(this)
         movieRepository = MovieRepoImpl(service, pagingCaseDb)
     }
@@ -73,7 +59,7 @@ class MovieRepositoryTest {
 
         coroutineTestRule.runBlockingTest {
 
-            coEvery { service.searchMovies(Config.TOKEN, 1, "a", false) } throws expected
+            coEvery { service.searchMovies("a", false) } throws expected
             coEvery { pagingCaseDb.getGenres() } returns FakeDataDetail.generateGenre()
             val adapter = RecyclerTestAdapter<Movies>()
             val result = movieRepository.searchMovies("a", false)
@@ -92,7 +78,7 @@ class MovieRepositoryTest {
             Assert.assertEquals(0, adapter.itemCount)
 
             coVerify {
-                service.searchMovies(Config.TOKEN, 1, "a", false)
+                service.searchMovies("a", false)
                 pagingCaseDb.getGenres()
             }
             confirmVerified(service)
@@ -104,9 +90,11 @@ class MovieRepositoryTest {
     @Test
     @ExperimentalCoroutinesApi
     fun searchMovies_should_return_data_when_searching_isSuccess() {
-        val movieResponse = FakeDataDetail.generateMovieResponse("a")
+        val movieResponse = FakeDataDetail.generateMovieResponse()
         coroutineTestRule.runBlockingTest {
-            coEvery { service.searchMovies(Config.TOKEN, 1, "a", false) } returns movieResponse
+            coEvery { service.searchMovies("a", false, 1) } returns movieResponse
+            coEvery { service.searchMovies("a", false, 2) } returns movieResponse
+
             coEvery { pagingCaseDb.getGenres() } returns FakeDataDetail.generateGenre()
             val adapter = RecyclerTestAdapter<Movies>()
             val result = movieRepository.searchMovies("a", false)
@@ -122,7 +110,8 @@ class MovieRepositoryTest {
             Assert.assertNotNull(actual)
             Assert.assertEquals(expectedFirstItem.id, actual?.movieId)
             coVerify {
-                service.searchMovies(Config.TOKEN, 1, "a", false)
+                service.searchMovies("a", false, 1)
+                service.searchMovies("a", false, 2)
                 pagingCaseDb.getGenres()
             }
             confirmVerified(service)
@@ -137,7 +126,7 @@ class MovieRepositoryTest {
         val expected = Exception("Error 404: Resource Not found")
         coroutineTestRule.runBlockingTest {
             val observer = mockk<Observer<State<DetailMovie>>>(relaxUnitFun = true)
-            coEvery { service.getDetailMovies(movieId.toString(), Config.TOKEN, language = "en-US") } throws expected
+            coEvery { service.getDetailMovies(movieId.toString()) } throws expected
 
 
             val result = movieRepository.getDetailMovie(movieId)
@@ -151,9 +140,9 @@ class MovieRepositoryTest {
 
             coVerifyOrder {
                 observer.onChanged(coMatch { it is State.Loading })
-                service.getDetailMovies(cmpEq(movieId.toString()), cmpEq(Config.TOKEN), cmpEq("en-US"))
+                service.getDetailMovies(cmpEq(movieId.toString()))
                 observer.onChanged(
-                        coMatch { it is State.Error }
+                    coMatch { it is State.Error }
                 )
             }
             confirmVerified(observer, service)
@@ -168,10 +157,10 @@ class MovieRepositoryTest {
     fun getDetailMovie_should_return_data_when_success_getData() {
         val movieId = 12345
         val fakeData = FakeDataDetail.generateMovieDetailResponse(movieId)
-        val expected = RemoteToDomainMapper.detailMovie(fakeData)
+        val expected = fakeData.mapToDomain()
         coroutineTestRule.runBlockingTest {
             val observer = mockk<Observer<State<DetailMovie>>>(relaxUnitFun = true)
-            coEvery { service.getDetailMovies(movieId.toString(), Config.TOKEN, language = "en-US") } returns fakeData
+            coEvery { service.getDetailMovies(movieId.toString()) } returns fakeData
 
             val result = movieRepository.getDetailMovie(movieId)
             var actual: DetailMovie? = null
@@ -184,9 +173,9 @@ class MovieRepositoryTest {
 
             coVerifyOrder {
                 observer.onChanged(coMatch { it is State.Loading })
-                service.getDetailMovies(cmpEq(movieId.toString()), cmpEq(Config.TOKEN), cmpEq("en-US"))
+                service.getDetailMovies(cmpEq(movieId.toString()))
                 observer.onChanged(
-                        coMatch { it is State.Success<DetailMovie> }
+                    coMatch { it is State.Success<DetailMovie> }
                 )
             }
             confirmVerified(observer, service)

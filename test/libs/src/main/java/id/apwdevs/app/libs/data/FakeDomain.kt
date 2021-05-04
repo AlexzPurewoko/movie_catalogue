@@ -45,7 +45,7 @@ object FakeDomain {
         )
     }
 
-    fun generateEpisodeToAir(): EpisodeToAir {
+    private fun generateEpisodeToAir(): EpisodeToAir {
         return EpisodeToAir(
             0, "", "", "", 0,
             0.0, "", 0, "", 0

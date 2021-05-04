@@ -5,4 +5,7 @@
     <string name="title_discover">Discover MovieShow</string>
     <string name="title_favorite">Favorite MovieShow</string>
     <string name="title_detail">Detail MovieShow Item</string>
+    <string name="tab_search">Search</string>
+    <string name="tab_discover">Discover</string>
+    <string name="tab_favorite">Favorite</string>
 </resources>

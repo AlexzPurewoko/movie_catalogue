@@ -1,15 +1,12 @@
 package id.apwdevs.app.core.repository
 
 import id.apwdevs.app.core.domain.model.DetailMovie
-import id.apwdevs.app.core.domain.model.Genre
 import id.apwdevs.app.core.domain.model.Movies
 import id.apwdevs.app.core.domain.repository.FavMovieRepository
-import id.apwdevs.app.core.utils.DomainToEntityMapper
-import id.apwdevs.app.core.utils.EntityToDomainMapper
 import id.apwdevs.app.core.utils.State
-import id.apwdevs.app.data.source.local.entity.Genres
-import id.apwdevs.app.data.source.local.entity.detail.movie.FavDetailMovieEntity
-import id.apwdevs.app.data.source.local.room.dbcase.favlocal.FavoriteMovieSource
+import id.apwdevs.app.core.utils.mapToDomain
+import id.apwdevs.app.core.utils.mapToEntity
+import id.apwdevs.app.data.source.local.database.favlocal.FavoriteMovieSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -22,7 +19,8 @@ class FavoriteMovieRepoImpl(
             try {
                 val data = favoriteDataSource.getAllFavorite()
                 val genres = favoriteDataSource.genres()
-                val mapped = mapData(data, genres)
+                val mapped =
+                    data.mapToDomain(genres) { favoriteDataSource.genreMapper(it) }.toList()
 
                 emit(State.Success(mapped))
             } catch (e: Exception) {
@@ -35,8 +33,8 @@ class FavoriteMovieRepoImpl(
         return flow {
             emit(State.Loading())
             try {
-                val data = favoriteDataSource.getFavorite(1)
-                val mapper = EntityToDomainMapper.detailMovie(data)
+                val data = favoriteDataSource.getFavorite(id)
+                val mapper = data.mapToDomain()
                 emit(State.Success(mapper))
             } catch (e: Exception) {
                 emit(State.Error(e))
@@ -49,33 +47,12 @@ class FavoriteMovieRepoImpl(
     }
 
     override suspend fun save(data: DetailMovie) {
-        val mapped = DomainToEntityMapper.favDetailMovie(data)
+        val mapped = data.mapToEntity()
         favoriteDataSource.save(mapped)
     }
 
     override suspend fun unFavorite(id: Int) {
         favoriteDataSource.deleteData(id)
     }
-
-    private suspend fun mapData(entities: List<FavDetailMovieEntity>, listGenres: List<Genres>): List<Movies> {
-        return entities.map { entity ->
-            val idMappers = favoriteDataSource.genreMapper(entity.id)
-            val genres = idMappers.map {
-                val item = listGenres.find { i -> i.id == it }
-                if (item == null) Genre(0, "")
-                else Genre(item.id, item.genreName)
-            }
-
-            Movies(
-                    movieId = entity.id, title = entity.title, overview = entity.overview,
-                    language = entity.originalLanguage, genres = genres, posterPath = entity.posterPath,
-                    backdropPath = entity.backdropPath, releaseDate = entity.releaseDate, voteAverage = entity.voteAverage,
-                    voteCount = entity.voteCount, adult = entity.adult
-            )
-        }
-
-    }
-
-
 }
 
