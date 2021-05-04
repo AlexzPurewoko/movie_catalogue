@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             app:tabIndicatorColor="@android:color/white"
             app:tabMode="fixed"
-            app:tabTextColor="@android:color/white"></com.google.android.material.tabs.TabLayout>
+            app:tabTextColor="@android:color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
 
