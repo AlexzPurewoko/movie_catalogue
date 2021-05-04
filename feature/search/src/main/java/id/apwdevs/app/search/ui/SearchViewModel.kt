@@ -29,8 +29,13 @@ class SearchVewModel(
 
     @FlowPreview
     fun search(
-        searchParameter: SearchData
+        searchParameter: SearchData,
+        forceReload: Boolean = false
     ): LiveData<PagingData<SearchItem>> {
+
+        if(!forceReload && searchParameter == savedSearchParameters && _searchResults != null)
+            return _searchResults!!
+
         val (query, pageType, includeAdult) = searchParameter
         savedSearchParameters = searchParameter
         _searchResults = when (pageType) {
