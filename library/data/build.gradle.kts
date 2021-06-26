@@ -1,6 +1,8 @@
 import modules.Apps
 import modules.KaptLibs
 import modules.Libs
+import java.util.Properties
+import java.io.FileInputStream
 
 val apiToken: String by project
 val baseUrl: String by project
@@ -24,8 +26,11 @@ android {
 
         testInstrumentationRunner = "id.apwdevs.app.test.androdtest.runner.AppTestRunner"
 
-        buildConfigField("String", "API_TOKEN", apiToken)
-        buildConfigField("String", "BASE_URL", baseUrl)
+        loadConfigField(this)
+//        print(project.properties)
+//        buildConfigField()
+//        buildConfigField("String", "API_TOKEN", apiToken)
+//        buildConfigField("String", "BASE_URL", baseUrl)
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -72,6 +77,7 @@ dependencies {
         Libs.loggingInterceptor,
         Libs.room,
         Libs.roomKtx,
+        Libs.sqliteChiper,
 
         Libs.koinCore,
         Libs.koinAndroid
@@ -83,5 +89,16 @@ dependencies {
     androidTestImplementation(project(":test:androidtestlibs"))
     androidTestImplementation(project(":test:libs")) {
         isTransitive = false
+    }
+}
+
+fun loadConfigField(scope: com.android.build.api.dsl.VariantDimension) {
+    val properties = Properties()
+    properties.load(FileInputStream(rootProject.file("local.properties")))
+
+    listOf(
+        "API_TOKEN", "BASE_URL", "DB_PASSPHRASE"
+    ).forEach {
+        scope.buildConfigField("String", it, properties.getProperty(it))
     }
 }

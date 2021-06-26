@@ -72,11 +72,11 @@ object Libs {
     const val googleMaterial = "com.google.android.material:material:${Versions.material}"
 
     //others
-    const val circularProgressBar =
-        "com.mikhaellopez:circularprogressbar:${Versions.customProgressBar}"
+    const val circularProgressBar = "com.mikhaellopez:circularprogressbar:${Versions.customProgressBar}"
     const val lottie = "com.airbnb.android:lottie:${Versions.lottie}"
     const val shimmer = "com.facebook.shimmer:shimmer:${Versions.shimmer}"
     const val mockWebServer = "com.squareup.okhttp3:mockwebserver:${Versions.mockWebServer}"
+    const val sqliteChiper = "net.zetetic:android-database-sqlcipher:${Versions.sqlchiper}"
 }
 
 @Suppress("unused")
