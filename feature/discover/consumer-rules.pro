@@ -1,0 +1,1 @@
+-keep class id.apwdevs.app.discover.ui.DiscoverFragment
