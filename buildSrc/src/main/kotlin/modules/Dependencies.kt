@@ -77,6 +77,7 @@ object Libs {
     const val shimmer = "com.facebook.shimmer:shimmer:${Versions.shimmer}"
     const val mockWebServer = "com.squareup.okhttp3:mockwebserver:${Versions.mockWebServer}"
     const val sqliteChiper = "net.zetetic:android-database-sqlcipher:${Versions.sqlchiper}"
+    const val leakCanary = "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"
 }
 
 @Suppress("unused")
