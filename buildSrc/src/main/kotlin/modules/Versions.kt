@@ -28,6 +28,7 @@ object Versions {
     const val lottie = "3.6.1"
     const val shimmer = "0.5.0"
     const val mockWebServer = "4.9.0"
+    const val sqlchiper = "4.4.3"
 
     /* test */
     const val junit = "4.12"
