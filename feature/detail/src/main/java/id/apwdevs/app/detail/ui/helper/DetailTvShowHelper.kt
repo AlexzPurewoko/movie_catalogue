@@ -26,30 +26,38 @@ class DetailTvShowHelper(
     onRetry: () -> Unit
 ) : DetailItemHelper(onRetry) {
 
-    private lateinit var contentBinding: ContentDetailTvshowBinding
-
-    private val sectionFragments: MutableList<Fragment> = mutableListOf()
+    private var contentBinding: ContentDetailTvshowBinding? = null
 
     override fun initView() {
-        contentBinding = ContentDetailTvshowBinding.inflate(
-            LayoutInflater.from(rootBinding.root.context),
-            rootBinding.nestedScroll,
-            false
-        )
-        contentBinding.root.visibility = View.GONE
-        rootBinding.nestedScroll.addView(contentBinding.root)
+
+        rootBinding?.apply {
+            contentBinding = ContentDetailTvshowBinding.inflate(
+                LayoutInflater.from(root.context),
+                nestedScroll,
+                false
+            )
+            contentBinding?.root?.visibility = View.GONE
+            nestedScroll.addView(contentBinding?.root)
+        }
+
     }
 
     @SuppressLint("SetTextI18n")
     override fun onSuccess(data: Any?) {
         val tvShowData = data as TvShowDetail
-        val context = rootBinding.root.context
-        Glide.with(context)
-            .load(tvShowData.posterPath.getImageURL())
-            .into(rootBinding.posterImage)
-        rootBinding.posterImage.visible()
 
-        with(contentBinding) {
+        rootBinding?.apply {
+
+            Glide.with(root.context)
+                .load(tvShowData.posterPath.getImageURL())
+                .placeholder(id.apwdevs.app.res.R.drawable.potrait_loading_placeholder)
+                .into(posterImage)
+            posterImage.visible()
+
+        }
+
+
+        contentBinding?.apply {
             title.text = tvShowData.title
             ratingBar.rating = tvShowData.rating.convertRatingFrom10to5()
             voteAverageText.text = "(${tvShowData.rating})"
@@ -78,27 +86,24 @@ class DetailTvShowHelper(
             replace(R.id.last_episode, lastEpisodeFg)
             replace(R.id.images_frame, backdropImg)
         }
-        sectionFragments.addAll(listOf(lastEpisodeFg, nextEpisodeFg, backdropImg))
     }
 
     override fun onLoad() {
-        contentBinding.root.gone()
+        contentBinding?.root?.gone()
     }
 
-    override fun onDestroy() {
-        sectionFragments.forEach { fg ->
-            if (!fragmentManager.isDestroyed && fragmentManager.fragments.contains(fg))
-                fragmentManager.commit { detach(fg) }
+    override fun onDestroy() {}
+
+    override fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener? {
+        return rootBinding?.let { rootBinding ->
+            contentBinding?.let {  contentBinding ->
+                GlobalLayoutListener(
+                    rootBinding.root,
+                    contentBinding.title, contentBinding.ratingBar, contentBinding.genres,
+                    callback
+                )
+            }
         }
-        sectionFragments.clear()
-    }
-
-    override fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener {
-        return GlobalLayoutListener(
-            rootBinding.root,
-            contentBinding.title, contentBinding.ratingBar, contentBinding.genres,
-            callback
-        )
     }
 
 }

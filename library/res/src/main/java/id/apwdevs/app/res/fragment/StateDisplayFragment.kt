@@ -13,7 +13,7 @@ import id.apwdevs.app.res.fragment.viewmodel.StateViewModel
 
 class StateDisplayFragment : Fragment() {
 
-    private lateinit var binding: StateFragmentBinding
+    private var binding: StateFragmentBinding? = null
     private var viewModelShare: StateViewModel? = null
 
     private var textMaps: HashMap<StateViewModel.DisplayType, Int>? = null
@@ -32,19 +32,24 @@ class StateDisplayFragment : Fragment() {
         viewModelShare = null
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = StateFragmentBinding.inflate(layoutInflater)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         instantiateMaps(savedInstanceState)
-        binding.btnRetry.setOnClickListener(::onRetryClick)
+        binding?.btnRetry?.setOnClickListener { onRetryClick() }
         viewModelShare?.stateFragmentDisplay?.observe(viewLifecycleOwner, ::stateDisplayObserver)
     }
 
@@ -76,7 +81,6 @@ class StateDisplayFragment : Fragment() {
                 false
             else -> true
         }
-        Log.e("VIEWMODELSHARE", "Change display $displayState")
         applyDisplay(displayState, toggleButton)
     }
 
@@ -89,25 +93,32 @@ class StateDisplayFragment : Fragment() {
                 StateViewModel.DisplayType.DATA_EMPTY -> ANIMATION_DATA_EMPTY
             }
         )
-        textMaps?.get(displayState)?.let { binding.titleExplanation.text = getString(it) }
+        textMaps?.get(displayState)?.let { binding?.titleExplanation?.text = getString(it) }
 
         toggleViewButton(toggleButton)
         stateForTests = "${javaClass.simpleName}.$displayState"
     }
 
     private fun toggleViewButton(displayed: Boolean) {
-        binding.btnRetry.visibility = if (displayed) View.VISIBLE else View.INVISIBLE
+        binding?.btnRetry?.visibility = if (displayed) View.VISIBLE else View.INVISIBLE
     }
 
-    private fun onRetryClick(v: View) {
+    private fun onRetryClick() {
         viewModelShare?.callToMainFragment(StateViewModel.StateCallType.RETRY)
     }
 
     private fun changeAnim(anim: String) {
-        binding.lottieAnim.apply {
+        binding?.lottieAnim?.apply {
             pauseAnimation()
             setAnimation(anim)
             playAnimation()
+        }
+    }
+
+    fun pauseAnim(paused: Boolean) {
+        binding?.lottieAnim?.apply {
+            if(paused) pauseAnimation()
+            else playAnimation()
         }
     }
 

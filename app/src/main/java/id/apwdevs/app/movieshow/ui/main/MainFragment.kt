@@ -16,17 +16,17 @@ import id.apwdevs.app.movieshow.util.instantiateFeatureFragment
 
 class MainFragment : Fragment() {
 
-    private lateinit var fragmentMainBinding: FragmentMainBinding
+    private var fragmentMainBinding: FragmentMainBinding? = null
     private lateinit var fragments: HashMap<Int, Fragment>
     private var currentFragmentKey: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         // Inflate the layout for this fragment
         fragmentMainBinding = FragmentMainBinding.inflate(inflater, container, false)
-        return fragmentMainBinding.root
+        return fragmentMainBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,7 +35,7 @@ class MainFragment : Fragment() {
 
         attachFragmentsToFragmentManager()
 
-        fragmentMainBinding.bottomNav.let {
+        fragmentMainBinding?.bottomNav?.let {
 
             val bottomNavBg = it.background as MaterialShapeDrawable
             bottomNavBg.shapeAppearanceModel = bottomNavBg.shapeAppearanceModel.toBuilder().apply {
@@ -114,6 +114,13 @@ class MainFragment : Fragment() {
             currentFragmentKey = id
             fragments[currentFragmentKey]?.let { show(it) }
         }.commit()
+
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fragmentMainBinding = null
     }
 
     companion object {

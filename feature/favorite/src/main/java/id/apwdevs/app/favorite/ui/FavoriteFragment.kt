@@ -18,7 +18,7 @@ import org.koin.core.module.Module
 
 class FavoriteFragment : BaseFeatureFragment() {
 
-    private lateinit var binding: FragmentFavoriteBinding
+    private var binding: FragmentFavoriteBinding? = null
 
     @VisibleForTesting
     var currentPageView: PageType? = null
@@ -33,23 +33,25 @@ class FavoriteFragment : BaseFeatureFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         // Inflate the layout for this fragment
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewPager.adapter = FavoriteFragmentAdapter(requireActivity())
 
-        tabLayoutMediator = TabLayoutMediator(
-            binding.tabs, binding.viewPager, true
-        ) { tab, position ->
-            tab.text = getString(TAB_TITLES[position])
 
+        binding?.let {
+            it.viewPager.adapter = FavoriteFragmentAdapter(this)
+            tabLayoutMediator = TabLayoutMediator(
+                it.tabs, it.viewPager, true
+            ) { tab, position ->
+                tab.text = getString(TAB_TITLES[position])
+
+            }
         }
-
         tabLayoutMediator?.attach()
         registerPageChangeCallback()
 
@@ -63,17 +65,21 @@ class FavoriteFragment : BaseFeatureFragment() {
                 else -> null
             }
         }
-        onPageChangeCallback?.let { binding.viewPager.registerOnPageChangeCallback(it) }
+        onPageChangeCallback?.let { 
+            binding?.viewPager?.registerOnPageChangeCallback(it)
+        }
     }
 
-    override fun onDetach() {
+    override fun onDestroyView() {
+        super.onDestroyView()
         onPageChangeCallback?.let {
-            binding.viewPager.unregisterOnPageChangeCallback(it)
+            binding?.viewPager?.unregisterOnPageChangeCallback(it)
         }
         onPageChangeCallback = null
         tabLayoutMediator?.detach()
+        tabLayoutMediator = null
 
-        super.onDetach()
+        binding = null
     }
 
     companion object {

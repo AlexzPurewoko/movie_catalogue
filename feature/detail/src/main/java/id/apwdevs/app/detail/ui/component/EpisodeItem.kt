@@ -18,14 +18,15 @@ class EpisodeItem : Fragment() {
         requireArguments().getParcelable(DATA)!!
     }
 
-    private lateinit var binding: ItemEpisodeContainerBinding
+    private var binding: ItemEpisodeContainerBinding? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = ItemEpisodeContainerBinding.inflate(layoutInflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,13 +35,18 @@ class EpisodeItem : Fragment() {
     }
 
     private fun initializeElements() {
-        with(binding) {
+        binding?.apply {
             title.text = data.title
             Glide.with(requireContext()).load(data.image.getImageURL())
                 .placeholder(landscape_placeholder_image).into(episodeImage)
             ratingProgress.progress = data.vote.toFloat()
             secondary.text = getString(R.string.secondary_text, data.seasonNumber, data.date)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     companion object {

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import id.apwdevs.app.detail.ui.DetailItemFragmentArgs
@@ -30,25 +31,25 @@ class SearchFragment : FragmentWithState() {
     override val koinModules: List<Module>
         get() = listOf(searchModule)
 
-    private lateinit var binding: FragmentSearchBinding
-    private val viewPagerAdapter: SearchMovieShowAdapter by lazy {
-        SearchMovieShowAdapter(this::anyClickFromItem)
-    }
+    private var binding: FragmentSearchBinding? = null
+    private var viewPagerAdapter: SearchMovieShowAdapter? = null
 
     private val searchVewModel: SearchVewModel by viewModel()
 
     private var searchData: SearchVewModel.SearchData? = null
     private var hasFirstInitialization: Boolean = false
 
+    private var storedLoadStateListener: ((CombinedLoadStates) -> Unit)? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         savedInstanceState?.let {
             searchData = it.getParcelable(SEARCH_DATA_PARCEL)
         }
-        return binding.root
+        return binding?.root
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -58,21 +59,29 @@ class SearchFragment : FragmentWithState() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initiateView()
         initAdapter()
+        binding?.apply {
+            searchVewModel.initViewInteractions(
+                include.textSearch.textChanges(),
+                isAdult.checkedChanges(),
+                spinner.itemSelections()
+            ).observe(viewLifecycleOwner, this@SearchFragment::listenInteractions)
+        }
+    }
 
-        searchVewModel.initViewInteractions(
-            binding.include.textSearch.textChanges(),
-            binding.isAdult.checkedChanges(),
-            binding.spinner.itemSelections()
-        ).observe(viewLifecycleOwner, this::listenInteractions)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        storedLoadStateListener?.let { viewPagerAdapter?.removeLoadStateListener(it) }
+        storedLoadStateListener = null
+        binding = null
+        viewPagerAdapter = null
     }
 
     private fun initAdapter() {
-        viewPagerAdapter.addLoadStateListener { state ->
 
-            val itemCount = viewPagerAdapter.itemCount
+        storedLoadStateListener = { state ->
+            val itemCount = viewPagerAdapter?.itemCount
             when {
                 !hasFirstInitialization -> {
                     callDisplay(StateViewModel.DisplayType.RECOMMENDATION)
@@ -88,6 +97,8 @@ class SearchFragment : FragmentWithState() {
                     toggleStateDisplayFragment(false)
             }
         }
+
+        storedLoadStateListener?.let { viewPagerAdapter?.addLoadStateListener(it) }
     }
 
     private fun callDisplay(type: StateViewModel.DisplayType) {
@@ -103,33 +114,38 @@ class SearchFragment : FragmentWithState() {
     }
 
     private fun initiateView() {
-        binding.spinner.adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
-            CONTENTS.map { getString(it) })
-        binding.recyclerView.adapter = viewPagerAdapter
 
-        super.applyFragmentIntoView(binding.frameStatusContainer.id)
+        binding?.apply {
+            spinner.adapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                CONTENTS.map { getString(it) })
+            viewPagerAdapter = SearchMovieShowAdapter(this@SearchFragment::anyClickFromItem)
+            recyclerView.adapter = viewPagerAdapter
 
-        searchData?.let {
-            binding.spinner.setSelection(
-                when (it.pageType) {
-                    PageType.MOVIES -> 0
-                    PageType.TV_SHOW -> 1
-                }
-            )
+            super.applyFragmentIntoView(frameStatusContainer.id)
 
-            binding.isAdult.isChecked = it.includeAdult
-            binding.include.textSearch.setText(it.searchQuery)
+            searchData?.let {
+                spinner.setSelection(
+                    when (it.pageType) {
+                        PageType.MOVIES -> 0
+                        PageType.TV_SHOW -> 1
+                    }
+                )
+
+                isAdult.isChecked = it.includeAdult
+                include.textSearch.setText(it.searchQuery)
+            }
         }
+
         toggleStateDisplayFragment(true)
         callStateFragmentToDisplaySomething(StateViewModel.DisplayType.RECOMMENDATION)
     }
 
     override fun toggleStateDisplayFragment(displayed: Boolean) {
         super.toggleStateDisplayFragment(displayed)
-        binding.recyclerView.visibility = if (displayed) View.GONE else View.VISIBLE
-        binding.frameStatusContainer.visibility = if (displayed) View.VISIBLE else View.INVISIBLE
+        binding?.recyclerView?.visibility = if (displayed) View.GONE else View.VISIBLE
+        binding?.frameStatusContainer?.visibility = if (displayed) View.VISIBLE else View.INVISIBLE
     }
 
     private fun anyClickFromItem(item: SearchItem) {
@@ -143,21 +159,25 @@ class SearchFragment : FragmentWithState() {
     }
 
     private fun listenInteractions(anyInteraction: Boolean) {
-        if (anyInteraction) {
-            val page = when (binding.spinner.selectedItemPosition) {
-                0 -> PageType.MOVIES
-                1 -> PageType.TV_SHOW
-                else -> return
-            }
-            val query = binding.include.textSearch.text.toString()
-            if (query.isEmpty()) return
-            val includeAdult = binding.isAdult.isChecked
 
-            val composeData = SearchVewModel.SearchData(query, page, includeAdult)
-            searchVewModel.search(composeData)
-                .observe(viewLifecycleOwner, ::searchResults)
-            searchData = composeData
+        binding?.apply {
+            if (anyInteraction) {
+                val page = when (spinner.selectedItemPosition) {
+                    0 -> PageType.MOVIES
+                    1 -> PageType.TV_SHOW
+                    else -> return
+                }
+                val query = include.textSearch.text.toString()
+                if (query.isEmpty()) return
+                val includeAdult = isAdult.isChecked
+
+                val composeData = SearchVewModel.SearchData(query, page, includeAdult)
+                searchVewModel.search(composeData)
+                    .observe(viewLifecycleOwner, ::searchResults)
+                searchData = composeData
+            }
         }
+
     }
 
     override fun mapOfTextDisplay(): HashMap<StateViewModel.DisplayType, Int> = hashMapOf(
@@ -172,7 +192,7 @@ class SearchFragment : FragmentWithState() {
     }
 
     private fun searchResults(data: PagingData<SearchItem>) {
-        viewPagerAdapter.submitData(lifecycle, data)
+        viewPagerAdapter?.submitData(lifecycle, data)
     }
 
     companion object {

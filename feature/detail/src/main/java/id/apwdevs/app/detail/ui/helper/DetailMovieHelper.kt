@@ -7,6 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
+import androidx.fragment.app.commitNow
 import com.bumptech.glide.Glide
 import id.apwdevs.app.detail.R
 import id.apwdevs.app.detail.data.MovieDetail
@@ -23,31 +24,33 @@ import id.apwdevs.app.res.R as Res
 class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: () -> Unit) :
     DetailItemHelper(onRetry) {
 
-    private lateinit var contentBinding: ContentDetailMovieBinding
-    private var backdropImageSection: Fragment? = null
+    private var contentBinding: ContentDetailMovieBinding? = null
 
     override fun initView() {
-        contentBinding = ContentDetailMovieBinding.inflate(
-            LayoutInflater.from(rootBinding.root.context),
-            rootBinding.nestedScroll,
-            false
-        )
-        contentBinding.root.visibility = View.GONE
-        rootBinding.nestedScroll.addView(contentBinding.root)
-
+        rootBinding?.let { root ->
+            contentBinding = ContentDetailMovieBinding.inflate(
+                LayoutInflater.from(root.root.context),
+                root.nestedScroll,
+                false
+            )
+            contentBinding?.root?.visibility = View.GONE
+            root.nestedScroll.addView(contentBinding?.root)
+        }
     }
 
     @SuppressLint("SetTextI18n")
     override fun onSuccess(data: Any?) {
         val movieData = data as MovieDetail
-        val context = rootBinding.root.context
-        Glide.with(context)
-            .load(movieData.posterPath.getImageURL())
-            .placeholder(Res.drawable.potrait_loading_placeholder)
-            .into(rootBinding.posterImage)
-        rootBinding.posterImage.visible()
 
-        with(contentBinding) {
+        rootBinding?.apply {
+            Glide.with(root.context)
+                .load(movieData.posterPath.getImageURL())
+                .placeholder(Res.drawable.potrait_loading_placeholder)
+                .into(posterImage)
+            posterImage.visible()
+        }
+
+        contentBinding?.apply {
             title.text = movieData.title
             ratingBar.rating = movieData.rating.convertRatingFrom10to5()
             Log.e("Rating", "rating: ${movieData.rating}")
@@ -64,36 +67,36 @@ class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: (
 
 
     override fun onLoad() {
-        contentBinding.root.gone()
+        contentBinding?.root?.gone()
     }
 
-    override fun onDestroy() {
+    override fun onDestroy() {}
 
-        backdropImageSection?.let {
-            if (!fragmentManager.isDestroyed && fragmentManager.fragments.contains(it))
-                fragmentManager.commit {
-                    detach(it)
-                }
+    override fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener? {
+        return rootBinding?.let { rootBinding ->
+            contentBinding?.let {  contentBinding ->
+                GlobalLayoutListener(
+                    rootBinding.root,
+                    contentBinding.title, contentBinding.ratingBar, contentBinding.genres,
+                    callback
+                )
+            }
         }
-        backdropImageSection = null
-    }
-
-    override fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener {
-        return GlobalLayoutListener(
-            rootBinding.root,
-            contentBinding.title, contentBinding.ratingBar, contentBinding.genres,
-            callback
-        )
     }
 
     private fun composeBackdrop(backdropPath: String?, titleMovie: String) {
 
-        backdropImageSection = backdropPath?.let {
+        /**
+         * I need to use double bang. And ensure that everything
+         * has been checked, possible not receive NPE
+         */
+        val backdropImageSection = backdropPath?.let {
             CardBackdropItem.newInstance(it.getImageURL()!!, titleMovie)
         } ?: NoDataItem()
 
         fragmentManager.commit {
-            replace(R.id.images_frame, backdropImageSection!!)
+            disallowAddToBackStack()
+            replace(R.id.images_frame, backdropImageSection)
         }
 
     }

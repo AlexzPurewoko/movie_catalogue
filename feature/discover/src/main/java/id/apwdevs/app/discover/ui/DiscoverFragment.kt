@@ -22,7 +22,7 @@ import org.koin.core.module.Module
 
 class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
 
-    private lateinit var binding: FragmentDiscoverBinding
+    private var binding: FragmentDiscoverBinding? = null
 
     @VisibleForTesting
     var currentPageView: PageType? = null
@@ -37,15 +37,15 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         // Inflate the layout for this fragment
         binding = FragmentDiscoverBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeTab(binding.tabs, binding.pagerContainer)
+        initializeTab(binding?.tabs, binding?.pagerContainer)
     }
 
     override fun onItemClick(pageType: PageType, item: Any) {
@@ -57,10 +57,15 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
         findNavController().navigate(directions)
     }
 
-    private fun initializeTab(tabs: TabLayout, pagerContainer: ViewPager2) {
-        pagerContainer.adapter = DiscoverStateFragmentAdapter(this)
-        tabLayoutMediator = TabLayoutMediator(tabs, pagerContainer) { tab, position ->
-            tab.text = getString(TABS[position])
+    private fun initializeTab(tabs: TabLayout?, pagerContainer: ViewPager2?) {
+
+        pagerContainer?.adapter = DiscoverStateFragmentAdapter(this)
+        tabLayoutMediator = tabs?.let { tab ->
+            pagerContainer?.let {
+                TabLayoutMediator(tab, it) { tab, position ->
+                    tab.text = getString(TABS[position])
+                }
+            }
         }
         tabLayoutMediator?.attach()
 
@@ -71,15 +76,16 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
                 else -> null
             }
         }
-        onPageChangeCallback?.let { pagerContainer.registerOnPageChangeCallback(it) }
+        onPageChangeCallback?.let { pagerContainer?.registerOnPageChangeCallback(it) }
     }
 
     override fun onDetach() {
         onPageChangeCallback?.let {
-            binding.pagerContainer.unregisterOnPageChangeCallback(it)
+            binding?.pagerContainer?.unregisterOnPageChangeCallback(it)
         }
         onPageChangeCallback = null
         tabLayoutMediator?.detach()
+        binding = null
 
         super.onDetach()
     }
