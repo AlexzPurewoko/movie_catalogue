@@ -74,6 +74,8 @@ class SearchFragment : FragmentWithState() {
         super.onDestroyView()
         storedLoadStateListener?.let { viewPagerAdapter?.removeLoadStateListener(it) }
         storedLoadStateListener = null
+        searchVewModel.clearJob()
+
         binding = null
         viewPagerAdapter = null
     }
@@ -147,6 +149,8 @@ class SearchFragment : FragmentWithState() {
         binding?.recyclerView?.visibility = if (displayed) View.GONE else View.VISIBLE
         binding?.frameStatusContainer?.visibility = if (displayed) View.VISIBLE else View.INVISIBLE
     }
+
+
 
     private fun anyClickFromItem(item: SearchItem) {
         searchData?.let {

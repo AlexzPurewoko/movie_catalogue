@@ -7,7 +7,7 @@ import id.apwdevs.app.favorite.ui.content.FragmentContent
 import id.apwdevs.app.res.util.PageType
 
 class FavoriteFragmentAdapter(fragment: Fragment) :
-    FragmentStateAdapter(fragment) {
+    FragmentStateAdapter(fragment.childFragmentManager, fragment.viewLifecycleOwner.lifecycle) {
     override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment =

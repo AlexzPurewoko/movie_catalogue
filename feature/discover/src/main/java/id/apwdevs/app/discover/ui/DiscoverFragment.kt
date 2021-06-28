@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
-import androidx.navigation.fragment.findNavController
+import androidx.core.view.get
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -13,21 +13,20 @@ import id.apwdevs.app.discover.adapter.DiscoverStateFragmentAdapter
 import id.apwdevs.app.discover.databinding.FragmentDiscoverBinding
 import id.apwdevs.app.discover.di.discoverViewModel
 import id.apwdevs.app.movieshow.R
-import id.apwdevs.app.movieshow.ui.main.MainFragmentDirections
 import id.apwdevs.app.res.BaseFeatureFragment
-import id.apwdevs.app.res.data.MovieShowItem
 import id.apwdevs.app.res.util.OnPageSelectedChangeCallback
 import id.apwdevs.app.res.util.PageType
 import org.koin.core.module.Module
+import java.lang.ref.WeakReference
 
-class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
+class DiscoverFragment : BaseFeatureFragment() {
 
     private var binding: FragmentDiscoverBinding? = null
 
     @VisibleForTesting
     var currentPageView: PageType? = null
 
-    private var tabLayoutMediator: TabLayoutMediator? = null
+    private var tabLayoutMediator: SafeTabLayoutMediator? = null
 
     private var onPageChangeCallback: ViewPager2.OnPageChangeCallback? = null
 
@@ -48,26 +47,16 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
         initializeTab(binding?.tabs, binding?.pagerContainer)
     }
 
-    override fun onItemClick(pageType: PageType, item: Any) {
-
-        val directions = MainFragmentDirections.actionMainFragmentToDetailFragment(
-            PageType.MOVIES,
-            (item as MovieShowItem).id
-        )
-        findNavController().navigate(directions)
-    }
-
     private fun initializeTab(tabs: TabLayout?, pagerContainer: ViewPager2?) {
 
         pagerContainer?.adapter = DiscoverStateFragmentAdapter(this)
         tabLayoutMediator = tabs?.let { tab ->
             pagerContainer?.let {
-                TabLayoutMediator(tab, it) { tab, position ->
-                    tab.text = getString(TABS[position])
+                SafeTabLayoutMediator(tab, it) { tab, position ->
+                    tab?.text = getString(TABS[position])
                 }
             }
         }
-        tabLayoutMediator?.attach()
 
         onPageChangeCallback = OnPageSelectedChangeCallback {
             currentPageView = when (it) {
@@ -79,13 +68,19 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
         onPageChangeCallback?.let { pagerContainer?.registerOnPageChangeCallback(it) }
     }
 
-    override fun onDetach() {
+    override fun onDestroyView() {
+        super.onDestroyView()
         onPageChangeCallback?.let {
             binding?.pagerContainer?.unregisterOnPageChangeCallback(it)
         }
-        onPageChangeCallback = null
         tabLayoutMediator?.detach()
+        onPageChangeCallback = null
+        tabLayoutMediator = null
         binding = null
+    }
+
+    override fun onDetach() {
+
 
         super.onDetach()
     }
@@ -95,5 +90,104 @@ class DiscoverFragment : BaseFeatureFragment(), FragmentMessenger {
             R.string.movies,
             R.string.tvshows
         )
+    }
+}
+
+class SafeTabLayoutMediator(
+    tab: TabLayout,
+    viewPager2: ViewPager2,
+    private val initImpl: (tab: TabLayout.Tab?, position: Int) -> Unit) {
+
+    private val tabViews = WeakReference(tab)
+    private val viewPager = WeakReference(viewPager2)
+
+    private val tabListener: WeakReference<TabLayout.OnTabSelectedListener> = composeTabListener()
+
+    private fun composeTabListener(): WeakReference<TabLayout.OnTabSelectedListener> {
+        val onTabChangeListener = object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                viewPager.get()?.setCurrentItem(tab?.position ?: 0, true)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+
+        }
+        return WeakReference(onTabChangeListener)
+    }
+
+    private val viewPagerListener: WeakReference<ViewPager2.OnPageChangeCallback> = composeVPagerListener()
+
+    private fun composeVPagerListener(): WeakReference<ViewPager2.OnPageChangeCallback> {
+        val onPageChange = object : ViewPager2.OnPageChangeCallback() {
+            private var prevScrollState: Int = ViewPager2.SCROLL_STATE_IDLE
+            private var scrollState: Int = ViewPager2.SCROLL_STATE_IDLE
+
+            override fun onPageScrollStateChanged(state: Int) {
+                prevScrollState = scrollState
+                scrollState = state
+            }
+
+            override fun onPageSelected(position: Int) {
+                tabViews.get()?.apply {
+                    if (selectedTabPosition != position && position < tabCount) {
+                        // Select the tab, only updating the indicator if we're not being dragged/settled
+                        // (since onPageScrolled will handle that).
+                        val updateIndicator = (scrollState == ViewPager2.SCROLL_STATE_IDLE
+                                || (scrollState == ViewPager2.SCROLL_STATE_SETTLING
+                                && prevScrollState == ViewPager2.SCROLL_STATE_IDLE))
+                        selectTab(getTabAt(position), updateIndicator)
+                    }
+                }
+            }
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                tabViews.get()?.apply {
+                    val updateText = scrollState != ViewPager2.SCROLL_STATE_SETTLING || prevScrollState == ViewPager2.SCROLL_STATE_DRAGGING
+                    val updateIndicator =
+                        !(scrollState == ViewPager2.SCROLL_STATE_SETTLING && prevScrollState == ViewPager2.SCROLL_STATE_IDLE)
+                    tabViews.get()?.setScrollPosition(position, positionOffset, updateText, updateIndicator)
+                }
+            }
+        }
+        return WeakReference(onPageChange)
+    }
+
+    init {
+        viewPager.get()?.adapter?.itemCount?.let { treshold ->
+            for (i in 0 until treshold) {
+                val tabItem = tabViews.get()!!.newTab()
+                tabViews.get()!!.addTab(tabItem)
+                initImpl(tabItem, i)
+            }
+        }
+
+        tabViews.get()?.addOnTabSelectedListener(tabListener.get()!!)
+        viewPager.get()?.registerOnPageChangeCallback(viewPagerListener.get()!!)
+        tabViews.get()?.setScrollPosition(viewPager.get()!!.currentItem, 0f, true)
+    }
+
+    fun detach() {
+
+        tabListener.get()?.let {
+            tabViews.get()?.removeOnTabSelectedListener(it)
+        }
+
+        viewPagerListener.get()?.let {
+            viewPager.get()?.unregisterOnPageChangeCallback(it)
+        }
+        tabListener.clear()
+        viewPagerListener.clear()
+        tabViews.clear()
+        viewPager.clear()
     }
 }
