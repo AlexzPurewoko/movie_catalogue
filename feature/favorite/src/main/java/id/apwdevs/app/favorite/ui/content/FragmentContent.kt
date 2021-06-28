@@ -1,6 +1,7 @@
 package id.apwdevs.app.favorite.ui.content
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,25 +26,27 @@ class FragmentContent : FragmentWithState() {
 
     private val favoriteViewModel: FavoriteViewModel by viewModel()
 
-    private val binding: FragmentContentBinding by lazy {
-        FragmentContentBinding.inflate(layoutInflater)
-    }
-    private val adapter: FavoriteMovieShowAdapter by lazy { FavoriteMovieShowAdapter(::onItemClick) }
-
+    private var binding: FragmentContentBinding? = null
+    private var adapter: FavoriteMovieShowAdapter? = null
     private val pageType: PageType? by lazy { arguments?.getParcelable(PAGE_TYPE_KEY) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View = binding.root
+    ): View = FragmentContentBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding?.apply {
+            adapter = FavoriteMovieShowAdapter(this@FragmentContent::onItemClick)
+            super.applyFragmentIntoView(frameStatus.id)
+            recyclerView.adapter = adapter
+            load()
+        }
 
-        super.applyFragmentIntoView(binding.frameStatus.id)
-        binding.recyclerView.adapter = adapter
-        load()
     }
 
     private fun load() {
@@ -52,6 +55,12 @@ class FragmentContent : FragmentWithState() {
             PageType.TV_SHOW -> favoriteViewModel.getFavoriteTvShows()
             else -> null
         }?.observe(viewLifecycleOwner, ::observeData)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        adapter = null
     }
 
     private fun observeData(data: State<List<MovieShowItem>>) {
@@ -63,15 +72,17 @@ class FragmentContent : FragmentWithState() {
                 if (data.data.isNullOrEmpty())
                     callDisplayType(StateViewModel.DisplayType.DATA_EMPTY)
                 else {
-                    data.data?.let { adapter.update(it) }
+                    data.data?.let { adapter?.update(it) }
                     dataHidden = false
                 }
             }
         }
 
+        Log.e("DATA HIDDEN", dataHidden.toString())
+
         super.toggleStateDisplayFragment(dataHidden)
-        binding.frameStatus.changeStateDisplay(dataHidden)
-        binding.recyclerView.changeStateDisplay(!dataHidden)
+        binding?.frameStatus?.changeStateDisplay(dataHidden)
+        binding?.recyclerView?.changeStateDisplay(!dataHidden)
     }
 
     private fun callDisplayType(displayType: StateViewModel.DisplayType) {

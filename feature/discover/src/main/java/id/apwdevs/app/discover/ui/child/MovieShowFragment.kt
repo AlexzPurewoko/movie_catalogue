@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import id.apwdevs.app.detail.ui.DetailItemFragmentArgs
@@ -24,10 +25,11 @@ import id.apwdevs.app.movieshow.R as BaseR
 class MovieShowFragment : FragmentWithState() {
 
     private val movieShowViewModel: MovieShowViewModel by viewModel()
-    private val movieShowAdapter: ListMovieShowAdapter by lazy { ListMovieShowAdapter(this::onItemClicked) }
-    private val currentFragmentType: PageType by lazy { requireArguments().getParcelable(SHOWS_TYPE)!! }
+    private var movieShowAdapter: ListMovieShowAdapter? = null
+    private var currentFragmentType: PageType? = null // by lazy { requireArguments().getParcelable(SHOWS_TYPE)!! }
 
-    private lateinit var binding: FragmentMovieShowBinding
+    private var binding: FragmentMovieShowBinding? = null
+    private var storeLoadStateFragment: ((CombinedLoadStates) -> Unit)? = null
 
     override val koinModules: List<Module>
         get() = listOf()
@@ -36,26 +38,42 @@ class MovieShowFragment : FragmentWithState() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentMovieShowBinding.inflate(inflater, container, false)
-        return binding.root
+        currentFragmentType = arguments?.getParcelable(SHOWS_TYPE)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.recyclerView.adapter = movieShowAdapter
-        movieShowViewModel.discoverPopular(currentFragmentType)
-            .observe(viewLifecycleOwner, this::observingData)
+        movieShowAdapter = ListMovieShowAdapter(this::onItemClicked)
 
-        applyFragmentIntoView(binding.frameStatus.id)
-        initAdapter()
+        binding?.apply {
+            recyclerView.adapter = movieShowAdapter
 
+            currentFragmentType?.let {
+                movieShowViewModel.discoverPopular(it)
+                    .observe(viewLifecycleOwner, this@MovieShowFragment::observingData)
+            }
+
+            applyFragmentIntoView(frameStatus.id)
+            initAdapter()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        storeLoadStateFragment?.let { movieShowAdapter?.removeLoadStateListener(it) }
+        binding?.recyclerView?.adapter = null
+        storeLoadStateFragment = null
+        currentFragmentType = null
+        movieShowAdapter = null
+        binding = null
     }
 
     private fun initAdapter() {
-
-        movieShowAdapter.addLoadStateListener { state ->
-            val itemCount = movieShowAdapter.itemCount
+        storeLoadStateFragment = { state ->
+            val itemCount = movieShowAdapter?.itemCount
             when {
 
                 state.refresh is LoadState.NotLoading && itemCount == 0 ->
@@ -73,6 +91,9 @@ class MovieShowFragment : FragmentWithState() {
 
         }
 
+        storeLoadStateFragment?.let { movieShowAdapter?.addLoadStateListener(it) }
+
+
     }
 
     private fun callDisplay(displayType: StateViewModel.DisplayType) {
@@ -88,25 +109,29 @@ class MovieShowFragment : FragmentWithState() {
 
     override fun toggleStateDisplayFragment(displayed: Boolean) {
         super.toggleStateDisplayFragment(displayed)
-        binding.recyclerView.changeStateDisplay(!displayed)
-        binding.frameStatus.changeStateDisplay(displayed)
+        binding?.recyclerView?.changeStateDisplay(!displayed)
+        binding?.frameStatus?.changeStateDisplay(displayed)
     }
 
+    @Synchronized
     override fun provideCallbackFromStateDisplay(parameters: List<Any>) {
-        if (parameters[0] === StateViewModel.StateCallType.RETRY) {
-            movieShowViewModel.discoverPopular(currentFragmentType)
+        if (parameters[0] === StateViewModel.StateCallType.RETRY && currentFragmentType != null) {
+            /**
+             * Add double bang because i ensure that's not null from last direct-checking
+             */
+            movieShowViewModel.discoverPopular(currentFragmentType!!)
                 .observe(viewLifecycleOwner, this::observingData)
         }
     }
 
 
     private fun observingData(data: PagingData<MovieShowItem>) {
-        movieShowAdapter.submitData(lifecycle, data)
+        movieShowAdapter?.submitData(lifecycle, data)
     }
 
     private fun onItemClicked(data: MovieShowItem) {
         Toast.makeText(requireContext(), "Item Click ${data.id}", Toast.LENGTH_LONG).show()
-        currentFragmentType.let {
+        currentFragmentType?.let {
             val bundle = DetailItemFragmentArgs(it, data.id).toBundle()
             findNavController().navigate(
                 BaseR.id.detailFragment, bundle

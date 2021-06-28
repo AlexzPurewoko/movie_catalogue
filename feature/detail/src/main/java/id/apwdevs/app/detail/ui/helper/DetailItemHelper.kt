@@ -25,15 +25,12 @@ abstract class DetailItemHelper(
     private val onRetry: () -> Unit
 ) {
 
-    protected lateinit var rootBinding: FragmentDetailBinding
+    protected var rootBinding: FragmentDetailBinding? = null
     var favoriteMenuItem: MenuItem? = null
 
-    private val shimmerLoading: ShimmerFrameLayout by lazy {
-        rootBinding.shimmerLoading
-    }
+    private var shimmerLoading: ShimmerFrameLayout? = null
 
-    private val appBarLayoutOffsetChangeListener: AppBarLayout.OnOffsetChangedListener =
-        AppBarLayout.OnOffsetChangedListener(::appBarOffsetChangeListener)
+    private var appBarLayoutOffsetChangeListener: AppBarLayout.OnOffsetChangedListener? = null
 
     private var globalLayoutListener: GlobalLayoutListener? = null
 
@@ -44,7 +41,7 @@ abstract class DetailItemHelper(
 
     protected abstract fun onLoad()
 
-    protected abstract fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener
+    protected abstract fun provideGlobalLayoutListener(callback: (Int, Int, Int) -> Unit): GlobalLayoutListener?
 
     protected abstract fun onDestroy()
 
@@ -68,10 +65,12 @@ abstract class DetailItemHelper(
         return Locale(iso6391).displayName
     }
 
-    fun onBindView(bindingLayout: FragmentDetailBinding) {
+    fun onBindView(bindingLayout: FragmentDetailBinding?) {
         rootBinding = bindingLayout
-        rootBinding.apply {
+        shimmerLoading = rootBinding?.shimmerLoading
+        rootBinding?.apply {
             btnRetry.setOnClickListener { onRetry() }
+            appBarLayoutOffsetChangeListener = AppBarLayout.OnOffsetChangedListener(this@DetailItemHelper::appBarOffsetChangeListener)
             appBar.addOnOffsetChangedListener(appBarLayoutOffsetChangeListener)
             posterImage.imageTintMode = PorterDuff.Mode.OVERLAY
             posterImage.imageTintList = ColorStateList.valueOf(BASE_COLOR_TOOLBAR)
@@ -82,11 +81,10 @@ abstract class DetailItemHelper(
     }
 
     fun bindObservedData(resData: State<DetailMovieShowVM.DataPostType>) {
-        val widgetFav = rootBinding.favoriteFab
         when (resData) {
             is State.Error -> handleOnFailed()
             is State.Loading -> {
-                widgetFav.isEnabled = false
+                rootBinding?.favoriteFab?.isEnabled = false
                 favoriteMenuItem?.isEnabled = false
 
                 if (resData.loadingTag != DetailMovieShowVM.FAVORITE_LOADING_TAG) {
@@ -112,30 +110,32 @@ abstract class DetailItemHelper(
     }
 
     private fun triggerFavorite(resFav: State<DetailMovieShowVM.DataPostType>) {
-        val widgetFav = rootBinding.favoriteFab
-        when (resFav) {
-            is State.Error -> {
-            }
-            is State.Loading -> {
-                widgetFav.isEnabled = false
-                favoriteMenuItem?.isEnabled = false
-            }
-            is State.Success -> {
-                val enabled = true
-                val isFavorited = resFav.data?.data == true
-                val img =
-                    if (isFavorited) R.drawable.ic_baseline_favorite_24
-                    else R.drawable.ic_baseline_favorite_border_24
-                widgetFav.tag = if (isFavorited) "favorited" else "unfavorited"
-                widgetFav.isEnabled = enabled
-                favoriteMenuItem?.isEnabled = enabled
-                widgetFav.setImageResource(img)
+        rootBinding?.favoriteFab?.let { widgetFav ->
+            when (resFav) {
+                is State.Error -> {
+                }
+                is State.Loading -> {
+                    widgetFav.isEnabled = false
+                    favoriteMenuItem?.isEnabled = false
+                }
+                is State.Success -> {
+                    val enabled = true
+                    val isFavorited = resFav.data?.data == true
+                    val img =
+                        if (isFavorited) R.drawable.ic_baseline_favorite_24
+                        else R.drawable.ic_baseline_favorite_border_24
+                    widgetFav.tag = if (isFavorited) "favorited" else "unfavorited"
+                    widgetFav.isEnabled = enabled
+                    favoriteMenuItem?.isEnabled = enabled
+                    widgetFav.setImageResource(img)
+                }
             }
         }
+
     }
 
     fun handleClickFavorite(caller: () -> Unit) {
-        rootBinding.favoriteFab.setOnClickListener {
+        rootBinding?.favoriteFab?.setOnClickListener {
             caller()
         }
     }
@@ -143,12 +143,13 @@ abstract class DetailItemHelper(
     fun init() {
         initView()
         globalLayoutListener = provideGlobalLayoutListener(::onReceiveFromLayoutObserver)
-        rootBinding.root.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
+        rootBinding?.root?.viewTreeObserver?.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     fun destroy() {
         loading(false)
-        rootBinding.appBar.removeOnOffsetChangedListener(appBarLayoutOffsetChangeListener)
+        rootBinding?.appBar?.removeOnOffsetChangedListener(appBarLayoutOffsetChangeListener)
+        appBarLayoutOffsetChangeListener = null
         removeGlobalLayoutListener()
 
         onDestroy()
@@ -159,21 +160,21 @@ abstract class DetailItemHelper(
         appBarComputeResult: Int,
         containerHeight: Int
     ) {
-        rootBinding.appBar.layoutParams = rootBinding.appBar.layoutParams.apply {
+        rootBinding?.appBar?.layoutParams = rootBinding?.appBar?.layoutParams?.apply {
             height = appBarComputeResult
         }
     }
 
     private fun removeGlobalLayoutListener() {
         globalLayoutListener?.apply {
-            rootBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            rootBinding?.root?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             release()
         }
         globalLayoutListener = null
     }
 
     private fun handleOnFailed() {
-        with(rootBinding) {
+        rootBinding?.apply {
             favoriteFab.isEnabled = false
             disableScrollState(true)
             errorState(true)
@@ -197,15 +198,15 @@ abstract class DetailItemHelper(
 
         favoriteMenuItem?.isVisible = scrollRate < 20
 
-        rootBinding.nestedScroll.layoutParams =
-            (rootBinding.nestedScroll.layoutParams as CoordinatorLayout.LayoutParams).apply {
+        rootBinding?.nestedScroll?.layoutParams =
+            (rootBinding?.nestedScroll?.layoutParams as? CoordinatorLayout.LayoutParams)?.apply {
                 this.topMargin = if (scrollRate < 15) 10 else -8
             }
 
     }
 
     private fun disableScrollState(disabled: Boolean) {
-        with(rootBinding) {
+        rootBinding?.apply {
             collapsingToolbar.layoutParams =
                 AppBarLayout.LayoutParams(collapsingToolbar.layoutParams).apply {
                     scrollFlags =
@@ -216,29 +217,31 @@ abstract class DetailItemHelper(
     }
 
     private fun loading(state: Boolean) {
-        if (!state) {
-            shimmerLoading.stopShimmer()
-            shimmerLoading.hideShimmer()
-            shimmerLoading.gone()
-            rootBinding.lottiePlaceholder.apply {
-                pauseAnimation()
-                gone()
+        shimmerLoading?.let {
+            if (!state) {
+                it.stopShimmer()
+                it.hideShimmer()
+                it.gone()
+                rootBinding?.lottiePlaceholder?.apply {
+                    pauseAnimation()
+                    gone()
+                }
+                rootBinding?.posterImage?.visible()
+            } else {
+                it.visible()
+                it.showShimmer(true)
+                rootBinding?.lottiePlaceholder?.apply {
+                    setAnimation("loading_scooter_riding.json")
+                    playAnimation()
+                    visible()
+                }
+                rootBinding?.posterImage?.gone()
             }
-            rootBinding.posterImage.visible()
-        } else {
-            shimmerLoading.visible()
-            shimmerLoading.showShimmer(true)
-            rootBinding.lottiePlaceholder.apply {
-                setAnimation("loading_scooter_riding.json")
-                playAnimation()
-                visible()
-            }
-            rootBinding.posterImage.gone()
         }
     }
 
     private fun errorState(displayed: Boolean) {
-        rootBinding.errorDisplay.changeStateDisplay(displayed)
+        rootBinding?.errorDisplay?.changeStateDisplay(displayed)
     }
 
     companion object {

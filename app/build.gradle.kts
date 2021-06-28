@@ -39,6 +39,11 @@ android {
         getByName("debug") {
             debuggable(true)
             applicationIdSuffix = ".debug"
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
 
     }
@@ -75,8 +80,17 @@ dependencies {
         Libs.navigationKtx,
         Libs.navigationDynamicModule
     ).forEach { api(it) }
-    debugImplementation(AndroidTestLibs.fragment)
-    debugImplementation(AndroidTestLibs.espressoIdlingResource)
-    debugImplementation(project(":test:assetDebug"))
-    debugImplementation(AndroidTestLibs.fragment)
+
+    listOf(
+        Libs.leakCanary,
+        AndroidTestLibs.fragment,
+        AndroidTestLibs.espressoIdlingResource,
+        project(":test:assetDebug")
+    ).forEach {
+        debugImplementation(it)
+    }
+//    debugImplementation(AndroidTestLibs.fragment)
+//    debugImplementation(AndroidTestLibs.espressoIdlingResource)
+//    debugImplementation(project(":test:assetDebug"))
+//    debugImplementation(AndroidTestLibs.fragment)
 }

@@ -26,6 +26,10 @@ abstract class FragmentWithState : BaseFeatureFragment() {
 
     }
 
+    private fun pauseAnim(paused: Boolean){
+        referenceStateFragment?.pauseAnim(paused)
+    }
+
     protected fun applyFragmentIntoView(@IdRes resId: Int) {
         childFragmentManager.commit {
             referenceStateFragment?.let {
@@ -39,7 +43,7 @@ abstract class FragmentWithState : BaseFeatureFragment() {
             referenceStateFragment?.let {
                 if (displayed) show(it)
                 else hide(it)
-                Log.e("TOGGLESTATE", "is displayed $displayed. ${it.isVisible}")
+                pauseAnim(displayed)
             }
         }
     }

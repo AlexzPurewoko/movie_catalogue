@@ -12,6 +12,7 @@ import id.apwdevs.app.movieshow.base.BaseViewModel
 import id.apwdevs.app.res.util.PageType
 import id.apwdevs.app.search.model.SearchItem
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.parcelize.Parcelize
 import ru.ldralighieri.corbind.internal.InitialValueFlow
@@ -26,6 +27,8 @@ class SearchVewModel(
     private var savedPosition: Int = 0
     private val _listenInteractions: MutableLiveData<Boolean> = MutableLiveData()
     private var _searchResults: LiveData<PagingData<SearchItem>>? = null
+
+    private var refCombineJob: Job? = null
 
     @FlowPreview
     fun search(
@@ -55,7 +58,7 @@ class SearchVewModel(
         spinnerChanges: InitialValueFlow<Int>
     ): LiveData<Boolean> {
 
-        combine(
+        refCombineJob = combine(
             textSearchChanges.map {
                 if (it.toString().isNotEmpty() && currentSearch != it.toString()) {
                     currentSearch = it.toString()
@@ -104,6 +107,16 @@ class SearchVewModel(
                     SearchItem(it.tvId, it.name, it.backdropPath, it.voteAverage, it.firstAirDate)
                 }
             }
+
+    fun clearJob() {
+        refCombineJob?.cancel()
+        refCombineJob = null
+    }
+
+
+    override fun onCleared() {
+        clearJob()
+    }
 
     @Parcelize
     data class SearchData(

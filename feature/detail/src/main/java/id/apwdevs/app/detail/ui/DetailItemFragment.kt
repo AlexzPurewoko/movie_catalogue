@@ -18,68 +18,76 @@ import org.koin.core.module.Module
 
 class DetailItemFragment : BaseFeatureFragment() {
 
-    private val args: DetailItemFragmentArgs by lazy {
-        DetailItemFragmentArgs.fromBundle(requireArguments())
-    }
+    private var args: DetailItemFragmentArgs? = null
 
     private val detailViewModel: DetailMovieShowVM by viewModel()
 
-    lateinit var detailHelper: DetailItemHelper
+    private var detailHelper: DetailItemHelper? = null
 
     override val koinModules: List<Module>
         get() = listOf(detailModule)
 
+    /*
 
+
+        val viewContainer = FragmentDetailBinding.inflate(inflater, container, false)
+
+
+
+        return viewContainer.root
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-
-        val viewContainer = FragmentDetailBinding.inflate(inflater, container, false)
-        detailHelper = when (args.pageType) {
+    ): View = FragmentDetailBinding.inflate(inflater, container, false).apply {
+        args = DetailItemFragmentArgs.fromBundle(requireArguments())
+        detailHelper = when (args?.pageType) {
             PageType.MOVIES -> {
                 DetailMovieHelper(childFragmentManager, detailViewModel::loadData)
             }
             PageType.TV_SHOW -> {
                 DetailTvShowHelper(childFragmentManager, detailViewModel::loadData)
             }
+            else -> null
         }
-        detailHelper.onBindView(viewContainer)
-
-        (requireActivity() as AppCompatActivity).apply {
-            setSupportActionBar(viewContainer.detailToolbar)
+        detailHelper?.onBindView(this)
+        (activity as? AppCompatActivity)?.apply {
+            setSupportActionBar(detailToolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
-
-        return viewContainer.root
-    }
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        detailHelper.init()
+        detailHelper?.init()
 
         detailViewModel.apply {
-            pageType = args.pageType
-            itemId = args.itemId
+            pageType = args?.pageType
+            itemId = args?.itemId ?: 0
+            detailHelper?.let {
+                data.observe(viewLifecycleOwner, it::bindObservedData)
+                loadData()
+                it.handleClickFavorite(::toggleFavorite)
+            }
 
-            data.observe(viewLifecycleOwner, detailHelper::bindObservedData)
-            loadData()
-            detailHelper.handleClickFavorite(::toggleFavorite)
         }
 
     }
 
     override fun onDetach() {
-        detailHelper.destroy()
+        detailHelper?.destroy()
+        detailHelper = null
+        args = null
+        (activity as? AppCompatActivity)?.setSupportActionBar(null)
         super.onDetach()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.detail_menu, menu)
-        detailHelper.favoriteMenuItem = menu.findItem(R.id.favorite_menu)
+        detailHelper?.favoriteMenuItem = menu.findItem(R.id.favorite_menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -1,0 +1,1 @@
+-keep class id.apwdevs.app.search.ui.SearchFragment

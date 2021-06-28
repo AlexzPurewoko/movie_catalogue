@@ -6,8 +6,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import id.apwdevs.app.favorite.ui.content.FragmentContent
 import id.apwdevs.app.res.util.PageType
 
-class FavoriteFragmentAdapter(fragmentActivity: FragmentActivity) :
-    FragmentStateAdapter(fragmentActivity) {
+class FavoriteFragmentAdapter(fragment: Fragment) :
+    FragmentStateAdapter(fragment.childFragmentManager, fragment.viewLifecycleOwner.lifecycle) {
     override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment =

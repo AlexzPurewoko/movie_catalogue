@@ -21,6 +21,7 @@ android {
 
         testInstrumentationRunner = "id.apwdevs.app.test.androdtest.runner.AppTestRunner"
         testApplicationId = applicationId
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildFeatures.viewBinding = true

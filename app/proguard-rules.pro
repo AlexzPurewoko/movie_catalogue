@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class id.apwdevs.app.movieshow.MainApplication
+-keep,includedescriptorclasses class id.apwdevs.app.movieshow.IdlingResourceImpl { *; }
+-keep,includedescriptorclasses class id.apwdevs.app.movieshow.util.IdlingResourceHelper { *; }
+-keep,includedescriptorclasses class id.apwdevs.app.movieshow.DebugUtilKt { *; }
