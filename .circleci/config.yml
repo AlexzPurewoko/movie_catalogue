@@ -7,15 +7,12 @@ orbs:
 #test-build-workflow:
 #  version: 1
 #  jobs:
-
-
-build-android-workflow:
-  version: 1
-  branches:
+branches:
     only:
-      - main
-      - circleci-project-setup
-  jobs:
+        - main 
+        - circleci-project-setup
+
+jobs:
     build:
       executor: android/android
       steps:
