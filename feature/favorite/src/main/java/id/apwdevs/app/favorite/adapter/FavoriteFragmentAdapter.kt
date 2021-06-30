@@ -1,7 +1,6 @@
 package id.apwdevs.app.favorite.adapter
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import id.apwdevs.app.favorite.ui.content.FragmentContent
 import id.apwdevs.app.res.util.PageType

@@ -7,6 +7,7 @@ import id.apwdevs.app.detail.data.EpisodeItemData
 import id.apwdevs.app.detail.data.MovieDetail
 import id.apwdevs.app.detail.data.TvShowDetail
 import id.apwdevs.app.res.util.zeroIfNull
+import java.util.*
 import kotlin.math.floor
 
 private fun composeEpisode(lastEpisodeToAir: EpisodeToAir): EpisodeItemData {
@@ -30,10 +31,14 @@ private fun composeRuntime(runtime: Int?): String {
     }
 }
 
+private fun getLanguage(iso6391: String): String {
+    return Locale(iso6391).displayName ?: " - "
+}
+
 @JvmName("mapFromDomainDetailMovieIntoItem")
 fun DetailMovie.mapToItem(): MovieDetail {
     return MovieDetail(
-        originalLanguage = originalLanguage,
+        originalLanguage = getLanguage(originalLanguage),
         title = title,
         backdropPath = backdropPath,
         overview = overview,
@@ -41,7 +46,6 @@ fun DetailMovie.mapToItem(): MovieDetail {
         posterPath = posterPath,
         releaseDate = releaseDate,
         rating = voteAverage.toFloat(),
-        tagline = tagline,
         status = status,
         genres = genres
     )
@@ -50,14 +54,13 @@ fun DetailMovie.mapToItem(): MovieDetail {
 @JvmName("mapFromDomainDetailTvShowIntoItem")
 fun DetailTvShow.mapToItem(): TvShowDetail {
     return TvShowDetail(
-        originalLanguage = originalLanguage,
+        originalLanguage = getLanguage(originalLanguage),
         title = name,
         backdropPath = backdropPath,
         overview = overview,
         posterPath = posterPath,
         firstAirDate = firstAirDate,
         rating = voteAverage.toFloat(),
-        tagline = tagline,
         status = status,
         genres = genres,
         lastEpisodeToAir = composeEpisode(lastEpisodeToAir),

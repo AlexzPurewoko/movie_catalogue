@@ -1,7 +1,6 @@
 package id.apwdevs.app.discover.adapter
 
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import id.apwdevs.app.discover.ui.child.MovieShowFragment
 import id.apwdevs.app.res.util.PageType

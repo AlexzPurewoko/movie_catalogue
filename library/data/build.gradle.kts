@@ -1,8 +1,8 @@
 import modules.Apps
 import modules.KaptLibs
 import modules.Libs
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.*
 
 val apiToken: String by project
 val baseUrl: String by project
