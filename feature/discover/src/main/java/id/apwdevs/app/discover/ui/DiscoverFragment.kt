@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
-import androidx.core.view.get
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import id.apwdevs.app.discover.adapter.DiscoverStateFragmentAdapter
 import id.apwdevs.app.discover.databinding.FragmentDiscoverBinding
 import id.apwdevs.app.discover.di.discoverViewModel
@@ -77,12 +75,6 @@ class DiscoverFragment : BaseFeatureFragment() {
         onPageChangeCallback = null
         tabLayoutMediator = null
         binding = null
-    }
-
-    override fun onDetach() {
-
-
-        super.onDetach()
     }
 
     companion object {

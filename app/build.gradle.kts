@@ -1,7 +1,6 @@
 import modules.AndroidTestLibs
 import modules.Apps
 import modules.Libs
-import modules.TestLibs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -89,8 +88,4 @@ dependencies {
     ).forEach {
         debugImplementation(it)
     }
-//    debugImplementation(AndroidTestLibs.fragment)
-//    debugImplementation(AndroidTestLibs.espressoIdlingResource)
-//    debugImplementation(project(":test:assetDebug"))
-//    debugImplementation(AndroidTestLibs.fragment)
 }

@@ -61,10 +61,6 @@ abstract class DetailItemHelper(
         }
     }
 
-    protected fun getLanguage(iso6391: String): CharSequence? {
-        return Locale(iso6391).displayName
-    }
-
     fun onBindView(bindingLayout: FragmentDetailBinding?) {
         rootBinding = bindingLayout
         shimmerLoading = rootBinding?.shimmerLoading

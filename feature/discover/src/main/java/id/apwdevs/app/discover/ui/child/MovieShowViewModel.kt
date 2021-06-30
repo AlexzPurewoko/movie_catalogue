@@ -9,6 +9,7 @@ import id.apwdevs.app.core.domain.usecase.DiscoverPopularUseCase
 import id.apwdevs.app.movieshow.base.BaseViewModel
 import id.apwdevs.app.res.data.MovieShowItem
 import id.apwdevs.app.res.util.PageType
+import id.apwdevs.app.res.util.mapToItem
 import kotlinx.coroutines.flow.map
 
 class MovieShowViewModel(
@@ -28,15 +29,7 @@ class MovieShowViewModel(
         return popularUseCase.discoverPopularMovies()
             .map { pagingData ->
                 pagingData.map {
-                    MovieShowItem(
-                        it.movieId,
-                        it.title,
-                        it.overview,
-                        it.backdropPath,
-                        it.genres,
-                        it.voteCount,
-                        it.voteAverage
-                    )
+                    it.mapToItem()
                 }
             }.toLiveData(viewModelScope.coroutineContext)
     }
@@ -45,15 +38,7 @@ class MovieShowViewModel(
         return popularUseCase.discoverPopularTvShow()
             .map { pagingData ->
                 pagingData.map {
-                    MovieShowItem(
-                        it.tvId,
-                        it.name,
-                        it.overview,
-                        it.backdropPath,
-                        it.genres,
-                        it.voteCount,
-                        it.voteAverage
-                    )
+                    it.mapToItem()
                 }
             }.toLiveData(viewModelScope.coroutineContext)
     }

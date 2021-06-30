@@ -3,7 +3,6 @@ package id.apwdevs.app.detail.ui.helper
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.bumptech.glide.Glide
@@ -64,7 +63,7 @@ class DetailTvShowHelper(
             composeGenre(genres, tvShowData.genres)
             status.text = "${tvShowData.status}\n(${tvShowData.firstAirDate})"
             tvshowType.text = tvShowData.type
-            language.text = getLanguage(tvShowData.originalLanguage)
+            language.text = tvShowData.originalLanguage
             overview.text = tvShowData.overview
             seasons.adapter = SeasonAdapter(tvShowData.seasons)
             composeFrame(tvShowData)

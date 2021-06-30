@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
-import androidx.fragment.app.commitNow
 import com.bumptech.glide.Glide
 import id.apwdevs.app.detail.R
 import id.apwdevs.app.detail.data.MovieDetail
@@ -58,7 +56,7 @@ class DetailMovieHelper(private val fragmentManager: FragmentManager, onRetry: (
             composeGenre(genres, movieData.genres)
             status.text = "${movieData.status}\n(${movieData.releaseDate})"
             runtime.text = movieData.runTime
-            language.text = getLanguage(movieData.originalLanguage)
+            language.text = movieData.originalLanguage
             overview.text = movieData.overview
             composeBackdrop(movieData.backdropPath, movieData.title)
             root.visible()

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 object RemoteInit {
     
-    private val serverHostname = "api.themoviedb.org"
+    private const val serverHostname = "api.themoviedb.org"
     
     private fun buildCertificatePinner() =
         CertificatePinner.Builder()

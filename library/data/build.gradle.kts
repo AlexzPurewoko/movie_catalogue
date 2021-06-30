@@ -1,8 +1,8 @@
 import modules.Apps
 import modules.KaptLibs
 import modules.Libs
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.*
 
 val apiToken: String by project
 val baseUrl: String by project
@@ -94,7 +94,7 @@ dependencies {
 
 fun loadConfigField(scope: com.android.build.api.dsl.VariantDimension) {
     val properties = Properties()
-    properties.load(FileInputStream(rootProject.file("local.properties")))
+    properties.load(FileInputStream(rootProject.file("config.properties")))
 
     listOf(
         "API_TOKEN", "BASE_URL", "DB_PASSPHRASE"

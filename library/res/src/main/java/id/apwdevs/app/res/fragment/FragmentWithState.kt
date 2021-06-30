@@ -1,7 +1,6 @@
 package id.apwdevs.app.res.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.fragment.app.commit

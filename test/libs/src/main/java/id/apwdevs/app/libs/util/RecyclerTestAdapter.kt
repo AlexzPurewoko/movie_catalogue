@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import id.apwdevs.app.data.source.remote.response.MovieItemResponse
 import id.apwdevs.app.data.source.remote.response.TvShowItemResponse
 
-class RecyclerTestAdapter<T : Any> : PagingDataAdapter<T, VH<T>>(DiffRecyclerTest<T>()) {
+class RecyclerTestAdapter<T : Any> : PagingDataAdapter<T, VH<T>>(DiffRecyclerTest()) {
     override fun onBindViewHolder(holder: VH<T>, position: Int) {
         holder.bind(getItem(position)!!)
     }
@@ -44,7 +44,5 @@ class DiffRecyclerTest<T> : DiffUtil.ItemCallback<T>() {
 }
 
 class VH<T>(view: View) : RecyclerView.ViewHolder(view) {
-    fun bind(data: T) {
-//        Log.d("DATARECYCLER", "id: ${data.id}, title: ${data.title}")
-    }
+    fun bind(data: T) {}
 }

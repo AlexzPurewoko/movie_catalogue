@@ -12,7 +12,6 @@ data class TvShowDetail(
     val posterPath: String?,
     val rating: Float,
     val title: String,
-    val tagline: String,
     val status: String,
     val genres: List<Genre>,
     val lastEpisodeToAir: EpisodeItemData,
